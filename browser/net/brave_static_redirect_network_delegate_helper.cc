@@ -169,6 +169,7 @@ int OnBeforeURLRequest_StaticRedirectWorkForGURL(
     return net::OK;
   }
 
+/*
 #if BUILDFLAG(ENABLE_BRAVE_TRANSLATE_GO)
   if (translate_pattern.MatchesURL(request_url)) {
     replacements.SetQueryStr(request_url.query_piece());
@@ -183,6 +184,7 @@ int OnBeforeURLRequest_StaticRedirectWorkForGURL(
     return net::OK;
   }
 #endif
+*/
 
   return net::OK;
 }

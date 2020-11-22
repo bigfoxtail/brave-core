@@ -102,8 +102,8 @@ void BraveBrowserMainParts::PostBrowserStart() {
           InfoBarService::FromWebContents(active_web_contents);
 
       if (infobar_service) {
-        BraveConfirmP3AInfoBarDelegate::Create(
-            infobar_service, g_browser_process->local_state());
+//        BraveConfirmP3AInfoBarDelegate::Create(
+//            infobar_service, g_browser_process->local_state());
 #if BUILDFLAG(ENABLE_BRAVE_SYNC)
       auto* sync_service = ProfileSyncServiceFactory::IsSyncAllowed(profile())
              ? ProfileSyncServiceFactory::GetForProfile(profile())

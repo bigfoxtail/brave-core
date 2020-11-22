@@ -12,7 +12,7 @@
 #include "brave/browser/brave_browser_process_impl.h"
 #include "brave/browser/extensions/brave_component_loader.h"
 #include "brave/common/pref_names.h"
-#include "brave/components/brave_webtorrent/grit/brave_webtorrent_resources.h"
+//#include "brave/components/brave_webtorrent/grit/brave_webtorrent_resources.h"
 #include "chrome/browser/about_flags.h"
 #include "chrome/browser/extensions/component_loader.h"
 #include "chrome/browser/extensions/extension_service.h"
@@ -158,7 +158,7 @@ void BraveDefaultExtensionsHandler::SetWebTorrentEnabled(
       base::FilePath brave_webtorrent_path(FILE_PATH_LITERAL(""));
       brave_webtorrent_path =
           brave_webtorrent_path.Append(FILE_PATH_LITERAL("brave_webtorrent"));
-      loader->Add(IDR_BRAVE_WEBTORRENT, brave_webtorrent_path);
+//      loader->Add(IDR_BRAVE_WEBTORRENT, brave_webtorrent_path);
     }
     service->EnableExtension(brave_webtorrent_extension_id);
   } else {

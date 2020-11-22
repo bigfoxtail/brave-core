@@ -336,9 +336,11 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   BraveOmniboxClientImpl::RegisterPrefs(registry);
 #endif
 
+/*
 #if !defined(OS_ANDROID)
   brave_ads::RegisterP2APrefs(registry);
 #endif
+*/
 
 #if !defined(OS_ANDROID)
   // Turn on most visited mode on NTP by default.

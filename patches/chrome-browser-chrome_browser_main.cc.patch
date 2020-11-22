@@ -1,0 +1,13 @@
+diff --git a/chrome/browser/chrome_browser_main.cc b/chrome/browser/chrome_browser_main.cc
+index 19746df8b0a55a42671146618e7f445b32b8a613..c9a9dcbcbbd088db47fa1c58550072f9e48e6ebb 100644
+--- a/chrome/browser/chrome_browser_main.cc
++++ b/chrome/browser/chrome_browser_main.cc
+@@ -1402,7 +1402,7 @@ int ChromeBrowserMainParts::PreMainMessageLoopRunImpl() {
+ #endif  // BUILDFLAG(ENABLE_BACKGROUND_MODE)
+   // Post-profile init ---------------------------------------------------------
+ 
+-  TranslateService::Initialize();
++  TranslateService::Initialize(profile_);
+   if (base::FeatureList::IsEnabled(features::kGeoLanguage) ||
+       base::FeatureList::IsEnabled(language::kExplicitLanguageAsk) ||
+       language::GetOverrideLanguageModel() ==

@@ -47,12 +47,12 @@ class DefaultPage extends React.Component<Props, {}> {
           saveShowBackgroundImage={PreferencesAPI.saveShowBackgroundImage}
           saveShowStats={PreferencesAPI.saveShowStats}
           saveShowToday={PreferencesAPI.saveShowToday}
-          saveShowRewards={PreferencesAPI.saveShowRewards}
-          saveShowTogether={PreferencesAPI.saveShowTogether}
-          saveShowBinance={PreferencesAPI.saveShowBinance}
-          saveShowGemini={PreferencesAPI.saveShowGemini}
-          saveShowBitcoinDotCom={PreferencesAPI.saveShowBitcoinDotCom}
-          saveShowCryptoDotCom={PreferencesAPI.saveShowCryptoDotCom}
+//          saveShowRewards={PreferencesAPI.saveShowRewards}
+//          saveShowTogether={PreferencesAPI.saveShowTogether}
+//          saveShowBinance={PreferencesAPI.saveShowBinance}
+//          saveShowGemini={PreferencesAPI.saveShowGemini}
+//          saveShowBitcoinDotCom={PreferencesAPI.saveShowBitcoinDotCom}
+//          saveShowCryptoDotCom={PreferencesAPI.saveShowCryptoDotCom}
           saveBrandedWallpaperOptIn={PreferencesAPI.saveBrandedWallpaperOptIn}
         />
       )

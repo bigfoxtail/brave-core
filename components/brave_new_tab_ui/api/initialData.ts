@@ -68,22 +68,31 @@ export async function getInitialData (): Promise<InitialData> {
         })
       }),
       new Promise((resolve) => {
+/*
         chrome.gemini.isSupported((supported: boolean) => {
           resolve(supported)
         })
+*/
+          resolve(false)
       }),
       new Promise((resolve) => {
         resolve(false)
       }),
       new Promise((resolve) => {
+/*
         chrome.cryptoDotCom.isSupported((supported: boolean) => {
           resolve(supported)
         })
+*/
+          resolve(false)
       }),
       new Promise((resolve) => {
+/*
         chrome.binance.isSupportedRegion((supported: boolean) => {
           resolve(supported)
         })
+*/
+          resolve(false)
       })
     ])
     console.timeStamp('Got all initial data.')

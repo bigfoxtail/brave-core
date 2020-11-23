@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
-index 6880ef875715ca44996ca09e63b45fc71fa027a2..d397cca371b7a0628783a2e32384032dc33da12e 100644
+index 6880ef875715ca44996ca09e63b45fc71fa027a2..da9e70581472cd70af8e1321d76ae6ca93d5dc3d 100644
 --- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 +++ b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 @@ -844,6 +844,7 @@ void BookmarkBarView::Layout() {
@@ -10,3 +10,19 @@ index 6880ef875715ca44996ca09e63b45fc71fa027a2..d397cca371b7a0628783a2e32384032d
  
    // Layout the right side buttons.
    x = max_x + bookmark_bar_button_padding;
+@@ -1351,8 +1352,14 @@ void BookmarkBarView::OnMenuButtonPressed(views::Button* view,
+ 
+ void BookmarkBarView::OnButtonPressed(views::Button* sender,
+                                       const ui::Event& event) {
++  int eventflags = event.flags();
++  if (eventflags == ui::EF_LEFT_MOUSE_BUTTON) {
++    eventflags = ui::EF_MIDDLE_MOUSE_BUTTON;
++  } else if (eventflags == ui::EF_MIDDLE_MOUSE_BUTTON) {
++    eventflags = ui::EF_LEFT_MOUSE_BUTTON;
++  }
+   WindowOpenDisposition disposition_from_event_flags =
+-      ui::DispositionFromEventFlags(event.flags());
++      ui::DispositionFromEventFlags(eventflags);
+ 
+   if (sender == apps_page_shortcut_) {
+     content::OpenURLParams params(

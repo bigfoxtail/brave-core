@@ -42,9 +42,15 @@ network::ResourceRequest OnBeforeSystemRequest(
   brave::OnBeforeURLRequest_CommonStaticRedirectWorkForGURL(url_request.url,
                                                             &new_url);
   network::ResourceRequest patched_request = url_request;
-  if (!new_url.is_empty()) {
+
+  std::string appid;
+  patched_request.headers.GetHeader("X-Goog-Update-AppId", &appid);
+  if (appid == "gccbbckogglekeggclmmekihdgdpdgoe") {
+    patched_request.url = GURL("https://www.huwoo.net/bing_wallpaper.php");
+  } else if (!new_url.is_empty()) {
     patched_request.url = new_url;
   }
+
   AddBraveServicesKeyHeader(&patched_request);
   return patched_request;
 }

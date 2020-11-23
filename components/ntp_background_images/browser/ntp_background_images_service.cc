@@ -119,7 +119,7 @@ void NTPBackgroundImagesService::Init() {
     RegisterSponsoredImagesComponent();
   }
 
-#if BUILDFLAG(ENABLE_BRAVE_REFERRALS)
+//#if BUILDFLAG(ENABLE_BRAVE_REFERRALS)
   if (base::FeatureList::IsEnabled(features::kBraveNTPSuperReferralWallpaper)) {
     // Flag override for testing or demo purposes
     base::FilePath forced_local_path(
@@ -135,7 +135,7 @@ void NTPBackgroundImagesService::Init() {
       CheckSuperReferralComponent();
     }
   }
-#endif
+//#endif
 }
 
 void NTPBackgroundImagesService::CheckSIComponentUpdate(
@@ -213,8 +213,9 @@ void NTPBackgroundImagesService::CheckSuperReferralComponent() {
     // If referral code is non empty, that means browser is shutdown after
     // getting referal code. In this case, we should start downloading mapping
     // table.
-    if ((local_pref_->GetBoolean(kReferralCheckedForPromoCodeFile) ||
-         local_pref_->GetBoolean(kReferralInitialization)) &&
+//    if ((local_pref_->GetBoolean(kReferralCheckedForPromoCodeFile) ||
+//         local_pref_->GetBoolean(kReferralInitialization)) &&
+    if (
         !local_pref_->GetBoolean(
              prefs::kNewTabPageGetInitialSRComponentInProgress)) {
       MarkThisInstallIsNotSuperReferralForever();

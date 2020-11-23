@@ -178,6 +178,7 @@ BraveNewTabMessageHandler* BraveNewTabMessageHandler::Create(
   // Initial Values
   // Should only contain data that is static
   //
+/*
   auto* ads_service_ = brave_ads::AdsServiceFactory::GetForProfile(profile);
   // For safety, default |is_ads_supported_locale_| to true. Better to have
   // false positive than falsen egative,
@@ -188,6 +189,7 @@ BraveNewTabMessageHandler* BraveNewTabMessageHandler::Create(
   } else {
     is_ads_supported_locale_ = ads_service_->IsSupportedLocale();
   }
+*/
 
   source->AddBoolean(
       "featureFlagBraveNTPSponsoredImagesWallpaper",

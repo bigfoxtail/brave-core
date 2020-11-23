@@ -1,0 +1,35 @@
+diff --git a/chrome/common/chrome_paths_win.cc b/chrome/common/chrome_paths_win.cc
+index b137ad00d8b906f8d807e83d2c7514467541f7c3..058c7cb2c741f6410a02450ef69bff1efa2a3fd2 100644
+--- a/chrome/common/chrome_paths_win.cc
++++ b/chrome/common/chrome_paths_win.cc
+@@ -43,18 +43,24 @@ bool GetUserDirectory(int csidl_folder, base::FilePath* result) {
+ }  // namespace
+ 
+ bool GetDefaultUserDataDirectory(base::FilePath* result) {
+-  if (!base::PathService::Get(base::DIR_LOCAL_APP_DATA, result))
++  //if (!base::PathService::Get(base::DIR_LOCAL_APP_DATA, result))
++  if (!base::PathService::Get(base::DIR_EXE, result))
+     return false;
+-  *result = result->Append(install_static::GetChromeInstallSubDirectory());
+-  *result = result->Append(chrome::kUserDataDirname);
++  //*result = result->Append(install_static::GetChromeInstallSubDirectory());
++  //*result = result->Append(chrome::kUserDataDirname);
++  *result = result->Append(L"..");
++  *result = result->Append(L"Data");
+   return true;
+ }
+ 
+ bool GetDefaultRoamingUserDataDirectory(base::FilePath* result) {
+-  if (!base::PathService::Get(base::DIR_APP_DATA, result))
++  //if (!base::PathService::Get(base::DIR_APP_DATA, result))
++  if (!base::PathService::Get(base::DIR_EXE, result))
+     return false;
+-  *result = result->Append(install_static::GetChromeInstallSubDirectory());
+-  *result = result->Append(chrome::kUserDataDirname);
++  //*result = result->Append(install_static::GetChromeInstallSubDirectory());
++  //*result = result->Append(chrome::kUserDataDirname);
++  *result = result->Append(L"..");
++  *result = result->Append(L"Data");
+   return true;
+ }
+ 

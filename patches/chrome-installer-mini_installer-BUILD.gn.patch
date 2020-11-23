@@ -1,5 +1,5 @@
 diff --git a/chrome/installer/mini_installer/BUILD.gn b/chrome/installer/mini_installer/BUILD.gn
-index df39ea145cc6b05775db7fbfb680fce892b8941a..f44076c2b5948c034dd4ba871e07f41a6447fea9 100644
+index df39ea145cc6b05775db7fbfb680fce892b8941a..6aa75f203f353c1b95c4f80cfc0c53f7b6edcd0c 100644
 --- a/chrome/installer/mini_installer/BUILD.gn
 +++ b/chrome/installer/mini_installer/BUILD.gn
 @@ -12,6 +12,7 @@ import("//third_party/icu/config.gni")
@@ -14,7 +14,7 @@ index df39ea145cc6b05775db7fbfb680fce892b8941a..f44076c2b5948c034dd4ba871e07f41a
        "//third_party/icu:icudata",
        chrome_dll_target,
      ]
-+    if (skip_signing) { args += [ "--skip_signing" ] }
++    if (skip_signing) { args += [ "--skip_signing=True" ] }
 +    if (build_delta_installer) { args += [ "--setup_exe_format=DIFF", "--diff_algorithm=COURGETTE", "--last_chrome_installer",rebase_path("$root_out_dir/$last_chrome_installer", root_build_dir) ] }
 +    deps += [ "//brave:mini_installer_dependencies" ]
  

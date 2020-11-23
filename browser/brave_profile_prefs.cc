@@ -150,7 +150,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   registry->RegisterBooleanPref(kHTTPSEVerywhereControlType, true);
   registry->RegisterBooleanPref(kNoScriptControlType, false);
   registry->RegisterBooleanPref(kAdControlType, true);
-  registry->RegisterBooleanPref(kShieldsAdvancedViewEnabled, false);
+  registry->RegisterBooleanPref(kShieldsAdvancedViewEnabled, true);
 
 #if !BUILDFLAG(USE_GCM_FROM_PLATFORM)
   // PushMessaging

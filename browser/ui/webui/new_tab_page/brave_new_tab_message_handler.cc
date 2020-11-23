@@ -193,8 +193,7 @@ BraveNewTabMessageHandler* BraveNewTabMessageHandler::Create(
 
   source->AddBoolean(
       "featureFlagBraveNTPSponsoredImagesWallpaper",
-      base::FeatureList::IsEnabled(kBraveNTPBrandedWallpaper) &&
-      is_ads_supported_locale_);
+      base::FeatureList::IsEnabled(kBraveNTPBrandedWallpaper));
   // Private Tab info
   if (IsPrivateNewTab(profile)) {
     source->AddBoolean(

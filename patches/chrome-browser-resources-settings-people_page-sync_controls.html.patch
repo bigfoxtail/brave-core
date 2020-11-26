@@ -1,0 +1,29 @@
+diff --git a/chrome/browser/resources/settings/people_page/sync_controls.html b/chrome/browser/resources/settings/people_page/sync_controls.html
+index 6b4eaba8a09ed36029255afae12571f03df987bf..c050130387d3fc4fbcea65a11f46e7264c20a618 100644
+--- a/chrome/browser/resources/settings/people_page/sync_controls.html
++++ b/chrome/browser/resources/settings/people_page/sync_controls.html
+@@ -30,6 +30,7 @@
+       }
+     </style>
+ 
++<!--
+     <div id="sync-data-radio" class="cr-row first">
+       <cr-radio-group
+           selected="[[selectedSyncDataRadio_(syncPrefs)]]"
+@@ -42,6 +43,7 @@
+         </cr-radio-button>
+       </cr-radio-group>
+     </div>
++-->
+ 
+     <div class="cr-row first">
+       <h2 class="cr-title-text flex">$i18n{syncData}</h2>
+@@ -101,7 +103,7 @@
+         </div>
+         <cr-toggle checked="{{syncPrefs.preferencesSynced}}"
+             on-change="onSingleSyncDataTypeChanged_"
+-            disabled="[[syncPrefs.syncAllDataTypes]]"
++            disabled="true"
+             aria-labelledby="settingsCheckboxLabel">
+         </cr-toggle>
+       </div>

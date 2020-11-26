@@ -1,0 +1,13 @@
+diff --git a/chrome/browser/ui/webui/signin/sync_confirmation_ui.cc b/chrome/browser/ui/webui/signin/sync_confirmation_ui.cc
+index 6e854c5ef37c75d60993c75773cef0636250be67..89b53f3043223e75d714f8ff826385d7b6f57151 100644
+--- a/chrome/browser/ui/webui/signin/sync_confirmation_ui.cc
++++ b/chrome/browser/ui/webui/signin/sync_confirmation_ui.cc
+@@ -47,7 +47,7 @@ SyncConfirmationUI::SyncConfirmationUI(content::WebUI* web_ui)
+     source->AddResourcePath("test_loader.html", IDR_WEBUI_HTML_TEST_LOADER);
+     source->OverrideContentSecurityPolicy(
+         network::mojom::CSPDirectiveName::ScriptSrc,
+-        "script-src chrome://resources chrome://test 'self';");
++        "script-src chrome://resources chrome://test chrome://brave-resources 'self';");
+ 
+     source->SetDefaultResource(IDR_SYNC_CONFIRMATION_HTML);
+     source->AddResourcePath("sync_confirmation_app.js",

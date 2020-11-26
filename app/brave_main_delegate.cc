@@ -185,8 +185,8 @@ bool BraveMainDelegate::BasicStartupComplete(int* exit_code) {
 #endif  // defined(OS_ANDROID)
 
   // Brave's sync protocol does not use the sync service url
-  command_line.AppendSwitchASCII(switches::kSyncServiceURL,
-                                 brave_sync_service_url.c_str());
+//  command_line.AppendSwitchASCII(switches::kSyncServiceURL,
+//                                 brave_sync_service_url.c_str());
 
   command_line.AppendSwitchASCII(switches::kLsoUrl, kDummyUrl);
 

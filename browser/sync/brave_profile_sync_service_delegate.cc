@@ -76,7 +76,8 @@ void BraveProfileSyncServiceDelegate::OnDeviceInfoChange() {
 
 void BraveProfileSyncServiceDelegate::OnSelfDeviceInfoDeleted(void) {
   syncer::BraveProfileSyncService* sync_service = GetSyncService(profile_);
-  sync_service->OnSelfDeviceInfoDeleted(base::DoNothing::Once());
+  DCHECK(sync_service);
+//  sync_service->OnSelfDeviceInfoDeleted(base::DoNothing::Once());
 }
 
 void BraveProfileSyncServiceDelegate::SuspendDeviceObserverForOwnReset() {

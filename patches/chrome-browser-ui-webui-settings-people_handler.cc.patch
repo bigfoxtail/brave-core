@@ -1,5 +1,5 @@
 diff --git a/chrome/browser/ui/webui/settings/people_handler.cc b/chrome/browser/ui/webui/settings/people_handler.cc
-index 702dce6977751cc7b884e9b6645f742aa5639961..b4637414e21a33d644db8f475b511cfe72cecf82 100644
+index 702dce6977751cc7b884e9b6645f742aa5639961..c37b964414913d18ff5200b9f64a42c9ca74b844 100644
 --- a/chrome/browser/ui/webui/settings/people_handler.cc
 +++ b/chrome/browser/ui/webui/settings/people_handler.cc
 @@ -879,7 +879,7 @@ void PeopleHandler::OnStateChanged(syncer::SyncService* sync) {
@@ -11,19 +11,11 @@ index 702dce6977751cc7b884e9b6645f742aa5639961..b4637414e21a33d644db8f475b511cfe
    syncer::SyncService* service = GetSyncService();
    DCHECK(service && service->IsSetupInProgress() &&
           !service->GetUserSettings()->IsFirstSetupComplete());
-@@ -927,6 +927,7 @@ std::unique_ptr<base::DictionaryValue> PeopleHandler::GetSyncStatusDictionary()
-       service && !disallowed_by_policy && service->IsSetupInProgress() &&
-           !service->GetUserSettings()->IsFirstSetupComplete() &&
-           identity_manager->HasPrimaryAccount());
-+  BRAVE_GET_SYNC_STATUS_DICTIONARY
- 
-   const sync_ui_util::StatusLabels status_labels =
-       sync_ui_util::GetStatusLabels(profile_);
-@@ -1077,6 +1078,7 @@ void PeopleHandler::MaybeMarkSyncConfiguring() {
- }
- 
- bool PeopleHandler::IsProfileAuthNeededOrHasErrors() {
-+  return false;
-   return !IdentityManagerFactory::GetForProfile(profile_)
-               ->HasPrimaryAccount() ||
-          SigninErrorControllerFactory::GetForProfile(profile_)->HasError();
+@@ -994,6 +994,7 @@ void PeopleHandler::PushSyncPrefs() {
+   }
+   args.SetBoolean("syncAllDataTypes",
+                   sync_user_settings->IsSyncEverythingEnabled());
++  args.SetBoolean("preferencesSynced",false);
+   args.SetBoolean(
+       "paymentsIntegrationEnabled",
+       autofill::prefs::IsPaymentsIntegrationEnabled(profile_->GetPrefs()));

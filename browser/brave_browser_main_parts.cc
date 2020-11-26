@@ -125,6 +125,7 @@ void BraveBrowserMainParts::PreShutdown() {
 
 void BraveBrowserMainParts::PreProfileInit() {
   ChromeBrowserMainParts::PreProfileInit();
+/*
 #if !defined(OS_ANDROID)
   auto* command_line = base::CommandLine::ForCurrentProcess();
   if (!base::FeatureList::IsEnabled(brave_sync::features::kBraveSync)) {
@@ -137,6 +138,7 @@ void BraveBrowserMainParts::PreProfileInit() {
     command_line->RemoveSwitch(switches::kDisableSync);
   }
 #endif
+*/
 }
 
 void BraveBrowserMainParts::PostProfileInit() {

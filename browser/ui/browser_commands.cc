@@ -43,8 +43,8 @@ void NewOffTheRecordWindowTor(Browser* browser) {
     return;
   }
 
-  TorProfileManager::SwitchToTorProfile(browser->profile(),
-                                        ProfileManager::CreateCallback());
+//  TorProfileManager::SwitchToTorProfile(browser->profile(),
+//                                        ProfileManager::CreateCallback());
 }
 
 void NewTorConnectionForSite(Browser* browser) {

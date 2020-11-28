@@ -42,8 +42,9 @@ AdsServiceImpl* AdsServiceFactory::GetImplForProfile(
     return nullptr;
   }
 
-  return static_cast<AdsServiceImpl*>(
-      GetInstance()->GetServiceForBrowserContext(profile, true));
+    return nullptr;
+//  return static_cast<AdsServiceImpl*>(
+//      GetInstance()->GetServiceForBrowserContext(profile, true));
 }
 
 // static

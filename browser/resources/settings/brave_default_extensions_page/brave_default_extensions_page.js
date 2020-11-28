@@ -58,9 +58,9 @@ Polymer({
     this.browserProxy_.isTorManaged().then(managed => {
       this.disableTorOption_ = managed
     })
-    this.browserProxy_.getWeb3ProviderList().then(list => {
-      this.braveWeb3Providers_ = JSON.parse(list)
-    });
+//    this.browserProxy_.getWeb3ProviderList().then(list => {
+//      this.braveWeb3Providers_ = JSON.parse(list)
+//    });
     this.browserProxy_.getIPFSResolveMethodList().then(list => {
       this.ipfsResolveMethod_ = JSON.parse(list)
     });

@@ -7,6 +7,7 @@
 
 #include <vector>
 
+#include "base/strings/stringprintf.h"
 #include "brave/components/ipfs/ipfs_constants.h"
 #include "brave/components/ipfs/ipfs_gateway.h"
 #include "brave/components/ipfs/translate_ipfs_uri.h"
@@ -26,11 +27,18 @@ bool HasIPFSPath(const GURL& gurl) {
 }
 
 bool IsDefaultGatewayURL(const GURL& url) {
-  return url.GetOrigin() == GetDefaultIPFSGateway() && HasIPFSPath(url);
+  std::string gateway_host = GetDefaultIPFSGateway().host();
+  return url.DomainIs(gateway_host) &&
+         (HasIPFSPath(url) ||
+          url.DomainIs(std::string("ipfs.") + gateway_host) ||
+          url.DomainIs(std::string("ipns.") + gateway_host));
 }
 
 bool IsLocalGatewayURL(const GURL& url) {
-  return url.SchemeIsHTTPOrHTTPS() && net::IsLocalhost(url) && HasIPFSPath(url);
+  return url.SchemeIsHTTPOrHTTPS() &&
+         ((net::IsLocalhost(url) && HasIPFSPath(url)) ||
+          url.DomainIs(std::string("ipfs.localhost")) ||
+          url.DomainIs(std::string("ipns.localhost")));
 }
 
 bool IsIPFSScheme(const GURL& url) {
@@ -59,6 +67,31 @@ GURL ToPublicGatewayURL(const GURL& url) {
   }
 
   return new_url;
+}
+
+GURL GetGatewayURL(const std::string& cid,
+                   const std::string& path,
+                   const GURL& base_gateway_url,
+                   bool ipfs) {
+  GURL uri(base_gateway_url);
+  GURL::Replacements replacements;
+  std::string host = base::StringPrintf("%s.%s.%s",
+      cid.c_str(), ipfs? "ipfs" : "ipns", uri.host().c_str());
+  replacements.SetHostStr(host);
+  replacements.SetPathStr(path);
+  return uri.ReplaceComponents(replacements);
+}
+
+GURL GetIPFSGatewayURL(const std::string& cid,
+                       const std::string& path,
+                       const GURL& base_gateway_url) {
+  return GetGatewayURL(cid, path, base_gateway_url, true);
+}
+
+GURL GetIPNSGatewayURL(const std::string& cid,
+                       const std::string& path,
+                       const GURL& base_gateway_url) {
+  return GetGatewayURL(cid, path, base_gateway_url, false);
 }
 
 }  // namespace ipfs

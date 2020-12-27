@@ -56,6 +56,7 @@ import org.chromium.base.TraceEvent;
 import org.chromium.base.supplier.Supplier;
 import org.chromium.base.task.AsyncTask;
 import org.chromium.chrome.R;
+import org.chromium.chrome.browser.BraveAdsNativeHelper;
 import org.chromium.chrome.browser.BraveRewardsHelper;
 import org.chromium.chrome.browser.ChromeTabbedActivity;
 import org.chromium.chrome.browser.InternetConnection;
@@ -498,7 +499,7 @@ public class BraveNewTabPageLayout extends NewTabPageLayout {
                     sponsoredTab.setNTPImage(SponsoredImageUtil.getBackgroundImage());
                 }
             }
-            checkForNonDistruptiveBanner(ntpImage);
+            checkForNonDisruptiveBanner(ntpImage);
             super.onConfigurationChanged(newConfig);
             showNTPImage(ntpImage);
         } else {
@@ -603,10 +604,15 @@ public class BraveNewTabPageLayout extends NewTabPageLayout {
         });
     }
 
-    private void checkForNonDistruptiveBanner(NTPImage ntpImage) {
-        int brOption = NTPUtil.checkForNonDistruptiveBanner(ntpImage, sponsoredTab);
-        if (SponsoredImageUtil.BR_INVALID_OPTION != brOption && !NTPUtil.isReferralEnabled()) {
-            NTPUtil.showNonDistruptiveBanner((BraveActivity) mActivity, this, brOption,
+    private void checkForNonDisruptiveBanner(NTPImage ntpImage) {
+        int brOption = NTPUtil.checkForNonDisruptiveBanner(ntpImage, sponsoredTab);
+        if (SponsoredImageUtil.BR_INVALID_OPTION != brOption && !NTPUtil.isReferralEnabled()
+                && ((!BraveAdsNativeHelper.nativeIsBraveAdsEnabled(
+                             Profile.getLastUsedRegularProfile())
+                            && BraveRewardsHelper.shouldShowBraveRewardsOnboardingModal())
+                        || BraveAdsNativeHelper.nativeIsBraveAdsEnabled(
+                                Profile.getLastUsedRegularProfile()))) {
+            NTPUtil.showNonDisruptiveBanner((BraveActivity) mActivity, this, brOption,
                                              sponsoredTab, newTabPageListener);
         }
     }
@@ -621,7 +627,7 @@ public class BraveNewTabPageLayout extends NewTabPageLayout {
                 sponsoredTab.setNTPImage(SponsoredImageUtil.getBackgroundImage());
             }
         }
-        checkForNonDistruptiveBanner(ntpImage);
+        checkForNonDisruptiveBanner(ntpImage);
         showNTPImage(ntpImage);
     }
 

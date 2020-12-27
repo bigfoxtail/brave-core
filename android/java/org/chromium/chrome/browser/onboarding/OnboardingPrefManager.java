@@ -7,8 +7,6 @@
 
 package org.chromium.chrome.browser.onboarding;
 
-import android.app.Activity;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -71,7 +69,7 @@ public class OnboardingPrefManager {
     private static final String BING = "Bing";
     private static final String STARTPAGE = "Startpage";
     private static final String YAHOO = "Yahoo";
-    private static final String YANDEX = "Yandex";
+    public static final String YANDEX = "Yandex";
 
     private OnboardingPrefManager() {
         mSharedPreferences = ContextUtils.getAppSharedPreferences();
@@ -211,7 +209,7 @@ public class OnboardingPrefManager {
 
     public void onboardingNotification(Context context) {
         if (!isOnboardingNotificationShown()) {
-            BraveOnboardingNotification.showOnboardingNotification((Activity) context);
+            BraveOnboardingNotification.showOnboardingNotification(context);
             setOnboardingNotificationShown(true);
         }
     }

@@ -61,6 +61,7 @@ interface Props {
 //  saveShowBitcoinDotCom: (value: boolean) => void
 //  saveShowCryptoDotCom: (value: boolean) => void
   saveBrandedWallpaperOptIn: (value: boolean) => void
+  onReadBraveTodayIntroCard: () => any
 }
 
 interface State {
@@ -1115,6 +1116,7 @@ class NewTabPage extends React.Component<Props, State> {
           publishers={this.props.todayData.publishers}
           isFetching={this.props.todayData.isFetching === true}
           isUpdateAvailable={this.props.todayData.isUpdateAvailable}
+          isIntroDismissed={this.props.newTabData.isBraveTodayIntroDismissed}
           onRefresh={this.props.actions.today.refresh}
           onAnotherPageNeeded={this.props.actions.today.anotherPageNeeded}
           onInteracting={this.onBraveTodayInteracting}
@@ -1123,6 +1125,7 @@ class NewTabPage extends React.Component<Props, State> {
           onReadFeedItem={this.props.actions.today.readFeedItem}
           onSetPublisherPref={this.props.actions.today.setPublisherPref}
           onCheckForUpdate={this.props.actions.today.checkForUpdate}
+          onReadCardIntro={this.props.onReadBraveTodayIntroCard}
         />
         }
         <Settings

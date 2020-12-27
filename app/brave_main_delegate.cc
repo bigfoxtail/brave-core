@@ -190,6 +190,7 @@ bool BraveMainDelegate::BasicStartupComplete(int* exit_code) {
 
   command_line.AppendSwitchASCII(switches::kLsoUrl, kDummyUrl);
 
+/*
 #if defined(OFFICIAL_BUILD)
   // Brave variations
   std::string kVariationsServerURL = BRAVE_VARIATIONS_SERVER_URL;
@@ -197,6 +198,7 @@ bool BraveMainDelegate::BasicStartupComplete(int* exit_code) {
       kVariationsServerURL.c_str());
   CHECK(!kVariationsServerURL.empty());
 #endif
+*/
 
   // Enabled features.
   std::unordered_set<const char*> enabled_features = {

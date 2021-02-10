@@ -24,7 +24,7 @@ Catalog::~Catalog() = default;
 bool Catalog::FromJson(
     const std::string& json) {
   auto json_schema =
-      AdsClientHelper::Get()->LoadResourceForId(_catalog_schema_resource_id);
+      AdsClientHelper::Get()->LoadResourceForId(g_catalog_schema_resource_id);
   auto result = LoadFromJson(catalog_state_.get(), json, json_schema);
   if (result != SUCCESS) {
     return false;
@@ -59,12 +59,12 @@ int64_t Catalog::GetPing() const {
   return catalog_state_->ping / base::Time::kMillisecondsPerSecond;
 }
 
-CatalogCampaignList Catalog::GetCampaigns() const {
-  return catalog_state_->campaigns;
-}
-
 CatalogIssuersInfo Catalog::GetIssuers() const {
   return catalog_state_->catalog_issuers;
+}
+
+CatalogCampaignList Catalog::GetCampaigns() const {
+  return catalog_state_->campaigns;
 }
 
 }  // namespace ads

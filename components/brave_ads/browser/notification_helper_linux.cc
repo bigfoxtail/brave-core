@@ -6,6 +6,7 @@
 #include "brave/components/brave_ads/browser/notification_helper_linux.h"
 
 #include "base/logging.h"
+#include "brave/common/brave_channel_info.h"
 #include "chrome/browser/fullscreen.h"
 
 namespace brave_ads {
@@ -18,6 +19,10 @@ bool NotificationHelperLinux::ShouldShowNotifications() {
   if (IsFullScreenMode()) {
     LOG(WARNING) << "Notification not made: Full screen mode";
     return false;
+  }
+
+  if (brave::IsNightlyOrDeveloperBuild()) {
+    return true;
   }
 
   // TODO(https://github.com/brave/brave-browser/issues/5542): Investigate how

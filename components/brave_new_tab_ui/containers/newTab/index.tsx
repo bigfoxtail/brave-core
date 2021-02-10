@@ -8,38 +8,38 @@ import * as React from 'react'
 // Components
 import Stats from './stats'
 import TopSitesGrid from './gridSites'
-import FooterInfo from './footerInfo'
+import FooterInfo from '../../components/default/footer/footer'
 import SiteRemovalNotification from './notification'
 import {
   ClockWidget as Clock,
-//  RewardsWidget as Rewards,
-//  TogetherWidget as Together,
-//  BinanceWidget as Binance,
-//  GeminiWidget as Gemini,
-//  BitcoinDotComWidget as BitcoinDotCom,
-//  CryptoDotComWidget as CryptoDotCom,
-//  EditCards
+  RewardsWidget as Rewards,
+  TogetherWidget as Together,
+  BinanceWidget as Binance,
+  GeminiWidget as Gemini,
+  CryptoDotComWidget as CryptoDotCom,
+  EditCards
 } from '../../components/default'
 import * as Page from '../../components/default/page'
 import BrandedWallpaperLogo from '../../components/default/brandedWallpaper/logo'
 import { brandedWallpaperLogoClicked } from '../../api/brandedWallpaper'
 import BraveTodayHint from '../../components/default/braveToday/hint'
 import BraveToday from '../../components/default/braveToday'
+import BAPDeprecationModal from '../../components/default/rewards/bapDeprecationModal'
 
 // Helpers
 import VisibilityTimer from '../../helpers/visibilityTimer'
-//import {
-//  fetchCryptoDotComTickerPrices,
-//  fetchCryptoDotComLosersGainers,
-//  fetchCryptoDotComCharts,
-//  fetchCryptoDotComSupportedPairs
-//} from '../../api/cryptoDotCom'
-//import { generateQRData } from '../../binance-utils'
+import {
+  fetchCryptoDotComTickerPrices,
+  fetchCryptoDotComLosersGainers,
+  fetchCryptoDotComCharts,
+  fetchCryptoDotComSupportedPairs
+} from '../../api/cryptoDotCom'
+import { generateQRData } from '../../binance-utils'
 
 // Types
 import { getLocale } from '../../../common/locale'
-//import currencyData from '../../components/default/binance/data'
-//import geminiData from '../../components/default/gemini/data'
+import currencyData from '../../components/default/binance/data'
+import geminiData from '../../components/default/gemini/data'
 import { NewTabActions } from '../../constants/new_tab_types'
 import { BraveTodayState } from '../../reducers/today'
 
@@ -54,14 +54,14 @@ interface Props {
   saveShowBackgroundImage: (value: boolean) => void
   saveShowStats: (value: boolean) => void
   saveShowToday: (value: boolean) => any
-//  saveShowRewards: (value: boolean) => void
-//  saveShowTogether: (value: boolean) => void
-//  saveShowBinance: (value: boolean) => void
-//  saveShowGemini: (value: boolean) => void
-//  saveShowBitcoinDotCom: (value: boolean) => void
-//  saveShowCryptoDotCom: (value: boolean) => void
+  saveShowRewards: (value: boolean) => void
+  saveShowTogether: (value: boolean) => void
+  saveShowBinance: (value: boolean) => void
+  saveShowGemini: (value: boolean) => void
+  saveShowCryptoDotCom: (value: boolean) => void
   saveBrandedWallpaperOptIn: (value: boolean) => void
   onReadBraveTodayIntroCard: () => any
+  saveSetAllStackWidgets: (value: boolean) => void
 }
 
 interface State {
@@ -236,7 +236,6 @@ class NewTabPage extends React.Component<Props, State> {
     this.props.actions.setMostVisitedSettings(showTopSites, !customLinksEnabled)
   }
 
-/*
   toggleShowRewards = () => {
     this.props.saveShowRewards(!this.props.newTabData.showRewards)
   }
@@ -246,32 +245,39 @@ class NewTabPage extends React.Component<Props, State> {
   }
 
   toggleShowBinance = () => {
-    const { showBinance } = this.props.newTabData
+    const { showBinance, binanceState } = this.props.newTabData
 
     this.props.saveShowBinance(!showBinance)
 
-    // If we are about to hide the widget, disconnect
-    if (showBinance) {
+    if (!showBinance) {
+      return
+    }
+
+    if (binanceState.userAuthed) {
       chrome.binance.revokeToken(() => {
         this.disconnectBinance()
       })
+    } else {
+      this.disconnectBinance()
     }
   }
 
   toggleShowGemini = () => {
-    const { showGemini } = this.props.newTabData
+    const { showGemini, geminiState } = this.props.newTabData
 
     this.props.saveShowGemini(!showGemini)
 
-    if (showGemini) {
+    if (!showGemini) {
+      return
+    }
+
+    if (geminiState.userAuthed) {
       chrome.gemini.revokeToken(() => {
         this.disconnectGemini()
       })
+    } else {
+      this.disconnectGemini()
     }
-  }
-
-  toggleShowBitcoinDotCom = () => {
-    this.props.saveShowBitcoinDotCom(!this.props.newTabData.showBitcoinDotCom)
   }
 
   toggleShowCryptoDotCom = () => {
@@ -335,27 +341,23 @@ class NewTabPage extends React.Component<Props, State> {
   }
 
   buyCrypto = (coin: string, amount: string, fiat: string) => {
-    const { userTLD } = this.props.newTabData.binanceState
+    const { userLocale, userTLD } = this.props.newTabData.binanceState
     const refCode = userTLD === 'us' ? '35089877' : '39346846'
     const refParams = `ref=${refCode}&utm_source=brave`
 
     if (userTLD === 'us') {
       window.open(`https://www.binance.us/en/buy-sell-crypto?crypto=${coin}&amount=${amount}&${refParams}`, '_blank', 'noopener')
     } else {
-      window.open(`https://www.binance.com/en/buy-sell-crypto?fiat=${fiat}&crypto=${coin}&amount=${amount}&${refParams}`, '_blank', 'noopener')
+      window.open(`https://www.binance.com/${userLocale}/buy-sell-crypto?fiat=${fiat}&crypto=${coin}&amount=${amount}&${refParams}`, '_blank', 'noopener')
     }
-  }
-
-  onBuyBitcoinDotComCrypto = () => {
-    this.props.actions.buyBitcoinDotComCrypto()
-  }
-
-  onInteractionBitcoinDotCom = () => {
-    this.props.actions.interactionBitcoinDotCom()
   }
 
   onBinanceUserTLD = (userTLD: NewTab.BinanceTLD) => {
     this.props.actions.onBinanceUserTLD(userTLD)
+  }
+
+  onBinanceUserLocale = (userLocale: string) => {
+    this.props.actions.onBinanceUserLocale(userLocale)
   }
 
   setBalanceInfo = (info: Record<string, Record<string, string>>) => {
@@ -365,7 +367,6 @@ class NewTabPage extends React.Component<Props, State> {
   setAssetDepositInfo = (symbol: string, address: string, url: string) => {
     this.props.actions.onAssetDepositInfo(symbol, address, url)
   }
-*/
 
   disableBrandedWallpaper = () => {
     this.props.saveBrandedWallpaperOptIn(false)
@@ -377,13 +378,11 @@ class NewTabPage extends React.Component<Props, State> {
     )
   }
 
-/*
   startRewards = () => {
     chrome.braveRewards.saveAdsSetting('adsEnabled', 'true')
     chrome.braveRewards.setAutoContributeEnabled(true)
   }
 
-*/
   dismissBrandedWallpaperNotification = (isUserAction: boolean) => {
     this.props.actions.dismissBrandedWallpaperNotification(isUserAction)
   }
@@ -411,7 +410,6 @@ class NewTabPage extends React.Component<Props, State> {
     brandedWallpaperLogoClicked(this.props.newTabData.brandedWallpaperData)
   }
 
-/*
   openSettingsEditCards = () => {
     this.openSettings(SettingsTabType.Cards)
   }
@@ -435,7 +433,6 @@ class NewTabPage extends React.Component<Props, State> {
   setUserTLDAutoSet = () => {
     this.props.actions.setUserTLDAutoSet()
   }
-*/
 
   onBraveTodayInteracting = (isInteracting: boolean) => {
     if (isInteracting && !this.hasInitBraveToday) {
@@ -444,7 +441,6 @@ class NewTabPage extends React.Component<Props, State> {
     }
   }
 
-/*
   learnMoreRewards = () => {
     window.open('https://brave.com/brave-rewards/', '_blank', 'noopener')
   }
@@ -671,9 +667,7 @@ class NewTabPage extends React.Component<Props, State> {
       showBinance,
       showTogether,
       showGemini,
-      showBitcoinDotCom,
       geminiSupported,
-      bitcoinDotComSupported,
       showCryptoDotCom,
       cryptoDotComSupported,
       binanceSupported
@@ -695,17 +689,19 @@ class NewTabPage extends React.Component<Props, State> {
         display: showGemini && geminiSupported,
         render: this.renderGeminiWidget.bind(this)
       },
-      'bitcoinDotCom': {
-        display: showBitcoinDotCom && bitcoinDotComSupported,
-        render: this.renderBitcoinDotComWidget.bind(this)
-      },
       'cryptoDotCom': {
         display: showCryptoDotCom && cryptoDotComSupported,
         render: this.renderCryptoDotComWidget.bind(this)
       }
     }
 
-    const widgetList = widgetStackOrder.filter((widget: NewTab.StackWidget) => lookup[widget].display)
+    const widgetList = widgetStackOrder.filter((widget: NewTab.StackWidget) => {
+      if (!lookup.hasOwnProperty(widget)) {
+        return false
+      }
+
+      return lookup[widget].display
+    })
 
     return (
       <>
@@ -729,8 +725,6 @@ class NewTabPage extends React.Component<Props, State> {
       showTogether,
       geminiSupported,
       showGemini,
-      showBitcoinDotCom,
-      bitcoinDotComSupported,
       showCryptoDotCom,
       cryptoDotComSupported,
       binanceSupported
@@ -740,18 +734,41 @@ class NewTabPage extends React.Component<Props, State> {
       togetherSupported && showTogether,
       binanceSupported && showBinance,
       geminiSupported && showGemini,
-      showBitcoinDotCom && bitcoinDotComSupported,
       cryptoDotComSupported && showCryptoDotCom
     ].every((widget: boolean) => !widget)
   }
 
   toggleAllCards = (show: boolean) => {
-    this.props.saveShowTogether(show)
-    this.props.saveShowRewards(show)
-    this.props.saveShowBinance(show)
-    this.props.saveShowGemini(show)
-    this.props.saveShowCryptoDotCom(show)
-    this.props.saveShowBitcoinDotCom(show)
+    if (!show) {
+      this.props.actions.saveWidgetStackOrder()
+      this.props.saveSetAllStackWidgets(false)
+      return
+    }
+
+    const saveShowProps = {
+      'binance': this.props.saveShowBinance,
+      'cryptoDotCom': this.props.saveShowCryptoDotCom,
+      'gemini': this.props.saveShowGemini,
+      'rewards': this.props.saveShowRewards,
+      'together': this.props.saveShowTogether
+    }
+
+    const setAllTrue = (list: NewTab.StackWidget[]) => {
+      list.forEach((widget: NewTab.StackWidget) => {
+        if (widget in saveShowProps) {
+          saveShowProps[widget](true)
+        }
+      })
+    }
+
+    const { savedWidgetStackOrder, widgetStackOrder } = this.props.newTabData
+    // When turning back on, all widgets should be set to shown
+    // in the case that all widgets were hidden previously.
+    setAllTrue(
+      !savedWidgetStackOrder.length ?
+      widgetStackOrder :
+      savedWidgetStackOrder
+    )
   }
 
   renderCryptoContent () {
@@ -877,6 +894,7 @@ class NewTabPage extends React.Component<Props, State> {
         onValidAuthCode={this.onValidBinanceAuthCode}
         onBuyCrypto={this.buyCrypto}
         onBinanceUserTLD={this.onBinanceUserTLD}
+        onBinanceUserLocale={this.onBinanceUserLocale}
         onShowContent={this.setForegroundStackWidget.bind(this, 'binance')}
         onSetInitialAmount={this.setInitialAmount}
         onSetInitialAsset={this.setInitialAsset}
@@ -934,35 +952,6 @@ class NewTabPage extends React.Component<Props, State> {
     )
   }
 
-  renderBitcoinDotComWidget (showContent: boolean, position: number) {
-    const { newTabData } = this.props
-    const { showBitcoinDotCom, bitcoinDotComSupported, textDirection } = newTabData
-
-    if (!showBitcoinDotCom || !bitcoinDotComSupported) {
-      return null
-    }
-
-    return(
-      <BitcoinDotCom
-        isCrypto={true}
-        paddingType={'none'}
-        isCryptoTab={!showContent}
-        menuPosition={'left'}
-        widgetTitle={'Bitcoin.com'}
-        isForeground={showContent}
-        stackPosition={position}
-        textDirection={textDirection}
-        preventFocus={false}
-        hideWidget={this.toggleShowBitcoinDotCom}
-        showContent={showContent}
-        onShowContent={this.setForegroundStackWidget.bind(this, 'bitcoinDotCom')}
-        onBuyCrypto={this.onBuyBitcoinDotComCrypto}
-        onInteraction={this.onInteractionBitcoinDotCom}
-        lightWidget={showContent}
-      />
-    )
-  }
-
   renderCryptoDotComWidget (showContent: boolean, position: number) {
     const { newTabData } = this.props
     const { cryptoDotComState, showCryptoDotCom, textDirection, cryptoDotComSupported } = newTabData
@@ -997,7 +986,6 @@ class NewTabPage extends React.Component<Props, State> {
       />
     )
   }
-*/
 
   render () {
     const { newTabData, gridSitesData, actions } = this.props
@@ -1010,7 +998,7 @@ class NewTabPage extends React.Component<Props, State> {
     const hasImage = this.imageSource !== undefined
     const isShowingBrandedWallpaper = newTabData.brandedWallpaperData ? true : false
     const showTopSites = !!this.props.gridSitesData.gridSites.length && newTabData.showTopSites
-//    const cryptoContent = this.renderCryptoContent()
+    const cryptoContent = this.renderCryptoContent()
 
     return (
       <Page.App
@@ -1025,9 +1013,9 @@ class NewTabPage extends React.Component<Props, State> {
             imageHasLoaded={this.state.backgroundHasLoaded}
             showClock={newTabData.showClock}
             showStats={newTabData.showStats}
-//            showRewards={!!cryptoContent}
-//            showTogether={newTabData.showTogether && newTabData.togetherSupported}
-//            showBinance={newTabData.showBinance}
+            showRewards={!!cryptoContent}
+            showTogether={newTabData.showTogether && newTabData.togetherSupported}
+            showBinance={newTabData.showBinance}
             showTopSites={showTopSites}
             showBrandedWallpaper={isShowingBrandedWallpaper}
         >
@@ -1081,6 +1069,7 @@ class NewTabPage extends React.Component<Props, State> {
             </Page.GridItemNotification>
             ) : null
           }
+            {cryptoContent}
           <Page.Footer>
             <Page.FooterContent>
             {isShowingBrandedWallpaper && newTabData.brandedWallpaperData &&
@@ -1096,9 +1085,12 @@ class NewTabPage extends React.Component<Props, State> {
             </Page.GridItemBrandedLogo>}
             <FooterInfo
               textDirection={newTabData.textDirection}
-              onClickSettings={this.openSettings}
+              supportsTogether={newTabData.togetherSupported}
+              togetherPromptDismissed={newTabData.togetherPromptDismissed}
               backgroundImageInfo={newTabData.backgroundImage}
               showPhotoInfo={!isShowingBrandedWallpaper && newTabData.showBackgroundImage}
+              onClickSettings={this.openSettings}
+              onDismissTogetherPrompt={this.props.actions.dismissTogetherPrompt}
             />
             </Page.FooterContent>
           </Page.Footer>
@@ -1124,6 +1116,7 @@ class NewTabPage extends React.Component<Props, State> {
           // tslint:disable-next-line:jsx-no-lambda
           onCustomizeBraveToday={() => { this.openSettings(SettingsTabType.BraveToday) }}
           onReadFeedItem={this.props.actions.today.readFeedItem}
+          onPromotedItemViewed={this.props.actions.today.promotedItemViewed}
           onSetPublisherPref={this.props.actions.today.setPublisherPref}
           onCheckForUpdate={this.props.actions.today.checkForUpdate}
           onReadCardIntro={this.props.onReadBraveTodayIntroCard}
@@ -1151,29 +1144,27 @@ class NewTabPage extends React.Component<Props, State> {
           showToday={newTabData.showToday}
           showTopSites={newTabData.showTopSites}
           customLinksEnabled={newTabData.customLinksEnabled}
-//          showRewards={newTabData.showRewards}
-//          showBinance={newTabData.showBinance}
+          showRewards={newTabData.showRewards}
+          showBinance={newTabData.showBinance}
           brandedWallpaperOptIn={newTabData.brandedWallpaperOptIn}
           allowSponsoredWallpaperUI={newTabData.featureFlagBraveNTPSponsoredImagesWallpaper}
-//          toggleShowRewards={this.toggleShowRewards}
-//          toggleShowBinance={this.toggleShowBinance}
-//          binanceSupported={newTabData.binanceSupported}
-//          togetherSupported={newTabData.togetherSupported}
-//          toggleShowTogether={this.toggleShowTogether}
-//          showTogether={newTabData.showTogether}
-//          geminiSupported={newTabData.geminiSupported}
-//          toggleShowGemini={this.toggleShowGemini}
-//          showCryptoDotCom={newTabData.showCryptoDotCom}
-//          cryptoDotComSupported={newTabData.cryptoDotComSupported}
-//          toggleShowCryptoDotCom={this.toggleShowCryptoDotCom}
-//          showGemini={newTabData.showGemini}
-//          bitcoinDotComSupported={newTabData.bitcoinDotComSupported}
-//          showBitcoinDotCom={newTabData.showBitcoinDotCom}
-//          toggleShowBitcoinDotCom={this.toggleShowBitcoinDotCom}
+          toggleShowRewards={this.toggleShowRewards}
+          toggleShowBinance={this.toggleShowBinance}
+          binanceSupported={newTabData.binanceSupported}
+          togetherSupported={newTabData.togetherSupported}
+          toggleShowTogether={this.toggleShowTogether}
+          showTogether={newTabData.showTogether}
+          geminiSupported={newTabData.geminiSupported}
+          toggleShowGemini={this.toggleShowGemini}
+          showCryptoDotCom={newTabData.showCryptoDotCom}
+          cryptoDotComSupported={newTabData.cryptoDotComSupported}
+          toggleShowCryptoDotCom={this.toggleShowCryptoDotCom}
+          showGemini={newTabData.showGemini}
           todayPublishers={this.props.todayData.publishers}
-//          cardsHidden={this.allWidgetsHidden()}
-//          toggleCards={this.toggleAllCards}
+          cardsHidden={this.allWidgetsHidden()}
+          toggleCards={this.toggleAllCards}
         />
+        <BAPDeprecationModal rewardsState={this.props.newTabData.rewardsState} />
       </Page.App>
     )
   }

@@ -66,7 +66,6 @@
       }
     </style>
 
-    <!--
     <div class="settings-box first">
       <div class="start">$i18n{braveWeb3ProviderDesc}</div>
       <settings-dropdown-menu id="braveWeb3ProvidersType"
@@ -79,7 +78,6 @@
         pref="{{prefs.brave.wallet.load_on_startup}}"
         label="$i18n{loadCryptoWalletsOnStartupDesc}">
     </settings-toggle-button>
-    -->
     <settings-toggle-button id="googleLoginForExtensions"
         class="cr-row"
         pref="{{prefs.signin.allowed_on_next_startup}}"
@@ -107,11 +105,29 @@
                                 menu-options="[[ipfsResolveMethod_]]">
         </settings-dropdown-menu>
       </div>
+      <div class="settings-box">
+        <div class="flex cr-padded-text">
+          <div>$i18n{ipfsPublicGatewayDesc}</div>
+          <div class="secondary" id="defaultIPFSGateway">
+            {{prefs.brave.ipfs.public_gateway_address.value}}
+          </div>
+        </div>
+        <cr-button id="changeIPFSGateway"
+            on-click="onChangeIPFSGatewayDialogTapped_">
+          $i18n{ipfsChangeGatewayButtonLabel}
+        </cr-button>
+      </div>
       <settings-toggle-button id="ipfsAutoGatewayFallbackEnabled"
           class="cr-row"
           pref="{{prefs.brave.ipfs.auto_fallback_to_gateway}}"
           label=$i18n{ipfsAutoFallbackToGatewayLabel}
           sub-label=$i18n{ipfsAutoFallbackToGatewayDesc}>
+      </settings-toggle-button>
+      <settings-toggle-button id="ipfsAutoRedirectGateway"
+        class="cr-row"
+        pref="{{prefs.brave.ipfs.auto_redirect_gateway}}"
+        label="$i18n{ipfsAutoRedirectGatewayLabel}"
+        sub-label="$i18n{ipfsAutoRedirectGatewayDesc}">
       </settings-toggle-button>
     </template>
     <settings-toggle-button id="ipfsCompanionEnabled"
@@ -146,7 +162,6 @@
         disabled="[[!torEnabled_]]">
     </settings-toggle-button>
     </if>
-    <!--
     <settings-toggle-button id="webTorrentEnabled"
         class="cr-row"
         pref="{{prefs.brave.webtorrent_enabled}}"
@@ -154,12 +169,20 @@
         sub-label="$i18n{webTorrentEnabledDesc}"
         on-settings-boolean-control-change="onWebTorrentEnabledChange_">
     </settings-toggle-button>
-    -->
     <settings-toggle-button
         class="cr-row"
         pref="{{prefs.brave.ask_widevine_install}}"
         label="Widevine"
         sub-label="$i18n{appearanceSettingsAskWidevineInstallDesc}">
+    </settings-toggle-button>
+    <settings-toggle-button
+        id="widevineEnabled"
+        class="cr-row"
+        pref=""
+        label="$i18n{widevineEnabledLabel}"
+        sub-label="$i18n{widevineEnabledDesc}"
+        on-settings-boolean-control-change="onWidevineEnabledChange_"
+        checked="[[widevineEnabled_]]">
     </settings-toggle-button>
     <div class="settings-row" id="manageExtensionsRow">
       <cr-link-row icon-class="icon-external"
@@ -178,6 +201,10 @@
         on-click="openWebStoreUrl_" external>
       </cr-link-row>
     </div>
+  <template is="dom-if" if="[[showChangeIPFSGatewayDialog_]]" restamp>
+    <change-ipfs-gateway-dialog prefs="{{prefs}}" on-close="onChangeIPFSGatewayDialogClosed_">
+    </change-ipfs-gateway-dialog>
+  </template>
   <template is="dom-if" if="{{ showRestartToast_ }}">
     <div id="needsRestart">
         <div class="flex-container">

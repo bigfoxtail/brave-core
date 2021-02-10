@@ -82,7 +82,7 @@ class AdNotifications {
   bool GetCampaignIdFromDictionary(
       base::DictionaryValue* dictionary,
       std::string* value) const;
-  bool GetCategoryFromDictionary(
+  bool GetSegmentFromDictionary(
       base::DictionaryValue* dictionary,
       std::string* value) const;
   bool GetTitleFromDictionary(

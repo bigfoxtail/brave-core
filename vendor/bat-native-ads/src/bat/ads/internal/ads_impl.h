@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "bat/ads/ads.h"
 #include "bat/ads/internal/account/account_observer.h"
@@ -17,7 +18,7 @@
 #include "bat/ads/internal/ad_transfer/ad_transfer_observer.h"
 #include "bat/ads/internal/ads/ad_notifications/ad_notification_observer.h"
 #include "bat/ads/internal/ads/new_tab_page_ads/new_tab_page_ad_observer.h"
-#include "bat/ads/internal/confirmations/confirmations_observer.h"
+#include "bat/ads/internal/ads/promoted_content_ads/promoted_content_ad_observer.h"
 #include "bat/ads/internal/conversions/conversions_observer.h"
 #include "bat/ads/internal/privacy/tokens/token_generator.h"
 #include "bat/ads/internal/privacy/tokens/token_generator_interface.h"
@@ -32,13 +33,17 @@ class AdServing;
 
 namespace ad_targeting {
 
-namespace contextual {
-class PageClassifier;
-}  // namespace contextual
+namespace resource {
+class EpsilonGreedyBandit;
+class PurchaseIntent;
+class TextClassification;
+}  // namespace resource
 
-namespace behavioral {
-class PurchaseIntentClassifier;
-}  // namespace behavioral
+namespace processor {
+class EpsilonGreedyBandit;
+class PurchaseIntent;
+class TextClassification;
+}  // namespace processor
 
 namespace geographic {
 class SubdivisionTargeting;
@@ -58,19 +63,19 @@ class AdsClientHelper;
 class AdServer;
 class AdTargeting;
 class AdTransfer;
+class Catalog;
 class Client;
-class Confirmations;
 class ConfirmationsState;
 class Conversions;
 class NewTabPageAd;
+class PromotedContentAd;
 class TabManager;
 class UserActivity;
 struct AdInfo;
 struct AdNotificationInfo;
 struct AdsHistoryInfo;
-struct CatalogIssuersInfo;
-struct ConfirmationInfo;
 struct NewTabPageAdInfo;
+struct PromotedContentAdInfo;
 
 class AdsImpl
     : public Ads,
@@ -79,7 +84,8 @@ class AdsImpl
       public AdServerObserver,
       public AdTransferObserver,
       public ConversionsObserver,
-      public NewTabPageAdObserver {
+      public NewTabPageAdObserver,
+      public PromotedContentAdObserver {
  public:
   AdsImpl(
       AdsClient* ads_client);
@@ -108,8 +114,7 @@ class AdsImpl
 
   void OnPageLoaded(
       const int32_t tab_id,
-      const std::string& original_url,
-      const std::string& url,
+      const std::vector<std::string>& redirect_chain,
       const std::string& content) override;
 
   void OnIdle() override;
@@ -148,9 +153,14 @@ class AdsImpl
       const AdNotificationEventType event_type) override;
 
   void OnNewTabPageAdEvent(
-      const std::string& wallpaper_id,
+      const std::string& uuid,
       const std::string& creative_instance_id,
       const NewTabPageAdEventType event_type) override;
+
+  void OnPromotedContentAdEvent(
+      const std::string& uuid,
+      const std::string& creative_instance_id,
+      const PromotedContentAdEventType event_type) override;
 
   void RemoveAllHistory(
       RemoveAllHistoryCallback callback) override;
@@ -194,11 +204,19 @@ class AdsImpl
 
   std::unique_ptr<AdsClientHelper> ads_client_helper_;
   std::unique_ptr<privacy::TokenGenerator> token_generator_;
-  std::unique_ptr<Confirmations> confirmations_;
   std::unique_ptr<Account> account_;
-  std::unique_ptr<ad_targeting::contextual::PageClassifier> page_classifier_;
-  std::unique_ptr<ad_targeting::behavioral::PurchaseIntentClassifier>
-      purchase_intent_classifier_;
+  std::unique_ptr<ad_targeting::processor::EpsilonGreedyBandit>
+      epsilon_greedy_bandit_processor_;
+  std::unique_ptr<ad_targeting::resource::EpsilonGreedyBandit>
+      epsilon_greedy_bandit_resource_;
+  std::unique_ptr<ad_targeting::resource::TextClassification>
+      text_classification_resource_;
+  std::unique_ptr<ad_targeting::processor::TextClassification>
+      text_classification_processor_;
+  std::unique_ptr<ad_targeting::resource::PurchaseIntent>
+      purchase_intent_resource_;
+  std::unique_ptr<ad_targeting::processor::PurchaseIntent>
+      purchase_intent_processor_;
   std::unique_ptr<ad_targeting::geographic::SubdivisionTargeting>
       subdivision_targeting_;
   std::unique_ptr<AdTargeting> ad_targeting_;
@@ -211,6 +229,7 @@ class AdsImpl
   std::unique_ptr<Conversions> conversions_;
   std::unique_ptr<database::Initialize> database_;
   std::unique_ptr<NewTabPageAd> new_tab_page_ad_;
+  std::unique_ptr<PromotedContentAd> promoted_content_ad_;
   std::unique_ptr<TabManager> tab_manager_;
   std::unique_ptr<UserActivity> user_activity_;
 
@@ -244,6 +263,10 @@ class AdsImpl
   void OnAdRewardsChanged() override;
   void OnTransactionsChanged() override;
 
+  // AdServerObserver implementation
+  void OnCatalogUpdated(
+      const Catalog& catalog) override;
+
   // AdNotificationObserver implementation
   void OnAdNotificationViewed(
       const AdNotificationInfo& ad) override;
@@ -251,10 +274,20 @@ class AdsImpl
       const AdNotificationInfo& ad) override;
   void OnAdNotificationDismissed(
       const AdNotificationInfo& ad) override;
+  void OnAdNotificationTimedOut(
+      const AdNotificationInfo& ad) override;
 
-  // AdServerObserver implementation
-  void OnCatalogUpdated(
-      const CatalogIssuersInfo& catalog_issuers) override;
+  // NewTabPageAdObserver implementation
+  void OnNewTabPageAdViewed(
+      const NewTabPageAdInfo& ad) override;
+  void OnNewTabPageAdClicked(
+      const NewTabPageAdInfo& ad) override;
+
+  // PromotedContentAdObserver implementation
+  void OnPromotedContentAdViewed(
+      const PromotedContentAdInfo& ad) override;
+  void OnPromotedContentAdClicked(
+      const PromotedContentAdInfo& ad) override;
 
   // AdTransferObserver implementation
   void OnAdTransfer(
@@ -263,12 +296,6 @@ class AdsImpl
   // ConversionsObserver implementation
   void OnConversion(
       const std::string& creative_instance_id) override;
-
-  // NewTabPageAdObserver implementation
-  void OnNewTabPageAdViewed(
-      const NewTabPageAdInfo& ad) override;
-  void OnNewTabPageAdClicked(
-      const NewTabPageAdInfo& ad) override;
 };
 
 }  // namespace ads

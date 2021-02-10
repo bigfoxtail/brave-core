@@ -81,7 +81,7 @@
 <translation id="2070991379950719711">Commencer à utiliser Brave Rewards</translation>
 <translation id="48520986898237073">Continuer vers le portefeuille</translation>
 <translation id="3570367516044491911">Définir comme navigateur par défaut</translation>
-<translation id="7493053924837150477">Sélectionnez Brave Browser dans la liste et appuyez sur « Toujours ».</translation>
+<translation id="19715420010996093">Sélectionnez le navigateur Brave et appuyez sur « toujours ».</translation>
 <translation id="3546439402724649282">Brave est déjà défini comme votre navigateur par défaut.</translation>
 <translation id="8389661903259423907">Vous avez déjà défini un navigateur par défaut. Vous pouvez modifier le navigateur par défaut dans les paramètres de votre application.</translation>
 <translation id="7091885296442320770">Brave est rapide comme l'éclair</translation>
@@ -236,6 +236,10 @@ mois-ci...</translation>
 <translation id="8712637175834984815">OK</translation>
 <translation id="4394049700291259645">Désactiver</translation>
 <translation id="8446884382197647889">En savoir plus</translation>
+<translation id="2514300153301737214">Nous avons détecté que vous avez activé Brave Sync, mais votre système de synchronisation est désactivé et ne permet pas à Brave de se synchroniser. Appuyez pour ouvrir les paramètres</translation>
+<translation id="7173114856073700355">Ouvrir les paramètres</translation>
+<translation id="6965382102122355670">OK</translation>
+<translation id="4450893287417543264">Ne plus afficher</translation>
 <translation id="597993392929850353">Licence Brave</translation>
 <translation id="6336451774241870485">Nouvel onglet de navigation privée</translation>
 <translation id="6199596294742117349">Ceci est un onglet privé</translation>
@@ -325,7 +329,7 @@ mois-ci...</translation>
 <translation id="7396366757003005317">Suivi par empreinte digitale numérique bloqué(strict, peut rendre des sites indisponibles)</translation>
 <translation id="700453611199558021">Suivi par empreinte digitale numérique bloqué(standard)</translation>
 <translation id="769702552748212954">Autoriser toutes les empreintes digitales</translation>
-<translation id="2888409909650566510">Annonces et autres choses effrayantes bloquées</translation>
+<translation id="5142293891785304489">Pistage, publicités et\nplus, bloqués</translation>
 <translation id="6930134873084561197">Les sites incluent souvent des cookies et des scripts qui tentent de vous identifier, vous et votre appareil. Ils veulent savoir qui vous êtes et vous suivre sur le web en suivant ce que vous faites sur chaque site. Brave bloque ces éléments afin que vous puissiez naviguer sans être suivi.</translation>
 <translation id="8553998445606452168">À propos de Brave Shields</translation>
 <translation id="8912304686498704084">Haut</translation>
@@ -343,9 +347,15 @@ mois-ci...</translation>
 <translation id="5516010970279932133">Afficher les sites suggérés en saisie automatique</translation>
 <translation id="5370478469168390143">Sauvegarder les données en ligne</translation>
 <translation id="1118508688433541158">Naviguez plus rapidement et bloquez les publicités avec Brave</translation>
-<translation id="915835519491851291">Vous venez de bloquer quelques traqueurs et publicités.</translation>
+<translation id="6589609065569680305">Trackers, annonces bloquées sur cette page.</translation>
+<translation id="1283922192221545319">Brave Shields vient de protéger votre vie privée.</translation>
 <translation id="3286927551967858325">Jeter un coup d'œil</translation>
-<translation id="2929661208078053609">Bien!</translation>
+<translation id="6227291358910554399">Les publicités sont bloquées pendant le visionnage des vidéos sur ce site.</translation>
+<translation id="7802980684512102010">Les vidéos sans publicité utilisent moins de données.</translation>
+<translation id="2046475855484346614">Plus de 10 trackers, annonces bloquées sur cette page.</translation>
+<translation id="5806208250835099572">Brave Shields protège votre vie privée en ligne sur chaque site.</translation>
+<translation id="5617673581653540121">Votre connexion est maintenant cryptée.</translation>
+<translation id="4055107796760496928">Si elle est disponible, Brave vous met automatiquement à niveau vers une connexion sécurisée.</translation>
 <translation id="4776948189086901857">Brave fonctionne partout</translation>
 <translation id="1606322780901645965">Téléchargez Brave sur brave.com sur votre ordinateur ou votre tablette pour une navigation web plus rapide et confidentielle</translation>
 <translation id="8374242949413616101">Protection de la confidentialité</translation>
@@ -437,26 +447,26 @@ mois-ci...</translation>
 <translation id="8804164990146287819">Politique de confidentialité</translation>
 <translation id="6318696841371191107">Faites une visite rapide</translation>
 <translation id="7930505144430343145">Bienvenue dans Brave Rewards!</translation>
-<translation id="7909111626803226907">Les publicités privées de Brave vous récompensent avec des jetons pour soutenir les créateurs de contenu contrairement aux publicités traditionnelles, tout en gardant privées vos informations personnelles.</translation>
+<translation id="3477340970981564961">Brave Private Ads vous récompense avec des jetons pour soutenir les créateurs de contenu contrairement aux publicités traditionnelles, tout en gardant vos informations personnelles privées.</translation>
 <translation id="6973095375773523904">Où les publicités s'affichent-elles?</translation>
-<translation id="3867028444168159102">Les publicités privées de Brave apparaîtront comme des notifications normales. Vous contrôlez la fréquence à laquelle vous voyez ces publicités dans les paramètres.</translation>
+<translation id="7556325460112047619">Brave Private Ads apparaîtra comme une notification normale. Vous contrôlez la fréquence à laquelle vous voyez ces annonces dans les paramètres.</translation>
 <translation id="5816125157889950051">Quand vous recevrez des récompenses</translation>
-<translation id="4649471244559455723">Vos jetons gagnés grâce aux publicités Brave tout au long du mois en cours arriveront le 5 du mois suivant.</translation>
+<translation id="310863932297733723">Vos jetons gagnés de Brave Private Ads tout au long du mois en cours arriveront le 5 du mois suivant.</translation>
 <translation id="7712287524451429139">Redonner devient facile</translation>
 <translation id="105037569026952831">Les créateurs reçoivent automatiquement vos contributions en jetons en fonction de vos niveaux d'engagement que nous mesurons en tant qu'‘Attention’.</translation>
 <translation id="5323267338679539010">Dites merci avec un pourboire</translation>
-<translation id="6042317056594735519">Donner un pourboire est un moyen d'encourager et de soutenir personnellement du contenu ou des créateurs que vous adorez. Commencez à donner des pourboires!</translation>
+<translation id="6730444165801605682">Le pourboire est un moyen d'encourager et de soutenir personnellement le contenu ou les créateurs que vous aimez absolument. Commencez à en offrir!</translation>
 <translation id="7509452925943421624">Que pouvez-vous faire avec ces jetons?</translation>
-<translation id="7059157883171259940">Les jetons peuvent être utilisés au-delà du soutien des créateurs. Vous pouvez acheter des biens numériques et des cartes-cadeaux avec des bonus de remise différée.</translation>
+<translation id="5876169128756792273">Les jetons peuvent être utilisés autrement que pour soutenir les créateurs. Vous pouvez acheter du contenu numérique et d'autres biens à mesure que des marchands se joignent à nous.</translation>
 <translation id="1402530520078693620">Enfin, laissez-nous vous aider à configurer les paramètres de base.</translation>
 <translation id="3494356595346329740">Vous pouvez changer ceci plus tard.</translation>
 <translation id="6462814326662189004">À quelle fréquence voulez-vous voir des publicités?\n(Publicités par heure)</translation>
 <translation id="2134244432345596331">Quel soutien voulez-vous donner à vos créateurs préférés?\n(à partir de vos revenus publicitaires)</translation>
-<translation id="7456161272236175794">YOUPPIIIIIII!\nVous avez fini.</translation>
+<translation id="827315274423079662">Hourra, vous êtes prêt!</translation>
 <translation id="3895246934788932488">En utilisant Brave Rewards, vous protégez votre confidentialité et vous aidez à faire de la toile un endroit meilleur pour tout le monde. Et c'est génial!</translation>
 <translation id="5705882733397021510">Revenir</translation>
 <translation id="5140321319944305531">Faisons une visite rapide</translation>
-<translation id="3808131693704413134">Après avoir reçu votre premier paiement publicitaire, vous pouvez revenir et donner du pourboire à ce créateur!</translation>
+<translation id="2434574859640694129">Après réception du paiement de vos premières annonces, vous pouvez revenir et donner un pourboire à ce créateur !</translation>
 <translation id="207242986925259074">Visite de remise à niveau rapide</translation>
 <translation id="8342862030112839977">Votre 1er paiement de récompenses arrivera le :</translation>
 <translation id="3769645103175790584">Gagnez des jetons et récompensez les créateurs pour leur contenu génial tout en navigant. <ph name="QUICK_TOUR"/>.</translation>
@@ -465,4 +475,25 @@ mois-ci...</translation>
 <translation id="3604285424134705930">Vous avez converti <ph name="FROM_VALUE"/> <ph name="FROM_CURRENCY"/> en <ph name="TO_VALUE"/> <ph name="TO_CURRENCY"/>!</translation>
 <translation id="392587271502873865">Veuillez vérifier votre connexion réseau.</translation>
 <translation id="7889432931837317731">Ouvrir automatiquement lorsque possible</translation>
+<translation id="8967385052772844086">Afficher le rapport de confidentialité complet</translation>
+<translation id="6864343534748973390">Le plus populaire</translation>
+<translation id="1622983732360473885">Prend en charge Brave</translation>
+<translation id="4608192160278975831">Privé et sans pistage</translation>
+<translation id="7208522820527289601">Privé et sans suivi, basé dans l'UE</translation>
+<translation id="1161008391729450974">Résultats Google sans pistage</translation>
+<translation id="7320542277711359296">Deuxième plus populaire</translation>
+<translation id="8295049095570748497">Un moteur de recherche éminent en Russie</translation>
+<translation id="2642661895835126239">Plante des arbres, basé à Berlin</translation>
+<translation id="1410130669636877548">Certains moteurs de recherche protègent votre vie privée mieux que d'autres lorsque vous effectuez une recherche sur le Web.</translation>
+<translation id="1078265935778232285">Bienvenue dans le navigateur Brave</translation>
+<translation id="6824713633331856331">Aidez-nous à apprendre de manière anonyme</translation>
+<translation id="6116685031674149112">Brave protège votre vie privée et\napprécie votre consentement à ce qui suit :</translation>
+<translation id="3971666849661839619">Aidez à améliorer Brave en envoyant des rapports d'erreur et en les rendant complètement anonymes, <ph name="PRIVATE_PRODUCT_ANALYSIS"/></translation>
+<translation id="6478996494082389936">analyse de produits privée.</translation>
+<translation id="5187052478998910855">Besoin d'un rappel sur les Récompenses?</translation>
+<translation id="8622329973403382303">Faites un tour rapide pour découvrir comment cela fonctionne pour entrer dans l'histoire en tant que rockstar Rewards!</translation>
+<translation id="8401711613788729448">Ouvrez tous les liens avec Brave pour protéger votre vie privée</translation>
+<translation id="3184805785843994538">Brave Shields bloque les trackers, les annonces, enregistre les données et vous fait gagner du temps sur chaque site que vous visitez.</translation>
+<translation id="8722651357687610395">Définir Brave par défaut</translation>
+<translation id="3479552764303398839">Pas maintenant</translation>
 </translationbundle>

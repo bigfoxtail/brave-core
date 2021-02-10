@@ -176,7 +176,8 @@ scoped_refptr<blink::StaticBitmapImage> BraveSessionCache::PerturbPixels(
 scoped_refptr<blink::StaticBitmapImage>
 BraveSessionCache::PerturbPixelsInternal(
     scoped_refptr<blink::StaticBitmapImage> image_bitmap) {
-  DCHECK(image_bitmap);
+  if (!image_bitmap)
+    return nullptr;
   if (image_bitmap->IsNull())
     return image_bitmap;
   // convert to an ImageDataBuffer to normalize the pixel data to RGBA, 4 bytes
@@ -184,7 +185,7 @@ BraveSessionCache::PerturbPixelsInternal(
   std::unique_ptr<blink::ImageDataBuffer> data_buffer =
       blink::ImageDataBuffer::Create(image_bitmap);
   if (!data_buffer) {
-    return image_bitmap;
+    return nullptr;
   }
   uint8_t* pixels = const_cast<uint8_t*>(data_buffer->Pixels());
   // This needs to be type size_t because we pass it to base::StringPiece
@@ -204,7 +205,7 @@ BraveSessionCache::PerturbPixelsInternal(
                sizeof session_plus_domain_key));
   uint8_t canvas_key[32];
   CHECK(h.Sign(
-      base::StringPiece(reinterpret_cast<const char*>(pixels), pixel_count),
+      base::StringPiece(reinterpret_cast<const char*>(pixels), pixel_count * 4),
       canvas_key, sizeof canvas_key));
   uint64_t v = *reinterpret_cast<uint64_t*>(canvas_key);
   uint64_t pixel_index;

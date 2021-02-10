@@ -13,11 +13,15 @@ namespace ads {
 
 using Environment = mojom::BraveAdsEnvironment;
 
+using SysInfo = mojom::BraveAdsSysInfo;
+using SysInfoPtr = mojom::BraveAdsSysInfoPtr;
+
 using BuildChannel = mojom::BraveAdsBuildChannel;
 using BuildChannelPtr = mojom::BraveAdsBuildChannelPtr;
 
 using AdNotificationEventType = mojom::BraveAdsAdNotificationEventType;
 using NewTabPageAdEventType = mojom::BraveAdsNewTabPageAdEventType;
+using PromotedContentAdEventType = mojom::BraveAdsPromotedContentAdEventType;
 
 using UrlRequest = mojom::BraveAdsUrlRequest;
 using UrlRequestPtr = mojom::BraveAdsUrlRequestPtr;

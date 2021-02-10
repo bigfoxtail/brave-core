@@ -5,7 +5,6 @@
 import * as React from 'react'
 import { bindActionCreators, Dispatch } from 'redux'
 import { connect } from 'react-redux'
-import { RewardsOptInModal } from '../../shared/components/onboarding'
 // Components
 import {
   ModalActivity,
@@ -674,11 +673,10 @@ class PageWallet extends React.Component<Props, State> {
   getMonthlyReportDropDown = (): Record<string, string> => {
     const { monthlyReportIds } = this.props.rewardsData
 
-    let ids = monthlyReportIds
-    if (!monthlyReportIds) {
-      ids = []
-      ids.push(`${new Date().getFullYear()}_${new Date().getMonth() + 1}`)
-    }
+    const ids = [
+      ...monthlyReportIds || [],
+      `${new Date().getFullYear()}_${new Date().getMonth() + 1}`
+    ]
 
     let result: Record<string, string> = {}
     ids.forEach((id: string) => {
@@ -765,22 +763,6 @@ class PageWallet extends React.Component<Props, State> {
     const walletStatus = this.getWalletStatus()
 
     return (!walletStatus || walletStatus === 'unverified') && balance && balance.total < 25
-  }
-
-  getOnboardingModal () {
-    if (!this.props.rewardsData.showOnboarding) {
-      return null
-    }
-    const onAddFunds = () => this.onFundsAction('add')
-    const onEnable = () => this.actions.saveOnboardingResult('opted-in')
-    const onClose = () => this.actions.saveOnboardingResult('dismissed')
-    return (
-      <RewardsOptInModal
-        onAddFunds={onAddFunds}
-        onEnable={onEnable}
-        onClose={onClose}
-      />
-    )
   }
 
   render () {
@@ -874,7 +856,6 @@ class PageWallet extends React.Component<Props, State> {
             ? this.generateMonthlyReport()
             : null
         }
-        {this.getOnboardingModal()}
       </>
     )
   }

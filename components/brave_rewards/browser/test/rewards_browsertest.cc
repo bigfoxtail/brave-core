@@ -7,7 +7,9 @@
 #include <string>
 
 #include "base/containers/flat_map.h"
-#include "base/test/bind_test_util.h"
+#include "base/test/bind.h"
+#include "base/time/time.h"
+#include "base/time/time_override.h"
 #include "bat/ledger/internal/uphold/uphold_util.h"
 #include "brave/browser/brave_rewards/rewards_service_factory.h"
 #include "brave/common/brave_paths.h"
@@ -23,11 +25,25 @@
 #include "chrome/test/base/in_process_browser_test.h"
 #include "chrome/test/base/testing_profile.h"
 #include "chrome/test/base/ui_test_utils.h"
+#include "components/country_codes/country_codes.h"
 #include "components/network_session_configurator/common/network_switches.h"
 #include "content/public/test/browser_test.h"
 #include "net/dns/mock_host_resolver.h"
 
 // npm run test -- brave_browser_tests --filter=RewardsBrowserTest.*
+
+namespace {
+
+base::Time GetDate(int year, int month, int day_of_month) {
+  base::Time time;
+  DCHECK(base::Time::FromUTCExploded(
+      base::Time::Exploded{
+          .year = year, .month = month, .day_of_month = day_of_month},
+      &time));
+  return time;
+}
+
+}  // namespace
 
 namespace rewards_browsertest {
 
@@ -109,6 +125,18 @@ class RewardsBrowserTest : public InProcessBrowserTest {
     return url;
   }
 
+  double FetchBalance() {
+    double total = -1.0;
+    base::RunLoop run_loop;
+    rewards_service_->FetchBalance(base::BindLambdaForTesting(
+        [&](ledger::type::Result result, ledger::type::BalancePtr balance) {
+          total = balance ? balance->total : -1.0;
+          run_loop.Quit();
+        }));
+    run_loop.Run();
+    return total;
+  }
+
   brave_rewards::RewardsServiceImpl* rewards_service_;
   std::unique_ptr<net::EmbeddedTestServer> https_server_;
   std::unique_ptr<RewardsBrowserTestResponse> response_;
@@ -117,7 +145,8 @@ class RewardsBrowserTest : public InProcessBrowserTest {
   std::unique_ptr<RewardsBrowserTestContextHelper> context_helper_;
 };
 
-IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, ActivateSettingsModal) {
+// https://github.com/brave/brave-browser/issues/12632
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, DISABLED_ActivateSettingsModal) {
   context_helper_->LoadURL(rewards_browsertest_util::GetRewardsUrl());
 
   rewards_browsertest_util::WaitForElementThenClick(
@@ -128,7 +157,8 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, ActivateSettingsModal) {
       "#modal");
 }
 
-IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, ToggleAutoContribute) {
+// https://github.com/brave/brave-browser/issues/12988
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, DISABLED_ToggleAutoContribute) {
   context_helper_->LoadURL(rewards_browsertest_util::GetRewardsUrl());
 
   // toggle auto contribute back on
@@ -301,7 +331,9 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, ZeroBalanceWalletClaimNotCalled) {
   run_loop.Run();
 }
 
-IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BackupRestoreModalHasNotice) {
+// https://github.com/brave/brave-browser/issues/12987
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest,
+                       DISABLED_BackupRestoreModalHasNotice) {
   context_helper_->LoadURL(rewards_browsertest_util::GetRewardsUrl());
   rewards_browsertest_util::CreateWallet(rewards_service_);
   contribution_->AddBalance(promotion_->ClaimPromotionViaCode());
@@ -372,7 +404,8 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, ResetRewards) {
       "Your Rewards data will");
 }
 
-IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, ResetRewardsWithBAT) {
+// https://github.com/brave/brave-browser/issues/12607
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, DISABLED_ResetRewardsWithBAT) {
   context_helper_->LoadURL(rewards_browsertest_util::GetRewardsUrl());
   rewards_browsertest_util::CreateWallet(rewards_service_);
   contribution_->AddBalance(promotion_->ClaimPromotionViaCode());
@@ -395,7 +428,8 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, ResetRewardsWithBAT) {
       "Your 30 BATs and other Rewards");
 }
 
-IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, UpholdLimitNoBAT) {
+// https://github.com/brave/brave-browser/issues/12704
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, DISABLED_UpholdLimitNoBAT) {
   context_helper_->LoadURL(rewards_browsertest_util::GetRewardsUrl());
   rewards_browsertest_util::WaitForElementThenClick(
       contents(),
@@ -419,6 +453,55 @@ IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, UpholdLimitNoBAT) {
 
     auto found = current_url.spec().find("intention=login");
     ASSERT_TRUE(found != std::string::npos);
+  }
+}
+
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffNonJP) {
+  rewards_browsertest_util::StartProcess(rewards_service_);
+  rewards_browsertest_util::CreateWallet(rewards_service_);
+  rewards_service_->FetchPromotions();
+  promotion_->WaitForPromotionInitialization();
+  promotion_->ClaimPromotionViaCode();
+
+  {
+    base::subtle::ScopedTimeClockOverrides time_override(
+        []() { return GetDate(2021, 3, 13); }, nullptr, nullptr);
+    ASSERT_EQ(FetchBalance(), 30.0);
+  }
+}
+
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffBefore) {
+  rewards_browsertest_util::StartProcess(rewards_service_);
+  rewards_browsertest_util::CreateWallet(rewards_service_);
+  rewards_service_->FetchPromotions();
+  promotion_->WaitForPromotionInitialization();
+  promotion_->ClaimPromotionViaCode();
+
+  browser()->profile()->GetPrefs()->SetInteger(
+      country_codes::kCountryIDAtInstall, 19024);
+
+  {
+    base::subtle::ScopedTimeClockOverrides time_override(
+        []() { return GetDate(2021, 3, 13) - base::TimeDelta::FromSeconds(1); },
+        nullptr, nullptr);
+    ASSERT_EQ(FetchBalance(), 30.0);
+  }
+}
+
+IN_PROC_BROWSER_TEST_F(RewardsBrowserTest, BAPCutoffAfter) {
+  rewards_browsertest_util::StartProcess(rewards_service_);
+  rewards_browsertest_util::CreateWallet(rewards_service_);
+  rewards_service_->FetchPromotions();
+  promotion_->WaitForPromotionInitialization();
+  promotion_->ClaimPromotionViaCode();
+
+  browser()->profile()->GetPrefs()->SetInteger(
+      country_codes::kCountryIDAtInstall, 19024);
+
+  {
+    base::subtle::ScopedTimeClockOverrides time_override(
+        []() { return GetDate(2021, 3, 13); }, nullptr, nullptr);
+    ASSERT_EQ(FetchBalance(), 0.0);
   }
 }
 

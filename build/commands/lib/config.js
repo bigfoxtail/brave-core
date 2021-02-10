@@ -42,7 +42,7 @@ var packageConfig = function(key){
 
 const getNPMConfig = (key) => {
   if (!NpmConfig) {
-    const list = run(npmCommand, ['config', 'list', '--json'], {cwd: rootDir})
+    const list = run(npmCommand, ['config', 'list', '--json', '--userconfig=' + path.join(rootDir, '.npmrc')])
     NpmConfig = JSON.parse(list.stdout.toString())
   }
 
@@ -119,7 +119,6 @@ const Config = function () {
   this.braveStatsUpdaterUrl = getNPMConfig(['brave_stats_updater_url']) || ''
   this.ignore_compile_failure = false
   this.enable_hangout_services_extension = true
-  this.widevineVersion = getNPMConfig(['widevine', 'version'])
   this.sign_widevine_cert = process.env.SIGN_WIDEVINE_CERT || ''
   this.sign_widevine_key = process.env.SIGN_WIDEVINE_KEY || ''
   this.sign_widevine_passwd = process.env.SIGN_WIDEVINE_PASSPHRASE || ''
@@ -204,14 +203,13 @@ Config.prototype.buildArgs = function () {
     dcheck_always_on: this.isDcheckAlwaysOn(),
     brave_channel: this.channel,
     brave_google_api_key: this.braveGoogleApiKey,
-    google_api_key: this.braveGoogleApiKey,
     brave_google_api_endpoint: this.googleApiEndpoint,
     google_default_client_id: this.googleDefaultClientId,
     google_default_client_secret: this.googleDefaultClientSecret,
     brave_infura_project_id: this.infuraProjectId,
-    //binance_client_id: this.binanceClientId,
-    //gemini_client_id: this.geminiClientId,
-    //gemini_client_secret: this.geminiClientSecret,
+    binance_client_id: this.binanceClientId,
+    gemini_client_id: this.geminiClientId,
+    gemini_client_secret: this.geminiClientSecret,
     brave_product_name: getNPMConfig(['brave_product_name']) || "brave-core",
     brave_project_name: getNPMConfig(['brave_project_name']) || "brave-core",
     brave_version_major: version_parts[0],
@@ -366,6 +364,12 @@ Config.prototype.buildArgs = function () {
     // https://github.com/brave/brave-browser/issues/10334
     args.dcheck_always_on = this.isDebug()
 
+    args.ios_enable_content_widget_extension = false
+    args.ios_enable_search_widget_extension = false
+    args.ios_enable_share_extension = false
+    args.ios_enable_credential_provider_extension = false
+    args.ios_enable_widget_kit_extension = false
+
     delete args.safebrowsing_api_endpoint
     delete args.updater_prod_endpoint
     delete args.updater_dev_endpoint
@@ -385,7 +389,6 @@ Config.prototype.buildArgs = function () {
     delete args.binance_client_id
     delete args.gemini_client_id
     delete args.gemini_client_secret
-    delete args.brave_services_key
     delete args.webcompat_report_api_endpoint
     delete args.use_blink_v8_binding_new_idl_interface
     delete args.v8_enable_verify_heap

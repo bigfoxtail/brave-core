@@ -27,6 +27,7 @@
 #include "net/http/http_request_headers.h"
 #include "net/test/embedded_test_server/default_handlers.h"
 #include "net/test/embedded_test_server/http_request.h"
+#include "testing/gmock/include/gmock/gmock.h"
 
 using brave_shields::ControlType;
 
@@ -52,7 +53,7 @@ const char kGetImageDataScript[] =
     "domAutomationController.send(ctx.getImageData(0, 0, canvas.width, "
     "canvas.height).data.reduce(adder));";
 
-const int kExpectedImageDataHashFarblingBalanced = 85;
+const int kExpectedImageDataHashFarblingBalanced = 83;
 const int kExpectedImageDataHashFarblingOff = 0;
 const int kExpectedImageDataHashFarblingMaximum =
     kExpectedImageDataHashFarblingBalanced;
@@ -217,22 +218,20 @@ class BraveContentSettingsAgentImplBrowserTest : public InProcessBrowserTest {
   void BlockReferrers() {
     content_settings()->SetContentSettingCustomScope(
         top_level_page_pattern(), ContentSettingsPattern::Wildcard(),
-        ContentSettingsType::PLUGINS, brave_shields::kReferrers,
-        CONTENT_SETTING_BLOCK);
+        ContentSettingsType::BRAVE_REFERRERS, CONTENT_SETTING_BLOCK);
     ContentSettingsForOneType settings;
     content_settings()->GetSettingsForOneType(
-        ContentSettingsType::PLUGINS, brave_shields::kReferrers, &settings);
+        ContentSettingsType::BRAVE_REFERRERS, &settings);
     EXPECT_EQ(settings.size(), 1u);
   }
 
   void AllowReferrers() {
     content_settings()->SetContentSettingCustomScope(
         top_level_page_pattern(), ContentSettingsPattern::Wildcard(),
-        ContentSettingsType::PLUGINS, brave_shields::kReferrers,
-        CONTENT_SETTING_ALLOW);
+        ContentSettingsType::BRAVE_REFERRERS, CONTENT_SETTING_ALLOW);
     ContentSettingsForOneType settings;
     content_settings()->GetSettingsForOneType(
-        ContentSettingsType::PLUGINS, brave_shields::kReferrers, &settings);
+        ContentSettingsType::BRAVE_REFERRERS, &settings);
     EXPECT_EQ(settings.size(), 1u);
   }
 
@@ -378,9 +377,17 @@ class BraveContentSettingsAgentImplBrowserTest : public InProcessBrowserTest {
   }
 
   template <typename T>
-  void CheckLocalStorageNull(T* frame) {
-    EXPECT_EQ(nullptr, EvalJs(frame, "localStorage"));
-    EXPECT_EQ(nullptr, EvalJs(frame, "sessionStorage"));
+  void CheckLocalStorageAccessDenied(T* frame) {
+    EXPECT_THAT(
+        EvalJs(frame, "localStorage").error,
+        ::testing::StartsWith(
+            "a JavaScript error:\nError: Failed to read the 'localStorage' "
+            "property from 'Window': Access is denied for this document.\n"));
+    EXPECT_THAT(
+        EvalJs(frame, "sessionStorage").error,
+        ::testing::StartsWith(
+            "a JavaScript error:\nError: Failed to read the 'sessionStorage' "
+            "property from 'Window': Access is denied for this document.\n"));
   }
 
   template <typename T>
@@ -579,7 +586,7 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
                        BlockReferrerByDefault) {
   ContentSettingsForOneType settings;
   content_settings()->GetSettingsForOneType(
-      ContentSettingsType::PLUGINS, brave_shields::kReferrers, &settings);
+      ContentSettingsType::BRAVE_REFERRERS, &settings);
   EXPECT_EQ(settings.size(), 0u)
       << "There should not be any visible referrer rules.";
 
@@ -624,17 +631,18 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
             link_url().GetOrigin().spec());
   EXPECT_EQ(GetLastReferrer(same_site_url()), link_url().GetOrigin().spec());
 
-  // Cross-site navigations get no referrer.
+  // Cross-site navigations should follow the default referrer policy.
   NavigateDirectlyToPageWithLink(cross_site_url());
-  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), "");
-  EXPECT_EQ(GetLastReferrer(cross_site_url()), "");
+  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()),
+            link_url().GetOrigin().spec());
+  EXPECT_EQ(GetLastReferrer(cross_site_url()), link_url().GetOrigin().spec());
 }
 
 IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
                        BlockReferrerByDefaultRedirects) {
   ContentSettingsForOneType settings;
   content_settings()->GetSettingsForOneType(
-      ContentSettingsType::PLUGINS, brave_shields::kReferrers, &settings);
+      ContentSettingsType::BRAVE_REFERRERS, &settings);
   EXPECT_EQ(settings.size(), 0u)
       << "There should not be any visible referrer rules.";
 
@@ -657,10 +665,12 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
             url().GetOrigin().spec());
   EXPECT_EQ(GetLastReferrer(cross_site_url()), url().GetOrigin().spec());
 
-  // Cross-site navigations get no referrer.
+  // Cross-site navigations  should follow the default referrer policy.
   RedirectToPageWithLink(redirect_to_cross_site_url(), cross_site_url());
-  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), "");
-  EXPECT_EQ(GetLastReferrer(cross_site_url()), "");
+  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()),
+            redirect_to_cross_site_url().GetOrigin().spec());
+  EXPECT_EQ(GetLastReferrer(cross_site_url()),
+            redirect_to_cross_site_url().GetOrigin().spec());
   EXPECT_EQ(GetLastReferrer(redirect_to_cross_site_url()),
             link_url().spec());
 }
@@ -698,28 +708,28 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
             url().GetOrigin().spec());
   EXPECT_EQ(GetLastReferrer(cross_site_url()), url().GetOrigin().spec());
 
-  // Same-origin navigations get the original page origin as the referrer.
+  // Same-origin navigations get the original page URL as the referrer.
   NavigateDirectlyToPageWithLink(same_origin_url());
   EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), link_url().spec());
   EXPECT_EQ(GetLastReferrer(same_origin_url()), link_url().spec());
 
   // Same-site but cross-origin navigations get the original page origin as the
   // referrer.
+  const std::string expected_referrer = link_url().GetOrigin().spec();
   NavigateDirectlyToPageWithLink(same_site_url());
-  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()),
-            link_url().GetOrigin().spec());
-  EXPECT_EQ(GetLastReferrer(same_site_url()), link_url().GetOrigin().spec());
+  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), expected_referrer);
+  EXPECT_EQ(GetLastReferrer(same_site_url()), expected_referrer);
 
-  // Cross-site navigations get no referrer.
+  // Cross-site navigations should follow the default referrer policy.
   NavigateDirectlyToPageWithLink(cross_site_url());
-  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), "");
-  EXPECT_EQ(GetLastReferrer(cross_site_url()), "");
+  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), expected_referrer);
+  EXPECT_EQ(GetLastReferrer(cross_site_url()), expected_referrer);
 
   // Check that a less restrictive policy is not respected.
   NavigateDirectlyToPageWithLink(cross_site_url(),
                                  "no-referrer-when-downgrade");
-  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), "");
-  EXPECT_EQ(GetLastReferrer(cross_site_url()), "");
+  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), expected_referrer);
+  EXPECT_EQ(GetLastReferrer(cross_site_url()), expected_referrer);
 
   // Check that "no-referrer" policy is respected as more restrictive.
   NavigateDirectlyToPageWithLink(same_origin_url(), "no-referrer");
@@ -727,6 +737,11 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
   EXPECT_EQ(GetLastReferrer(same_origin_url()), "");
 
   NavigateDirectlyToPageWithLink(cross_site_url(), "no-referrer");
+  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), "");
+  EXPECT_EQ(GetLastReferrer(cross_site_url()), "");
+
+  // Check that "same-origin" policy is respected as more restrictive.
+  NavigateDirectlyToPageWithLink(cross_site_url(), "same-origin");
   EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), "");
   EXPECT_EQ(GetLastReferrer(cross_site_url()), "");
 }
@@ -754,10 +769,12 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
             url().GetOrigin().spec());
   EXPECT_EQ(GetLastReferrer(cross_site_url()), url().GetOrigin().spec());
 
-  // Cross-site navigations get no referrer.
+  // Cross-site navigations should follow the default referrer policy.
   RedirectToPageWithLink(redirect_to_cross_site_url(), cross_site_url());
-  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()), "");
-  EXPECT_EQ(GetLastReferrer(cross_site_url()), "");
+  EXPECT_EQ(ExecScriptGetStr(kReferrerScript, contents()),
+            redirect_to_cross_site_url().GetOrigin().spec());
+  EXPECT_EQ(GetLastReferrer(cross_site_url()),
+            redirect_to_cross_site_url().GetOrigin().spec());
   // Intermidiate same-origin navigation gets full referrer.
   EXPECT_EQ(GetLastReferrer(redirect_to_cross_site_url()),
             link_url().spec());
@@ -925,7 +942,7 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
       HostContentSettingsMapFactory::GetForProfile(browser()->profile());
   content_settings->SetContentSettingCustomScope(
       top_level_page_pattern(), ContentSettingsPattern::Wildcard(),
-      ContentSettingsType::COOKIES, std::string(), CONTENT_SETTING_BLOCK);
+      ContentSettingsType::COOKIES, CONTENT_SETTING_BLOCK);
 
   NavigateToPageWithIframe();
   CheckCookie(contents(), kEmptyCookie);
@@ -941,7 +958,7 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
       HostContentSettingsMapFactory::GetForProfile(browser()->profile());
   content_settings->SetContentSettingCustomScope(
       iframe_pattern(), ContentSettingsPattern::Wildcard(),
-      ContentSettingsType::COOKIES, std::string(), CONTENT_SETTING_BLOCK);
+      ContentSettingsType::COOKIES, CONTENT_SETTING_BLOCK);
 
   NavigateToPageWithIframe();
   CheckCookie(contents(), kTestCookie);
@@ -994,7 +1011,7 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
 
   // Local storage is null, accessing it shouldn't throw.
   NavigateIframe(cross_site_url());
-  CheckLocalStorageNull(child_frame());
+  CheckLocalStorageAccessDenied(child_frame());
 
   // Cookies allowed:
   AllowCookies();
@@ -1014,7 +1031,7 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
 
   // Local storage is null, accessing it doesn't throw.
   NavigateIframe(cross_site_url());
-  CheckLocalStorageNull(child_frame());
+  CheckLocalStorageAccessDenied(child_frame());
 
   // Shields down, third-party cookies still blocked:
   ShieldsDown();
@@ -1068,7 +1085,7 @@ IN_PROC_BROWSER_TEST_F(BraveContentSettingsAgentImplBrowserTest,
   // Block scripts in b.com.
   content_settings()->SetContentSettingCustomScope(
       iframe_pattern(), ContentSettingsPattern::Wildcard(),
-      ContentSettingsType::JAVASCRIPT, "", CONTENT_SETTING_BLOCK);
+      ContentSettingsType::JAVASCRIPT, CONTENT_SETTING_BLOCK);
 
   NavigateToURLUntilLoadStop("b.com", "/load_js_from_origins.html");
   EXPECT_EQ(contents()->GetAllFrames().size(), 1u);

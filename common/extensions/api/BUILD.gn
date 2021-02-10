@@ -4,7 +4,6 @@ import("//brave/components/crypto_dot_com/browser/buildflags/buildflags.gni")
 import("//brave/components/brave_wallet/buildflags/buildflags.gni")
 import("//brave/components/brave_together/buildflags/buildflags.gni")
 import("//brave/components/ipfs/buildflags/buildflags.gni")
-import("//brave/components/moonpay/browser/buildflags/buildflags.gni")
 import("//tools/grit/grit_rule.gni")
 import("//tools/json_schema_compiler/json_features.gni")
 import("//tools/json_schema_compiler/json_schema_api.gni")
@@ -40,10 +39,6 @@ json_features("api_features") {
   if (brave_together_enabled) {
     sources += [ "_brave_together_api_features.json" ]
   }
-
-  if (moonpay_enabled) {
-    sources += [ "_moonpay_api_features.json" ]
-  }
 }
 
 json_features("permission_features") {
@@ -76,11 +71,11 @@ json_features("behavior_features") {
 
 brave_extensions_api_schema_sources = [
   "brave_shields.json",
-#  "brave_rewards.json",
+  "brave_rewards.json",
   "brave_theme.json",
   "brave_today.json",
   "greaselion.json",
-#  "rewards_notifications.json",
+  "rewards_notifications.json",
 ]
 
 if (ipfs_enabled) {
@@ -105,10 +100,6 @@ if (crypto_dot_com_enabled) {
 
 if (brave_together_enabled) {
   brave_extensions_api_schema_sources += [ "brave_together.json" ]
-}
-
-if (moonpay_enabled) {
-  brave_extensions_api_schema_sources += [ "moonpay.json" ]
 }
 
 brave_extensions_api_uncompiled_sources = []

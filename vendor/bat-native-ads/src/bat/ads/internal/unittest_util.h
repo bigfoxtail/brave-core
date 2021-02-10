@@ -15,6 +15,7 @@
 #include <vector>
 
 #include "base/files/file_path.h"
+#include "base/optional.h"
 #include "base/time/time.h"
 #include "brave/components/l10n/browser/locale_helper_mock.h"
 #include "testing/gtest/include/gtest/gtest.h"
@@ -78,10 +79,19 @@ class AdsClientMock;
 
 base::FilePath GetTestPath();
 
+base::Optional<std::string> ReadFileFromTestPathToString(
+    const std::string& name);
+
 base::FilePath GetResourcesPath();
+
+base::Optional<std::string> ReadFileFromResourcePathToString(
+    const std::string& name);
 
 void SetEnvironment(
     const Environment environment);
+
+void SetSysInfo(
+    const SysInfo& sys_info);
 
 void SetBuildChannel(
     const bool is_release,
@@ -140,10 +150,13 @@ base::Time TimeFromDateString(
     const std::string& date);
 
 int64_t DistantPast();
+std::string DistantPastAsISO8601();
 
 int64_t Now();
+std::string NowAsISO8601();
 
 int64_t DistantFuture();
+std::string DistantFutureAsISO8601();
 
 }  // namespace ads
 

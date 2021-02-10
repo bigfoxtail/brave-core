@@ -6,8 +6,6 @@
 #ifndef BRAVE_COMPONENTS_BRAVE_ADS_BROWSER_NOTIFICATION_HELPER_ANDROID_H_
 #define BRAVE_COMPONENTS_BRAVE_ADS_BROWSER_NOTIFICATION_HELPER_ANDROID_H_
 
-#include <memory>
-
 #include "base/memory/weak_ptr.h"
 
 #include "brave/components/brave_ads/browser/notification_helper.h"

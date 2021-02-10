@@ -19,6 +19,7 @@
 #include "brave/components/brave_stats/browser/brave_stats_updater_util.h"
 #include "chrome/browser/browser_process.h"
 #include "chrome/browser/net/system_network_context_manager.h"
+#include "chrome/browser/profiles/profile_manager.h"
 #include "chrome/common/channel_info.h"
 #include "components/prefs/pref_change_registrar.h"
 #include "components/prefs/pref_registry_simple.h"
@@ -73,6 +74,8 @@ GURL GetUpdateURL(
       update_url, "dtoi", stats_updater_params.GetDateOfInstallationParam());
   update_url = net::AppendQueryParameter(
       update_url, "ref", stats_updater_params.GetReferralCodeParam());
+  update_url = net::AppendQueryParameter(
+      update_url, "adsEnabled", stats_updater_params.GetAdsEnabledParam());
   return update_url;
 }
 
@@ -170,11 +173,7 @@ void BraveStatsUpdater::SetStatsThresholdCallback(
 }
 
 GURL BraveStatsUpdater::BuildStatsEndpoint(const std::string& path) {
-  auto stats_updater_url = GURL(usage_server_ + path);
-#if defined(OFFICIAL_BUILD)
-  CHECK(stats_updater_url.is_valid());
-#endif
-  return stats_updater_url;
+  return GURL(usage_server_ + path);
 }
 
 void BraveStatsUpdater::OnSimpleLoaderComplete(
@@ -254,7 +253,7 @@ void BraveStatsUpdater::OnServerPingTimerFired() {
   if (base::CompareCaseInsensitiveASCII(today_ymd, last_check_ymd) == 0)
     return;
 
-//  SendServerPing();
+  SendServerPing();
 }
 
 bool BraveStatsUpdater::IsReferralInitialized() {
@@ -281,10 +280,10 @@ void BraveStatsUpdater::QueueServerPing() {
   } else {
     pref_change_registrar_.reset(new PrefChangeRegistrar());
     pref_change_registrar_->Init(pref_service_);
-//    pref_change_registrar_->Add(
-//        kReferralInitialization,
-//        base::Bind(&BraveStatsUpdater::OnReferralInitialization,
-//                   base::Unretained(this)));
+    pref_change_registrar_->Add(
+        kReferralInitialization,
+        base::Bind(&BraveStatsUpdater::OnReferralInitialization,
+                   base::Unretained(this)));
   }
 }  // namespace brave
 
@@ -303,8 +302,11 @@ void BraveStatsUpdater::SendServerPing() {
   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
   auto traffic_annotation = AnonymousStatsAnnotation();
   auto resource_request = std::make_unique<network::ResourceRequest>();
+  auto* profile_pref_service =
+      ProfileManager::GetPrimaryUserProfile()->GetPrefs();
   auto stats_updater_params =
-      std::make_unique<brave_stats::BraveStatsUpdaterParams>(pref_service_);
+      std::make_unique<brave_stats::BraveStatsUpdaterParams>(
+          pref_service_, profile_pref_service);
 
   auto endpoint = BuildStatsEndpoint(kBraveUsageStandardPath);
   resource_request->url = GetUpdateURL(endpoint, *stats_updater_params);

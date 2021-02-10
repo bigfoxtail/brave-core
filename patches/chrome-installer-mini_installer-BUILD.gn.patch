@@ -1,8 +1,8 @@
 diff --git a/chrome/installer/mini_installer/BUILD.gn b/chrome/installer/mini_installer/BUILD.gn
-index df39ea145cc6b05775db7fbfb680fce892b8941a..6aa75f203f353c1b95c4f80cfc0c53f7b6edcd0c 100644
+index a75484da690fc22614e4a5615aec727b6d763fd5..11086c2d5c5339e12ca4a67a543f48a1c295e799 100644
 --- a/chrome/installer/mini_installer/BUILD.gn
 +++ b/chrome/installer/mini_installer/BUILD.gn
-@@ -12,6 +12,7 @@ import("//third_party/icu/config.gni")
+@@ -13,6 +13,7 @@ import("//third_party/icu/config.gni")
  import("//tools/v8_context_snapshot/v8_context_snapshot.gni")
  import("//ui/base/ui_features.gni")
  import("//v8/gni/v8.gni")
@@ -10,11 +10,11 @@ index df39ea145cc6b05775db7fbfb680fce892b8941a..6aa75f203f353c1b95c4f80cfc0c53f7
  
  declare_args() {
    # The Chrome archive is compressed in official builds to reduce the size of
-@@ -189,6 +190,9 @@ template("generate_mini_installer") {
+@@ -194,6 +195,9 @@ template("generate_mini_installer") {
        "//third_party/icu:icudata",
        chrome_dll_target,
      ]
-+    if (skip_signing) { args += [ "--skip_signing=True" ] }
++    if (skip_signing) { args += [ "--skip_signing" ] }
 +    if (build_delta_installer) { args += [ "--setup_exe_format=DIFF", "--diff_algorithm=COURGETTE", "--last_chrome_installer",rebase_path("$root_out_dir/$last_chrome_installer", root_build_dir) ] }
 +    deps += [ "//brave:mini_installer_dependencies" ]
  

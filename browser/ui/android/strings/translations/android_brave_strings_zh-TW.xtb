@@ -81,7 +81,7 @@
 <translation id="2070991379950719711">開始使用 Brave Rewards</translation>
 <translation id="48520986898237073">繼續到錢包</translation>
 <translation id="3570367516044491911">設為預設瀏覽器</translation>
-<translation id="7493053924837150477">從列表選擇「Brave 瀏覽器」，然後點擊「始終」</translation>
+<translation id="19715420010996093">選取 Brave 瀏覽器並點擊「一律使用」</translation>
 <translation id="3546439402724649282">Brave 已設為預設瀏覽器。</translation>
 <translation id="8389661903259423907">你已有預設瀏覽器。你可到應用程式設定頁面更改預設瀏覽器。</translation>
 <translation id="7091885296442320770">Brave 如閃電般快速</translation>
@@ -233,6 +233,10 @@
 <translation id="8712637175834984815">我瞭解了</translation>
 <translation id="4394049700291259645">停用</translation>
 <translation id="8446884382197647889">更多資訊</translation>
+<translation id="2514300153301737214">我們偵測到您已啟用 Brave Sync，但是系統同步已關閉，且不允許 Brave 同步。點擊以開啟設定</translation>
+<translation id="7173114856073700355">開啟設定</translation>
+<translation id="6965382102122355670">確定</translation>
+<translation id="4450893287417543264">不要再顯示</translation>
 <translation id="597993392929850353">Brave 授權條款</translation>
 <translation id="6336451774241870485">新隱私分頁</translation>
 <translation id="6199596294742117349">這是私人標籤</translation>
@@ -322,7 +326,7 @@
 <translation id="7396366757003005317">特徵辨識封鎖（嚴格，可能會破壞網站內容）</translation>
 <translation id="700453611199558021">特徵辨識封鎖（標準）</translation>
 <translation id="769702552748212954">允許所有指紋追蹤</translation>
-<translation id="2888409909650566510">封鎖廣告以及其它恐怖\東西</translation>
+<translation id="5142293891785304489">封鎖追蹤器、廣告和\n更多</translation>
 <translation id="6930134873084561197">網站時常包含 cookies 和 scripts，它們會試著辨認你和你的裝置。它們想要知道你是誰，並追蹤您在每個網站做什麼。\n\n Brave 會封鎖這些東西，讓您在不被跟蹤的狀態下進行瀏覽。</translation>
 <translation id="8553998445606452168">關於 Brave Shields</translation>
 <translation id="8912304686498704084">上</translation>
@@ -340,9 +344,15 @@
 <translation id="5516010970279932133">在自動完成中顯示建議的網站</translation>
 <translation id="5370478469168390143">降低線上使用流量</translation>
 <translation id="1118508688433541158">使用 Brave 瀏覽更快並封鎖廣告</translation>
-<translation id="915835519491851291">您剛封鎖了一些追蹤器與廣告。</translation>
+<translation id="6589609065569680305">此頁面上被封鎖的追蹤器與廣告。</translation>
+<translation id="1283922192221545319">Brave Shields 保護您的隱私。</translation>
 <translation id="3286927551967858325">看一看</translation>
-<translation id="2929661208078053609">很好！</translation>
+<translation id="6227291358910554399">在此網站上觀看影片時，廣告被封鎖。</translation>
+<translation id="7802980684512102010">沒有廣告的影片使用的流量更少。</translation>
+<translation id="2046475855484346614">在此頁面上已封鎖了超過 10 個追蹤器與廣告。</translation>
+<translation id="5806208250835099572">Brave Shields 保護您在每個網站上的線上隱私。</translation>
+<translation id="5617673581653540121">您的連線已加密。</translation>
+<translation id="4055107796760496928">若可用，Brave 將會自動升級到安全連線。</translation>
 <translation id="4776948189086901857">Brave 隨處皆可運作</translation>
 <translation id="1606322780901645965">在您的筆記型電腦或平板上，從 brave.com 下載 Brave 以獲得更快和更私密的網際網路</translation>
 <translation id="8374242949413616101">隱私權保護</translation>
@@ -434,26 +444,26 @@
 <translation id="8804164990146287819">隱私政策</translation>
 <translation id="6318696841371191107">快速瀏覽</translation>
 <translation id="7930505144430343145">歡迎使用 Brave Rewards！</translation>
-<translation id="7909111626803226907">與傳統廣告不同，Brave 的私人廣告會獎勵您代幣以支持內容創作者，同時又將您的個人資訊保密。</translation>
+<translation id="3477340970981564961">與傳統廣告不同，Brave 的私人廣告用代幣獎勵您以支持內容創作者，同時為您的個人資訊保密。</translation>
 <translation id="6973095375773523904">廣告會在哪裡顯示？</translation>
-<translation id="3867028444168159102">Brave 私人廣告將會以一般的通知顯示。您可以在設定中控制廣告顯示的頻率。</translation>
+<translation id="7556325460112047619">Brave 的私人廣告會以一般通知顯示。您可以在設定中控制看到這些廣告的頻率。</translation>
 <translation id="5816125157889950051">您何時獲得獎勵</translation>
-<translation id="4649471244559455723">您在本月透過 Brave 廣告賺取的代幣將會在下個月的5號到達。</translation>
+<translation id="310863932297733723">本月您從 Brave 的私人廣告賺取的代幣，將在下個月的 5 日抵達。</translation>
 <translation id="7712287524451429139">回饋毫不費力</translation>
 <translation id="105037569026952831">創作者會根據您對我們的參與程度（「關注度」）自動收到您的代幣捐款。</translation>
 <translation id="5323267338679539010">用小費說謝謝</translation>
-<translation id="6042317056594735519">給小費是一種個人鼓勵或支持您喜歡的內容或創作者的方式。取得小費！</translation>
+<translation id="6730444165801605682">給小費是一種親自鼓勵和支持您所熱愛的內容或創作者的方式。取得秘訣！</translation>
 <translation id="7509452925943421624">您可以使用代幣做什麼？</translation>
-<translation id="7059157883171259940">代幣可用於支持創作者以外的用途。您可以購買帶有現金回饋的數位商品與禮物卡。</translation>
+<translation id="5876169128756792273">代幣可用於支持創作者以外的用途。隨著商家加入行列，您可以購買數位內容和其他商品。</translation>
 <translation id="1402530520078693620">最後，讓我們協助您完成基本設定</translation>
 <translation id="3494356595346329740">您稍後可以變更此設定。</translation>
 <translation id="6462814326662189004">您想多常看到廣告？\n（每小時廣告次數）</translation>
 <translation id="2134244432345596331">您想為最喜歡的創作者提供多少支持？\n（從您的廣告收入）</translation>
-<translation id="7456161272236175794">喔喔喔喔喔喔喔！\n您完成了。</translation>
+<translation id="827315274423079662">喔耶，您已就緒！</translation>
 <translation id="3895246934788932488">透過使用「Brave Rewards」，您可以保護自己的隱私並讓網路對所有人來說都變成更好的地方。太棒了！</translation>
 <translation id="5705882733397021510">返回</translation>
 <translation id="5140321319944305531">快速瀏覽</translation>
-<translation id="3808131693704413134">收到您的第一筆廣告付款後，您可以回來並給這位創作者小費！</translation>
+<translation id="2434574859640694129">收到您的第一筆廣告付款後，您可以回來並給這位創作者小費！</translation>
 <translation id="207242986925259074">快速複習</translation>
 <translation id="8342862030112839977">您的第一筆獎勵將抵達：</translation>
 <translation id="3769645103175790584">瀏覽豐富的內容時賺取代幣並獎勵創作者。 <ph name="QUICK_TOUR"/>.</translation>
@@ -462,4 +472,25 @@
 <translation id="3604285424134705930">您已將 <ph name="FROM_VALUE"/> <ph name="FROM_CURRENCY"/> 轉換為 <ph name="TO_VALUE"/> <ph name="TO_CURRENCY"/>！</translation>
 <translation id="392587271502873865">請檢查您的網路連線。</translation>
 <translation id="7889432931837317731">可能的話自動開啟</translation>
+<translation id="8967385052772844086">檢視完整的隱私權報告</translation>
+<translation id="6864343534748973390">最熱門</translation>
+<translation id="1622983732360473885">支持 Brave</translation>
+<translation id="4608192160278975831">私人且沒有追蹤</translation>
+<translation id="7208522820527289601">私人且沒有追蹤，總部設於歐盟</translation>
+<translation id="1161008391729450974">沒有追蹤器的 Google 結果</translation>
+<translation id="7320542277711359296">第二熱門</translation>
+<translation id="8295049095570748497">俄羅斯領先的搜尋引擎</translation>
+<translation id="2642661895835126239">植樹，總部設於柏林</translation>
+<translation id="1410130669636877548">當您搜尋網路時，一些搜尋引擎會比其他搜尋引擎更好地保護您的隱私權。</translation>
+<translation id="1078265935778232285">歡迎使用 Brave 瀏覽器</translation>
+<translation id="6824713633331856331">幫助我們匿名學習</translation>
+<translation id="6116685031674149112">Brave 保護您的隱私，並\n感謝您對以下內容之同意：</translation>
+<translation id="3971666849661839619">透過傳送當機報告和完全匿名，來協助改善 Brave，<ph name="PRIVATE_PRODUCT_ANALYSIS"/></translation>
+<translation id="6478996494082389936">私人產品分析。</translation>
+<translation id="5187052478998910855">需要複習一下獎勵嗎？</translation>
+<translation id="8622329973403382303">快速瀏覽，以溫習它如何以獎勵搖滾明星的身分名垂千古！</translation>
+<translation id="8401711613788729448">使用 Brave 開啟所有連結以保護您的隱私</translation>
+<translation id="3184805785843994538">Brave Shields 封鎖追蹤器與廣告，節省流量，並節省您造訪每個網站的時間。</translation>
+<translation id="8722651357687610395">將 Brave 設為預設值</translation>
+<translation id="3479552764303398839">現在不要</translation>
 </translationbundle>

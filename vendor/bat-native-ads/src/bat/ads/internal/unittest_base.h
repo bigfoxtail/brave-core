@@ -15,12 +15,13 @@
 #include "testing/gmock/include/gmock/gmock.h"
 #include "testing/gtest/include/gtest/gtest.h"
 #include "bat/ads/database.h"
+#include "bat/ads/internal/account/ad_rewards/ad_rewards.h"
+#include "bat/ads/internal/account/confirmations/confirmations_state.h"
 #include "bat/ads/internal/ads/ad_notifications/ad_notifications.h"
 #include "bat/ads/internal/ads_client_helper.h"
 #include "bat/ads/internal/ads_client_mock.h"
 #include "bat/ads/internal/ads_impl.h"
 #include "bat/ads/internal/client/client.h"
-#include "bat/ads/internal/confirmations/confirmations_state.h"
 #include "bat/ads/internal/database/database_initialize.h"
 #include "bat/ads/internal/platform/platform_helper_mock.h"
 #include "bat/ads/internal/tab_manager/tab_manager.h"
@@ -61,11 +62,22 @@ class UnitTestBase : public testing::Test {
 
   // Fast-forwards virtual time by |time_delta|, causing all tasks on the main
   // thread and thread pool with a remaining delay less than or equal to
-  // |time_delta| to be executed in their natural order before this returns
+  // |time_delta| to be executed in their natural order before this returns. For
+  // debugging purposes use |task_environment_.DescribePendingMainThreadTasks()|
+  // to dump information about pending tasks
   void FastForwardClockBy(
       const base::TimeDelta& time_delta);
 
-  // Unlike |FastForwardBy| AdvanceClock does not run tasks
+  // Fast-forwards virtual time to |time|, causing all tasks on the main thread
+  // and thread pool with a remaining delay less than or equal to |time| to be
+  // executed in their natural order before this returns. For debugging purposes
+  // use |task_environment_.DescribePendingMainThreadTasks()| to dump
+  // information about pending tasks
+  void FastForwardClockTo(
+       const base::Time& time);
+
+  // Unlike |FastForwardClockBy|, |FastForwardClockTo| and |FastForwardBy|
+  // AdvanceClock does not run tasks
   void AdvanceClockToMidnightUTC();
   void AdvanceClock(
        const base::Time& time);
@@ -76,6 +88,11 @@ class UnitTestBase : public testing::Test {
   // TaskRunner if there is one, otherwise it returns TimeDelta::Max()
   base::TimeDelta NextPendingTaskDelay() const;
 
+  // Returns the number of pending tasks of the main thread's TaskRunner. When
+  // debugging, you can use |task_environment_.DescribePendingMainThreadTasks()|
+  // to see what those are
+  size_t GetPendingTaskCount() const;
+
  private:
   bool setup_called_ = false;
   bool teardown_called_ = false;
@@ -84,6 +101,7 @@ class UnitTestBase : public testing::Test {
 
   std::unique_ptr<AdsClientHelper> ads_client_helper_;
   std::unique_ptr<Client> client_;
+  std::unique_ptr<AdRewards> ad_rewards_;
   std::unique_ptr<AdNotifications> ad_notifications_;
   std::unique_ptr<ConfirmationsState> confirmations_state_;
   std::unique_ptr<database::Initialize> database_initialize_;

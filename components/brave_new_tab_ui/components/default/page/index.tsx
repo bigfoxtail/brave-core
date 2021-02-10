@@ -29,15 +29,15 @@ type AppProps = {
 type PageProps = {
   showClock: boolean
   showStats: boolean
-//  showRewards: boolean
-//  showBinance: boolean
-//  showTogether: boolean
+  showRewards: boolean
+  showBinance: boolean
+  showTogether: boolean
   showTopSites: boolean
   showBrandedWallpaper: boolean
 } & HasImageProps
 
 function getItemRowCount (p: PageProps): number {
-  let right = (p.showClock ? 1 : 0)
+  let right = (p.showClock ? 1 : 0) + (p.showRewards ? 2 : 0)
   let left = (p.showStats ? 1 : 0) + (p.showTopSites ? 1 : 0)
   // Has space for branded logo to sit next to something on right?
   if (p.showBrandedWallpaper && left >= right) {
@@ -54,6 +54,7 @@ const StyledPage = styled<PageProps, 'div'>('div')`
   --ntp-extra-footer-rows: ${p => p.showBrandedWallpaper ? 1 : 0};
   --ntp-space-rows: 0;
   --ntp-page-rows: calc(var(--ntp-item-row-count) + var(--ntp-space-rows));
+  --ntp-page-padding: 12px;
   --ntp-item-justify: start;
   --blur-amount: calc(var(--ntp-extra-content-effect-multiplier, 0) * 38px);
   @media screen and (max-width: ${breakpointLargeBlocks}) {
@@ -72,7 +73,7 @@ const StyledPage = styled<PageProps, 'div'>('div')`
   grid-template-rows: repeat(calc(var(--ntp-page-rows) - 1), min-content) auto;
   grid-template-columns: min-content auto min-content;
   grid-auto-flow: row dense;
-  padding: 12px;
+  padding: var(--ntp-page-padding);
   overflow: hidden;
   flex: 1;
   flex-direction: column;
@@ -215,10 +216,21 @@ export const GridItemBrandedLogo = styled(GridItemCredits)`
   --ntp-grid-item-credits-left-margin-narrow: 0;
   --ntp-grid-item-credits-bottom-margin-wide: -8px;
   --ntp-grid-item-credits-left-margin-wide: 22px;
+
+  @media screen and (min-width: ${breakpointEveryBlock}) {
+    position: fixed;
+    bottom: var(--ntp-page-padding);
+    left: var(--ntp-page-padding);
+    .${CLASSNAME_PAGE_STUCK} & {
+      // When page is also position: fixed, then we are relative to that
+      bottom: 0;
+      left: 0;
+    }
+  }
 `
 
 export const GridItemNavigation = styled('section')`
-  grid-column: 3 / span 1;
+  grid-column: 2 / span 2;
   grid-row: -2 / span 1;
   align-self: end;
   margin: 0 24px 24px 0;

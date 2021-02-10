@@ -9,9 +9,11 @@
 
 #include "base/android/jni_string.h"
 #include "base/system/sys_info.h"
+#include "bat/ads/pref_names.h"
 #include "brave/browser/brave_ads/android/jni_headers/BraveAds_jni.h"
 #include "brave/browser/brave_ads/android/jni_headers/BraveAdsSignupDialog_jni.h"
 #include "brave/build/android/jni_headers/BraveNotificationSettingsBridge_jni.h"
+#include "brave/common/brave_channel_info.h"
 #include "brave/components/brave_ads/browser/background_helper.h"
 #include "chrome/android/chrome_jni_headers/NotificationSystemStatusUtil_jni.h"
 #include "chrome/browser/notifications/notification_channels_provider_android.h"
@@ -32,6 +34,10 @@ NotificationHelperAndroid::NotificationHelperAndroid() = default;
 NotificationHelperAndroid::~NotificationHelperAndroid() = default;
 
 bool NotificationHelperAndroid::ShouldShowNotifications() {
+  if (brave::IsNightlyOrDeveloperBuild()) {
+    return true;
+  }
+
   JNIEnv* env = base::android::AttachCurrentThread();
   int status = Java_NotificationSystemStatusUtil_getAppNotificationStatus(env);
   bool is_notifications_enabled = (status == kAppNotificationsStatusEnabled ||
@@ -52,13 +58,21 @@ bool NotificationHelperAndroid::ShowMyFirstAdNotification() {
     return false;
   }
 
+  const bool use_custom_notifications = brave::IsNightlyOrDeveloperBuild();
+
   JNIEnv* env = base::android::AttachCurrentThread();
-  Java_BraveAdsSignupDialog_enqueueOnboardingNotificationNative(env);
+  Java_BraveAdsSignupDialog_enqueueOnboardingNotificationNative(
+      env,
+      use_custom_notifications);
 
   return true;
 }
 
 bool NotificationHelperAndroid::CanShowBackgroundNotifications() const {
+  if (brave::IsNightlyOrDeveloperBuild()) {
+    return true;
+  }
+
   JNIEnv* env = base::android::AttachCurrentThread();
   return Java_BraveAdsSignupDialog_showAdsInBackground(env);
 }

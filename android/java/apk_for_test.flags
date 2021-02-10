@@ -83,16 +83,15 @@
 }
 
 -keep class org.chromium.chrome.browser.toolbar.ToolbarManager {
-    *** mBottomControlsCoordinator;
+    *** mBottomControlsCoordinatorSupplier;
+    *** mCallbackController;
     *** mBrowserControlsSizer;
     *** mFullscreenManager;
     *** mActivityTabProvider;
     *** mAppThemeColorProvider;
     *** mShareDelegateSupplier;
     *** mScrimCoordinator;
-    *** mActivity;
     *** mShowStartSurfaceSupplier;
-    *** mOverviewModeBehaviorSupplier;
     *** mMenuButtonCoordinator;
     *** mToolbarTabController;
     *** mLocationBar;
@@ -127,4 +126,50 @@
 
 -keep class org.chromium.chrome.browser.download.MimeUtils {
     *** canAutoOpenMimeType(...);
+}
+
+-keep class org.chromium.chrome.browser.app.ChromeActivity {
+    *** mTabModelProfileSupplier;
+}
+
+-keep class org.chromium.chrome.browser.ChromeTabbedActivity {
+    *** hideOverview(...);
+}
+
+-keep class org.chromium.chrome.browser.app.BraveActivity {
+    *** openNewOrSelectExistingTab(...);
+    *** selectExistingTab(...);
+}
+
+-keep class org.chromium.chrome.browser.tabbed_mode.TabbedRootUiCoordinator {
+    public <init>(...);
+}
+
+-keep class org.chromium.chrome.browser.tabbed_mode.BraveTabbedRootUiCoordinator {
+    public <init>(...);
+}
+
+-keep class org.chromium.chrome.browser.tabbed_mode.TabbedAppMenuPropertiesDelegate {
+    public <init>(...);
+}
+
+-keep class org.chromium.chrome.browser.appmenu.BraveTabbedAppMenuPropertiesDelegate {
+    public <init>(...);
+}
+
+-keep class org.chromium.chrome.browser.tabmodel.ChromeTabCreator {
+    public <init>(...);
+}
+
+-keep class org.chromium.chrome.browser.tabmodel.BraveTabCreator {
+    public <init>(...);
+}
+
+-keep class org.chromium.chrome.browser.bookmarks.BraveBookmarkUtils {
+    *** addOrEditBookmark(...);
+}
+
+-keep class org.chromium.chrome.browser.bookmarks.BookmarkUtils {
+    *** showBookmarkBottomSheet(...);
+    *** addBookmarkAndShowSnackbar(...);
 }

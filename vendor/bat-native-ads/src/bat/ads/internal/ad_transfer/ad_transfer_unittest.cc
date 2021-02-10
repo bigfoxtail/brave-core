@@ -49,7 +49,7 @@ class BatAdsAdTransferTest
     ad.creative_instance_id = "c71b357a-89b9-4c4a-b71e-22654d4e557e";
     ad.creative_set_id = "01cd57da-1fa2-460b-a95d-4cc8cbd25e21";
     ad.campaign_id = "579e4e33-8c26-418f-9936-236142e0a697";
-    ad.category = "Technology & Computing";
+    ad.segment = "Technology & Computing";
     ad.target_url = "https://www.brave.com";
 
     return ad;
@@ -64,7 +64,7 @@ class BatAdsAdTransferTest
 TEST_F(BatAdsAdTransferTest,
     DoNotTransferAdIfUrlIsMissingHTTPOrHTTPSScheme) {
   // Arrange
-  const AdInfo ad = GetAdForType(AdType::kAdNotification);
+  const AdInfo ad = GetAdForType(AdType::kPromotedContentAd);
   ad_transfer_->set_last_clicked_ad(ad);
 
   TabManager::Get()->OnUpdated(1, "https://brave.com", /* is_visible */ true,
@@ -117,7 +117,7 @@ TEST_F(BatAdsAdTransferTest,
 TEST_F(BatAdsAdTransferTest,
     TransferAdIfAnotherAdIsAlreadyTransferring) {
   // Arrange
-  const AdInfo ad = GetAdForType(AdType::kAdNotification);
+  const AdInfo ad = GetAdForType(AdType::kPromotedContentAd);
   ad_transfer_->set_last_clicked_ad(ad);
 
   TabManager::Get()->OnUpdated(1, "https://foobar.com", /* is_visible */ true,

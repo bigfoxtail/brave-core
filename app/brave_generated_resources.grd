@@ -48,7 +48,13 @@
     <output filename="brave_generated_resources_en-GB.pak" type="data_package" lang="en-GB" />
     <output filename="brave_generated_resources_en-US.pak" type="data_package" lang="en" />
     <output filename="brave_generated_resources_es.pak" type="data_package" lang="es" />
-    <output filename="brave_generated_resources_es-419.pak" type="data_package" lang="es-419" />
+    <if expr="is_ios">
+      <!-- iOS uses es-MX for es-419 -->
+      <output filename="brave_generated_resources_es-MX.pak" type="data_package" lang="es-419" />
+    </if>
+    <if expr="not is_ios">
+      <output filename="brave_generated_resources_es-419.pak" type="data_package" lang="es-419" />
+    </if>
     <output filename="brave_generated_resources_et.pak" type="data_package" lang="et" />
     <output filename="brave_generated_resources_fa.pak" type="data_package" lang="fa" />
     <output filename="brave_generated_resources_fake-bidi.pak" type="data_package" lang="fake-bidi" />
@@ -190,6 +196,12 @@
       <message name="IDS_WIDEVINE_DONT_ASK_AGAIN_CHECKBOX" desc="Checkbox for prevent showing widevine install prompt">
         Don't ask again
       </message>
+      <message name="IDS_SETTINGS_ENABLE_WIDEVINE_TITLE" desc="Text fragment for enabling widevine component. 'Widevine' is the name of a plugin and should not be translated.">
+        Enable Widevine
+      </message>
+      <message name="IDS_SETTINGS_ENABLE_WIDEVINE_DESC" desc="Text fragment for enabling widevine component. 'Widevine' is the name of a plugin and should not be translated.">
+        Use Widevine digital rights management (DRM) component to view protected streaming video and other content in the browser.
+      </message>
       <message name="IDS_SETTINGS_ASK_WIDEVINE_INSTALL_DESC" desc="Text fragment for asking widevine install or not">
         Ask when a site wants to install Widevine on your computer.
       </message>
@@ -203,7 +215,7 @@
         Automatically redirect .onion sites
       </message>
       <message name="IDS_SETTINGS_AUTO_ONION_LOCATION_DESC" desc="Text fragment for onion site component">
-        Brave will open onion service of the website in Tor window when available
+        Brave will open onion service of the website when available or .onion domain in Tor window
       </message>
       <if expr="is_linux">
         <message name="IDS_WIDEVINE_PERMISSION_REQUEST_TEXT_FRAGMENT_INSTALL" desc="Text fragment for Widevine permission request. 'Widevine' is the name of a plugin and should not be translated.">
@@ -703,11 +715,32 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
       <message name="IDS_IPFS_RESOLVE_OPTION_DISABLED" desc="Select control value for which IPFS resolve method to use">
         Disabled
       </message>
+      <message name="IDS_SETTINGS_IPFS_PUBLIC_GATEWAY_DESC" desc="The description of changing IPFS public gateway">
+        IPFS public gateway address
+      </message>
+      <message name="IDS_SETTINGS_IPFS_CHANGE_GATEWAY_BUTTON_LABEL" desc="The label of the button for changing IPFS gateway address">
+        Change
+      </message>
+      <message name="IDS_SETTINGS_CHANGE_IPFS_GATEWAY_DIALOG_TITLE" desc="The title of dialog for changing IPFS gateway">
+        Set IPFS gateway
+      </message>
+      <message name="IDS_SETTINGS_CHANGE_IPFS_GATEWAY_DIALOG_LABEL" desc="The text label for IPFS gateway input field">
+        Gateway address
+      </message>
+      <message name="IDS_SETTINGS_IPFS_ERROR_INVALID_ADDRESS" desc="The error message used when user input an invalid gateway address">
+        Invalid gateway address
+      </message>
       <message name="IDS_SETTINGS_IPFS_AUTO_FALLBACK_TO_GATEWAY_LABEL" desc="The text label for IPFS public gateway fallback switch">
         IPFS public gateway fallback
       </message>
       <message name="IDS_SETTINGS_IPFS_AUTO_FALLBACK_TO_GATEWAY_DESC" desc="The description for the switch of automatically fallback to IPFS public gateway">
         Automatically fall back to public IPFS gateway if your local node cannot be reached.
+      </message>
+      <message name="IDS_SETTINGS_IPFS_AUTO_REDIRECT_GATEWAY_LABEL" desc="The text label for redirecting IPFS resources to the configured gateway">
+        Redirect IPFS resources to the configured IPFS gateway
+      </message>
+      <message name="IDS_SETTINGS_IPFS_AUTO_REDIRECT_GATEWAY_DESC" desc="The description for redirecting IPFS resources to the configured gateway">
+        Automatically uses the configured gateway for IPFS resolutions when an IPFS gateway resource is encountered.
       </message>
      <message name="IDS_SETTINGS_HANGOUTS_ENABLED_DESC" desc="The description for Hangouts switch in settings">
         Uses Hangouts component to enable screen sharing and other features in the browser.
@@ -736,6 +769,15 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
       </message>
       <message name="IDS_EXTENSIONS_BRAVE_ITEM_CHROME_WEB_STORE" desc="Label for button to visit the Web Extensions Store.">
         View in Web Extensions Store
+      </message>
+      <message name="IDS_EXTENSIONS_BRAVE_PRIVATE_WARNING" desc="Warns the user that Brave cannot prevent extensions from recording history in private mode and Tor mode">
+        Warning: Brave cannot prevent extensions from recording your browsing history.
+      </message>
+      <message name="IDS_EXTENSIONS_BRAVE_SPANNING_WARNING" desc="Warns the user that extension will make network connection not through Tor when it is in spanning mode">
+        If this extension makes network requests, they will not use Tor or private mode.
+      </message>
+      <message name="IDS_EXTENSIONS_BRAVE_PRIVATE_AND_TOR_WARNING" desc="Displayed in extensions management UI after an extension is selected to be run in private mode and Tor mode.">
+        To disable this extension in private mode and Tor mode, unselect this option.
       </message>
       <!-- Brave Clear Browsing Data On Exit Settings -->
       <message name="IDS_SETTINGS_BRAVE_ON_EXIT" desc="Clear Browsing Data dialog On exit tab label">
@@ -887,6 +929,21 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
         <message name="IDS_BRAVE_AVATAR_LABEL_89" desc="The label for the avatar_bonbon_ninja.png avatar.">
             Avatar Bonbon Ninja
         </message>
+        <!-- Brave default browser dialog -->
+        <message name="IDS_BRAVE_DEFAULT_BROWSER_DIALOG_HEADER_TEXT" desc="The header text for default browser dialog">
+          Set Brave as your default browser
+        </message>
+        <message name="IDS_BRAVE_DEFAULT_BROWSER_DIALOG_CONTENTS_TEXT" desc="The contents for default browser dialog">
+          Brave browser is currently not set as your default browser.
+Set Brave as your default to keep browsing the web faster -
+up to 6x faster on major news sites.
+        </message>
+        <message name="IDS_BRAVE_DEFAULT_BROWSER_DIALOG_OK_BUTTON_LABEL" desc="The text for default browser dialog ok button">
+          Set as default
+        </message>
+        <message name="IDS_BRAVE_DEFAULT_BROWSER_DIALOG_CANCEL_BUTTON_LABEL" desc="The text for default browser dialog cancel button">
+          Not now
+        </message>
       </if>
       <!-- P3A -->
       <message name="IDS_BRAVE_CONFIRM_P3A_INFO_BAR" desc="Text that shows on the info bar where user acknowledges the P3A message">
@@ -991,6 +1048,19 @@ By installing this extension, you are agreeing to the Google Widevine Terms of U
       <message name="IDS_SETTINGS_RESET_REWARDS_DATA" desc="The label for opening rewards manage wallet dialog">
         Reset Brave Rewards data...
       </message>
+      <!--First-run dialog messages -->
+      <message name="IDS_FR_ENABLE_LOGGING_BRAVE" desc="Label for checkbox to ask whether to send usage stats to brave">
+          Help improve Brave by sending crash reports and
+completely anonymised, private product analytics.
+      </message>
+      <message name="IDS_FR_CUSTOMIZE_DEFAULT_BROWSER_BRAVE" desc="Default browser checkbox label">
+        Set Brave as your default browser
+      </message>
+      <if expr="is_macosx">
+        <message name="IDS_FIRSTRUN_DLG_MAC_OPTIONS_SEND_USAGE_STATS_LABEL_BRAVE" desc="Label for checkbox to ask whether to send usage stats to Google">
+          Help improve <ph name="PRODUCT_NAME">$1<ex>Brave</ex></ph> by sending crash reports and completely anonymised, private product analytics.
+        </message>
+      </if>
     </messages>
   </release>
 </grit>

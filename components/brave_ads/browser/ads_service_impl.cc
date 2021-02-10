@@ -37,6 +37,7 @@
 #include "bat/ads/pref_names.h"
 #include "bat/ads/resources/grit/bat_ads_resources.h"
 #include "bat/ads/statement_info.h"
+#include "brave/browser/brave_ads/notifications/platform_bridge.h"
 #include "brave/browser/profiles/profile_util.h"
 #include "brave/common/brave_channel_info.h"
 #include "brave/components/brave_ads/browser/ad_notification.h"
@@ -62,6 +63,7 @@
 #include "chrome/browser/profiles/profile_manager.h"
 #include "chrome/browser/profiles/profile.h"
 #if !defined(OS_ANDROID)
+#include "brave/ui/brave_ads/message_popup_view.h"
 #include "chrome/browser/ui/browser.h"
 #include "chrome/browser/ui/browser_finder.h"
 #endif
@@ -104,7 +106,7 @@ const unsigned int kRetriesCountOnNetworkChange = 1;
 namespace {
 
 static std::map<std::string, int> g_schema_resource_ids = {
-  {ads::_catalog_schema_resource_id, IDR_ADS_CATALOG_SCHEMA}
+  {ads::g_catalog_schema_resource_id, IDR_ADS_CATALOG_SCHEMA}
 };
 
 int GetSchemaResourceId(
@@ -275,6 +277,8 @@ void AdsServiceImpl::SetAllowConversionTracking(
 
 void AdsServiceImpl::SetAdsPerHour(
     const uint64_t ads_per_hour) {
+  DCHECK(ads_per_hour >= ads::kMinimumAdNotificationsPerHour &&
+      ads_per_hour <= ads::kMaximumAdNotificationsPerHour);
   SetUint64Pref(ads::prefs::kAdsPerHour, ads_per_hour);
 }
 
@@ -315,14 +319,18 @@ void AdsServiceImpl::ChangeLocale(
 
 void AdsServiceImpl::OnPageLoaded(
     const SessionID& tab_id,
-    const GURL& original_url,
-    const GURL& url,
+    const std::vector<GURL>& redirect_chain,
     const std::string& content) {
   if (!connected()) {
     return;
   }
 
-  bat_ads_->OnPageLoaded(tab_id.id(), original_url.spec(), url.spec(), content);
+  std::vector<std::string> redirect_chain_as_strings;
+  for (const auto& url : redirect_chain) {
+    redirect_chain_as_strings.push_back(url.spec());
+  }
+
+  bat_ads_->OnPageLoaded(tab_id.id(), redirect_chain_as_strings, content);
 }
 
 void AdsServiceImpl::OnMediaStart(
@@ -508,12 +516,8 @@ bool AdsServiceImpl::IsEnabled() const {
 
 uint64_t AdsServiceImpl::GetAdsPerHour() const {
   return base::ClampToRange(GetUint64Pref(ads::prefs::kAdsPerHour),
-      static_cast<uint64_t>(1), static_cast<uint64_t>(5));
-}
-
-uint64_t AdsServiceImpl::GetAdsPerDay() const {
-  return base::ClampToRange(GetUint64Pref(ads::prefs::kAdsPerDay),
-      static_cast<uint64_t>(1), static_cast<uint64_t>(40));
+      static_cast<uint64_t>(ads::kMinimumAdNotificationsPerHour),
+          static_cast<uint64_t>(ads::kMaximumAdNotificationsPerHour));
 }
 
 bool AdsServiceImpl::ShouldAllowAdsSubdivisionTargeting() const {
@@ -657,7 +661,9 @@ void AdsServiceImpl::OnInitialize(
 
   is_initialized_ = true;
 
-  SetAdsServiceForNotificationHandler();
+  if (!brave::IsNightlyOrDeveloperBuild()) {
+    SetAdsServiceForNotificationHandler();
+  }
 
   MaybeViewAdNotification();
 
@@ -744,7 +750,7 @@ void AdsServiceImpl::MaybeStart(
 }
 
 void AdsServiceImpl::Start() {
-  EnsureBaseDirectoryExists();
+  GetHardwareInfo();
 }
 
 void AdsServiceImpl::Stop() {
@@ -799,6 +805,22 @@ void AdsServiceImpl::OnResetAllState(
   }
 
   VLOG(1) << "Successfully reset ads state";
+}
+
+void AdsServiceImpl::GetHardwareInfo() {
+  base::SysInfo::GetHardwareInfo(base::BindOnce(
+      &AdsServiceImpl::OnGetHardwareInfo, base::Unretained(this)));
+}
+
+void AdsServiceImpl::OnGetHardwareInfo(
+    base::SysInfo::HardwareInfo hardware) {
+  ads::SysInfoPtr sys_info = ads::SysInfo::New();
+  sys_info->manufacturer = hardware.manufacturer;
+  sys_info->model = hardware.model;
+
+  bat_ads_service_->SetSysInfo(std::move(sys_info), base::NullCallback());
+
+  EnsureBaseDirectoryExists();
 }
 
 void AdsServiceImpl::EnsureBaseDirectoryExists() {
@@ -994,14 +1016,25 @@ void AdsServiceImpl::OnViewAdNotification(
 }
 
 void AdsServiceImpl::OnNewTabPageAdEvent(
-    const std::string& wallpaper_id,
+    const std::string& uuid,
     const std::string& creative_instance_id,
     const ads::NewTabPageAdEventType event_type) {
   if (!connected()) {
     return;
   }
 
-  bat_ads_->OnNewTabPageAdEvent(wallpaper_id, creative_instance_id, event_type);
+  bat_ads_->OnNewTabPageAdEvent(uuid, creative_instance_id, event_type);
+}
+
+void AdsServiceImpl::OnPromotedContentAdEvent(
+    const std::string& uuid,
+    const std::string& creative_instance_id,
+    const ads::PromotedContentAdEventType event_type) {
+  if (!connected()) {
+    return;
+  }
+
+  bat_ads_->OnPromotedContentAdEvent(uuid, creative_instance_id, event_type);
 }
 
 void AdsServiceImpl::RetryViewingAdNotification(
@@ -1049,12 +1082,13 @@ void AdsServiceImpl::OpenNewTabWithUrl(
 #else
   Browser* browser = chrome::FindTabbedBrowser(profile_, false);
   if (!browser) {
-    browser = new Browser(Browser::CreateParams(profile_, true));
+    browser = Browser::Create(Browser::CreateParams(profile_, true));
   }
 
   NavigateParams nav_params(browser, gurl, ui::PAGE_TRANSITION_LINK);
   nav_params.disposition = WindowOpenDisposition::SINGLETON_TAB;
   nav_params.window_action = NavigateParams::SHOW_WINDOW;
+  nav_params.path_behavior = NavigateParams::IGNORE_AND_NAVIGATE;
   Navigate(&nav_params);
 #endif
 }
@@ -1066,8 +1100,6 @@ void AdsServiceImpl::NotificationTimedOut(
   }
 
   CloseNotification(uuid);
-
-  OnClose(profile_, GURL(), uuid, false, base::OnceClosure());
 }
 
 void AdsServiceImpl::RegisterUserModelComponentsForLocale(
@@ -1131,10 +1163,6 @@ void AdsServiceImpl::OnURLRequestComplete(
   callback(url_response);
 }
 
-bool AdsServiceImpl::CanShowBackgroundNotifications() const {
-  return NotificationHelper::GetInstance()->CanShowBackgroundNotifications();
-}
-
 void AdsServiceImpl::OnGetAdsHistory(
     OnGetAdsHistoryCallback callback,
     const std::string& json) {
@@ -1196,6 +1224,10 @@ void AdsServiceImpl::OnGetAdsHistory(
   }
 
   std::move(callback).Run(list);
+}
+
+bool AdsServiceImpl::CanShowBackgroundNotifications() const {
+  return NotificationHelper::GetInstance()->CanShowBackgroundNotifications();
 }
 
 void AdsServiceImpl::OnGetStatement(
@@ -1389,14 +1421,8 @@ bool AdsServiceImpl::MigratePrefs(
 }
 
 void AdsServiceImpl::MigratePrefsVersion1To2() {
-  // Unlike Muon, ads per day are not configurable in the UI so we can safely
-  // migrate to the new value
-
-  #if defined(OS_ANDROID)
-    SetUint64Pref(ads::prefs::kAdsPerDay, 12);
-  #else
-    SetUint64Pref(ads::prefs::kAdsPerDay, 20);
-  #endif
+  // Intentionally empty as we no longer need to migrate ads per day due to
+  // deprecation of prefs::kAdsPerDay
 }
 
 void AdsServiceImpl::MigratePrefsVersion2To3() {
@@ -1483,10 +1509,8 @@ void AdsServiceImpl::MigratePrefsVersion4To5() {
 }
 
 void AdsServiceImpl::MigratePrefsVersion5To6() {
-  // Unlike Muon, ads per day are not configurable in the UI so we can safely
-  // migrate to the new value
-
-  SetUint64Pref(ads::prefs::kAdsPerDay, 20);
+  // Intentionally empty as we no longer need to migrate ads per day due to
+  // deprecation of prefs::kAdsPerDay
 }
 
 void AdsServiceImpl::MigratePrefsVersion6To7() {
@@ -1560,10 +1584,8 @@ void AdsServiceImpl::MigratePrefsVersion7To8() {
 }
 
 void AdsServiceImpl::MigratePrefsVersion8To9() {
-  // Unlike Muon, ads per day are not configurable in the UI so we can safely
-  // migrate to the new value
-
-  SetUint64Pref(ads::prefs::kAdsPerDay, 40);
+  // Intentionally empty as we no longer need to migrate ads per day due to
+  // deprecation of prefs::kAdsPerDay
 }
 
 int AdsServiceImpl::GetPrefsVersion() const {
@@ -1713,20 +1735,39 @@ std::string AdsServiceImpl::LoadDataResourceAndDecompressIfNeeded(
   return data_resource;
 }
 
+// Custom Notifications and Message Center notifications use 2 different
+// types of notification.h
 void AdsServiceImpl::ShowNotification(
     const ads::AdNotificationInfo& ad_notification) {
-  auto notification = CreateAdNotification(ad_notification);
+  if (brave::IsNightlyOrDeveloperBuild()) {
+    auto notification = CreateAdNotification(ad_notification);
 
-  display_service_->Display(NotificationHandler::Type::BRAVE_ADS,
-      *notification, /*metadata=*/nullptr);
+    std::unique_ptr<PlatformBridge> platform_bridge =
+        std::make_unique<PlatformBridge>(profile_);
+
+    platform_bridge->Display(profile_, notification);
+  } else {
+    auto notification = CreateMessageCenterNotification(ad_notification);
+    display_service_->Display(NotificationHandler::Type::BRAVE_ADS,
+        *notification, /*metadata=*/nullptr);
+  }
 
   StartNotificationTimeoutTimer(ad_notification.uuid);
 }
 
 void AdsServiceImpl::StartNotificationTimeoutTimer(
     const std::string& uuid) {
+#if defined(OS_ANDROID)
+  if (!brave::IsNightlyOrDeveloperBuild()) {
+    return;
+  }
+#endif
+
 #if !defined(OS_ANDROID)
   const uint64_t timeout_in_seconds = 120;
+#else
+  const uint64_t timeout_in_seconds = 30;
+#endif
 
   notification_timers_[uuid] = std::make_unique<base::OneShotTimer>();
 
@@ -1738,7 +1779,6 @@ void AdsServiceImpl::StartNotificationTimeoutTimer(
 
   VLOG(1) << "Timeout ad notification with uuid " << uuid << " in "
       << timeout_in_seconds << " seconds";
-#endif
 }
 
 bool AdsServiceImpl::StopNotificationTimeoutTimer(
@@ -1759,14 +1799,20 @@ bool AdsServiceImpl::ShouldShowNotifications() {
 
 void AdsServiceImpl::CloseNotification(
     const std::string& uuid) {
+  if (brave::IsNightlyOrDeveloperBuild()) {
+    std::unique_ptr<PlatformBridge>
+      platform_bridge = std::make_unique<PlatformBridge>(profile_);
+    platform_bridge->Close(profile_, uuid);
+  } else {
 #if defined(OS_ANDROID)
-  const std::string brave_ads_url_prefix = kBraveAdsUrlPrefix;
-  const GURL service_worker_scope =
-      GURL(brave_ads_url_prefix.substr(0, brave_ads_url_prefix.size() - 1));
-  BraveNotificationPlatformBridgeHelperAndroid::MaybeRegenerateNotification(
-      uuid, service_worker_scope);
+    const std::string brave_ads_url_prefix = kBraveAdsUrlPrefix;
+    const GURL service_worker_scope =
+        GURL(brave_ads_url_prefix.substr(0, brave_ads_url_prefix.size() - 1));
+    BraveNotificationPlatformBridgeHelperAndroid::MaybeRegenerateNotification(
+        uuid, service_worker_scope);
 #endif
-  display_service_->Close(NotificationHandler::Type::BRAVE_ADS, uuid);
+    display_service_->Close(NotificationHandler::Type::BRAVE_ADS, uuid);
+  }
 }
 
 void AdsServiceImpl::UrlRequest(

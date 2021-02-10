@@ -32,14 +32,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+
 import org.chromium.base.ContextUtils;
 import org.chromium.base.Log;
 import org.chromium.chrome.R;
-import org.chromium.chrome.browser.app.BraveActivity;
 import org.chromium.chrome.browser.BraveAdsNativeHelper;
 import org.chromium.chrome.browser.BraveRewardsHelper;
 import org.chromium.chrome.browser.BraveRewardsNativeWorker;
 import org.chromium.chrome.browser.BraveRewardsPanelPopup;
+import org.chromium.chrome.browser.app.BraveActivity;
 import org.chromium.chrome.browser.app.ChromeActivity;
 import org.chromium.chrome.browser.ntp_background_images.NTPBackgroundImagesBridge;
 import org.chromium.chrome.browser.ntp_background_images.RewardsBottomSheetDialogFragment;
@@ -49,15 +51,17 @@ import org.chromium.chrome.browser.ntp_background_images.model.SponsoredTab;
 import org.chromium.chrome.browser.ntp_background_images.model.Wallpaper;
 import org.chromium.chrome.browser.ntp_background_images.util.SponsoredImageUtil;
 import org.chromium.chrome.browser.preferences.BravePref;
+import org.chromium.chrome.browser.preferences.BravePreferenceKeys;
+import org.chromium.chrome.browser.preferences.SharedPreferencesManager;
 import org.chromium.chrome.browser.profiles.Profile;
 import org.chromium.chrome.browser.settings.BackgroundImagesPreferences;
 import org.chromium.chrome.browser.tab.TabLaunchType;
 import org.chromium.chrome.browser.util.ConfigurationUtils;
 import org.chromium.chrome.browser.util.ImageUtils;
+import org.chromium.chrome.browser.util.PackageUtils;
 import org.chromium.components.user_prefs.UserPrefs;
 import org.chromium.content_public.browser.LoadUrlParams;
 import org.chromium.ui.base.DeviceFormFactor;
-import org.chromium.chrome.browser.util.PackageUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,64 +93,34 @@ public class NTPUtil {
         parentLayout.removeView(mainLayout);
         parentLayout.removeView(imageCreditLayout);
 
+        parentLayout.addView(mainLayout);
+        parentLayout.addView(imageCreditLayout);
+
+        parentLayout.setOrientation(LinearLayout.VERTICAL);
+
         boolean isTablet = DeviceFormFactor.isNonMultiDisplayContextOnTablet(context);
-        if (isTablet) {
-            parentLayout.addView(mainLayout);
-            parentLayout.addView(imageCreditLayout);
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        CardView widgetLayout = (CardView) view.findViewById(R.id.ntp_widget_cardview_layout);
+        LinearLayout.LayoutParams widgetLayoutParams = new LinearLayout.LayoutParams(
+                (isTablet ? (int) (dpWidth * 0.75)
+                          : (ConfigurationUtils.isLandscape(context)
+                                          ? (int) (displayMetrics.widthPixels * 0.75)
+                                          : (int) (displayMetrics.widthPixels * 0.93))),
+                dpToPx(context, 140));
+        widgetLayout.setLayoutParams(widgetLayoutParams);
 
-            parentLayout.setOrientation(LinearLayout.VERTICAL);
-            LinearLayout.LayoutParams mainLayoutLayoutParams =
-                    new LinearLayout.LayoutParams(dpToPx(context, 390), 0);
-            mainLayoutLayoutParams.weight = 1f;
-            mainLayout.setLayoutParams(mainLayoutLayoutParams);
+        LinearLayout.LayoutParams mainLayoutLayoutParams =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
+        mainLayoutLayoutParams.weight = 1f;
+        mainLayout.setLayoutParams(mainLayoutLayoutParams);
 
-            LinearLayout.LayoutParams imageCreditLayoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            imageCreditLayout.setLayoutParams(imageCreditLayoutParams);
+        LinearLayout.LayoutParams imageCreditLayoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        imageCreditLayout.setLayoutParams(imageCreditLayoutParams);
 
-            layoutParams.setMargins(dpToPx(context, 32), 0, 0, 0);
-            layoutParams.gravity = Gravity.BOTTOM | Gravity.START;
-            sponsoredLogo.setLayoutParams(layoutParams);
-        } else {
-            if (ConfigurationUtils.isLandscape(context)
-                    && UserPrefs.get(Profile.getLastUsedRegularProfile())
-                               .getBoolean(BravePref.NEW_TAB_PAGE_SHOW_BACKGROUND_IMAGE)) {
-                parentLayout.addView(imageCreditLayout);
-                parentLayout.addView(mainLayout);
-
-                parentLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-                LinearLayout.LayoutParams mainLayoutLayoutParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
-                mainLayoutLayoutParams.weight = 0.6f;
-                mainLayout.setLayoutParams(mainLayoutLayoutParams);
-
-                LinearLayout.LayoutParams imageCreditLayoutParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT);
-                imageCreditLayoutParams.weight = 0.4f;
-                imageCreditLayout.setLayoutParams(imageCreditLayoutParams);
-
-                layoutParams.setMargins(dpToPx(context, 32), 0, 0, 0);
-                layoutParams.gravity = Gravity.BOTTOM | Gravity.START;
-                sponsoredLogo.setLayoutParams(layoutParams);
-            } else {
-                parentLayout.addView(mainLayout);
-                parentLayout.addView(imageCreditLayout);
-
-                parentLayout.setOrientation(LinearLayout.VERTICAL);
-
-                LinearLayout.LayoutParams mainLayoutLayoutParams =
-                        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0);
-                mainLayoutLayoutParams.weight = 1f;
-                mainLayout.setLayoutParams(mainLayoutLayoutParams);
-
-                LinearLayout.LayoutParams imageCreditLayoutParams =
-                        new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                LinearLayout.LayoutParams.WRAP_CONTENT);
-                imageCreditLayout.setLayoutParams(imageCreditLayoutParams);
-
-                layoutParams.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-                sponsoredLogo.setLayoutParams(layoutParams);
-            }
-        }
+        layoutParams.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+        sponsoredLogo.setLayoutParams(layoutParams);
     }
 
     public static int checkForNonDisruptiveBanner(NTPImage ntpImage, SponsoredTab sponsoredTab) {
@@ -163,6 +137,38 @@ public class NTPUtil {
             }
         }
         return SponsoredImageUtil.BR_INVALID_OPTION;
+    }
+
+    public static void showBREBottomBanner(View view) {
+        Context context = ContextUtils.getApplicationContext();
+        if (!PackageUtils.isFirstInstall(context)
+                && BraveAdsNativeHelper.nativeIsBraveAdsEnabled(Profile.getLastUsedRegularProfile())
+                && ContextUtils.getAppSharedPreferences().getBoolean(
+                        BackgroundImagesPreferences.PREF_SHOW_BRE_BANNER, true)) {
+            final ViewGroup breBottomBannerLayout = (ViewGroup) view.findViewById(R.id.bre_banner);
+            breBottomBannerLayout.setVisibility(View.VISIBLE);
+            BackgroundImagesPreferences.setOnPreferenceValue(
+                    BackgroundImagesPreferences.PREF_SHOW_BRE_BANNER, false);
+            ImageView bannerClose = breBottomBannerLayout.findViewById(R.id.bre_banner_close);
+            bannerClose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    breBottomBannerLayout.setVisibility(View.GONE);
+                }
+            });
+
+            Button takeTourButton = breBottomBannerLayout.findViewById(R.id.btn_take_tour);
+            takeTourButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (BraveActivity.getBraveActivity() != null) {
+                        BraveRewardsHelper.setShowBraveRewardsOnboardingOnce(true);
+                        BraveActivity.getBraveActivity().openRewardsPanel();
+                    }
+                    breBottomBannerLayout.setVisibility(View.GONE);
+                }
+            });
+        }
     }
 
     public static void showNonDisruptiveBanner(ChromeActivity chromeActivity, View view, int ntpType, SponsoredTab sponsoredTab, NewTabPageListener newTabPageListener) {
@@ -297,6 +303,8 @@ public class NTPUtil {
                 inputStream.close();
             } catch (IOException exc) {
                 Log.e("NTP", exc.getMessage());
+            } catch (IllegalArgumentException exc) {
+                Log.e("NTP", exc.getMessage());
             } finally {
                 try {
                     if (inputStream != null) {
@@ -313,8 +321,8 @@ public class NTPUtil {
             BackgroundImage mBackgroundImage = (BackgroundImage) ntpImage;
             imageBitmap = BitmapFactory.decodeResource(mContext.getResources(), mBackgroundImage.getImageDrawable(), options);
 
-            centerPointX = mBackgroundImage.getCenterPoint();
-            centerPointY = 0;
+            centerPointX = mBackgroundImage.getCenterPointX();
+            centerPointY = mBackgroundImage.getCenterPointY();
         }
         return getCalculatedBitmap(imageBitmap, centerPointX, centerPointY, layoutWidth, layoutHeight);
     }
@@ -370,15 +378,30 @@ public class NTPUtil {
             }
         }
 
-        imageBitmap = Bitmap.createScaledBitmap(imageBitmap, newImageWidth, newImageHeight, true);
+        Bitmap newBitmap = null;
+        Bitmap bitmapWithGradient = null;
+        try {
+            imageBitmap =
+                    Bitmap.createScaledBitmap(imageBitmap, newImageWidth, newImageHeight, true);
 
-        Bitmap newBitmap = Bitmap.createBitmap(imageBitmap, (startX + layoutWidth) <= imageBitmap.getWidth() ? startX : 0, (startY + (int) layoutHeight) <= imageBitmap.getHeight() ? startY : 0, layoutWidth, (int) layoutHeight);
-        Bitmap bitmapWithGradient = ImageUtils.addGradient(newBitmap);
+            newBitmap = Bitmap.createBitmap(imageBitmap,
+                    (startX + layoutWidth) <= imageBitmap.getWidth() ? startX : 0,
+                    (startY + (int) layoutHeight) <= imageBitmap.getHeight() ? startY : 0,
+                    layoutWidth, (int) layoutHeight);
+            bitmapWithGradient = ImageUtils.addGradient(newBitmap);
 
-        imageBitmap.recycle();
-        newBitmap.recycle();
+            if (imageBitmap != null && !imageBitmap.isRecycled()) imageBitmap.recycle();
+            if (newBitmap != null && !newBitmap.isRecycled()) newBitmap.recycle();
 
-        return bitmapWithGradient;
+            return bitmapWithGradient;
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            Log.e("NTP", exc.getMessage());
+            return null;
+        } finally {
+            if (imageBitmap != null && !imageBitmap.isRecycled()) imageBitmap.recycle();
+            if (newBitmap != null && !newBitmap.isRecycled()) newBitmap.recycle();
+        }
     }
 
     public static Bitmap getTopSiteBitmap(String iconPath) {
@@ -391,6 +414,7 @@ public class NTPUtil {
             topSiteIcon = BitmapFactory.decodeStream(inputStream);
             inputStream.close();
         } catch (IOException exc) {
+            exc.printStackTrace();
             Log.e("NTP", exc.getMessage());
             topSiteIcon = null;
         } finally {
@@ -399,6 +423,7 @@ public class NTPUtil {
                     inputStream.close();
                 }
             } catch (IOException exception) {
+                exception.printStackTrace();
                 Log.e("NTP", exception.getMessage());
                 topSiteIcon = null;
             }

@@ -89,7 +89,6 @@ public class BraveNotificationPlatformBridge extends NotificationPlatformBridge 
             // importance of Ads notification channel to IMPORTANCE_HIGH?
             return new BraveAdsNotificationBuilder(context).setPriority(Notification.PRIORITY_HIGH);
         }
-
         return super.createNotificationBuilder(context, hasImage);
     }
 }

@@ -12,6 +12,7 @@
 
 #include "base/mac/mac_util.h"
 #include "base/feature_list.h"
+#include "brave/common/brave_channel_info.h"
 #include "chrome/common/chrome_features.h"
 #include "base/logging.h"
 
@@ -28,6 +29,10 @@ bool NotificationHelperMac::ShouldShowNotifications() {
   if (IsFullScreenMode()) {
     LOG(WARNING) << "Notification not made: Full screen mode";
     return false;
+  }
+
+  if (brave::IsNightlyOrDeveloperBuild()) {
+    return true;
   }
 
   if (base::mac::IsAtMostOS10_13()) {

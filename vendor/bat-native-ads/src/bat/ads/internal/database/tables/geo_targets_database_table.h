@@ -45,18 +45,9 @@ class GeoTargets : public Table {
       DBCommand* command,
       const CreativeAdList& creative_ads);
 
-  void CreateTableV1(
+  void CreateTableV9(
       DBTransaction* transaction);
-  void CreateIndexV1(
-      DBTransaction* transaction);
-  void MigrateToV1(
-      DBTransaction* transaction);
-
-  void CreateTableV3(
-      DBTransaction* transaction);
-  void CreateIndexV3(
-      DBTransaction* transaction);
-  void MigrateToV3(
+  void MigrateToV9(
       DBTransaction* transaction);
 };
 

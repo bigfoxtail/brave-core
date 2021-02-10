@@ -19,5 +19,8 @@ const char kDefaultIPFSLocalGateway[] = "http://localhost";
 const char kIPFSLearnMoreURL[] =
     "https://support.brave.com/hc/en-us/sections/"
     "360010974932-InterPlanetary-File-System-IPFS-";
-
+const char kRepoStatsPath[] = "/api/v0/repo/stat";
+const char kRepoStatsHumanReadableParamName[] = "human";
+const char kRepoStatsHumanReadableParamValue[] = "true";
+const char kNodeInfoPath[] = "/api/v0/id";
 }  // namespace ipfs

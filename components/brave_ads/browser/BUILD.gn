@@ -38,7 +38,6 @@ source_set("browser") {
     # for profile.h
     "//components/domain_reliability",
     "//content/public/browser",
-    "//brave/vendor/bat-native-ads",
   ]
 
   if (brave_ads_enabled) {
@@ -62,6 +61,7 @@ source_set("browser") {
     deps += [
       "//brave/app:brave_generated_resources_grit",
       "//brave/vendor/bat-native-ads",
+      "//brave/browser/notifications",
       "//brave/components/brave_ads/resources",
       "//brave/components/services/bat_ads/public/cpp",
       "//components/history/core/browser",
@@ -80,6 +80,8 @@ source_set("browser") {
         "background_helper_android.h",
         "notification_helper_android.cc",
         "notification_helper_android.h",
+        "//brave/browser/brave_ads/android/brave_ads_native_helper.cc",
+        "//brave/browser/brave_ads/android/brave_ads_native_helper.h",
       ]
       deps += [
         "//brave/browser/brave_ads/android:jni_headers",

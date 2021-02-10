@@ -639,8 +639,106 @@
     "message": "Alustage Brave Rewardsi kasutamist",
     "description": ""
   },
+  "onboardingTakeTour": {
+    "message": "Tehke kiire tuur",
+    "description": ""
+  },
   "onboardingTerms": {
-    "message": "Jätkamisega nõustute $$1teenusetingimuste$$2 ja $$3privaatsuspoliitikaga$$4.",
+    "message": "Jätkamisega nõustute $tos_link_begin$teenusetingimuste$tos_link_end$ ja $pp_link_begin$privaatsuspõhimõtetega$pp_link_end$.",
+    "description": "",
+    "placeholders": {
+      "tos_link_begin": {
+        "content": "$1"
+      },
+      "tos_link_end": {
+        "content": "$2"
+      },
+      "pp_link_begin": {
+        "content": "$3"
+      },
+      "pp_link_end": {
+        "content": "$4"
+      }
+    }
+  },
+  "onboardingTourBack": {
+    "message": "Mine tagasi",
+    "description": ""
+  },
+  "onboardingTourBegin": {
+    "message": "Teeme kiire ringkäigu",
+    "description": ""
+  },
+  "onboardingTourContinue": {
+    "message": "Jätka",
+    "description": ""
+  },
+  "onboardingTourDone": {
+    "message": "Valmis",
+    "description": ""
+  },
+  "onboardingTourSkip": {
+    "message": "Jäta vahele",
+    "description": ""
+  },
+  "onboardingTourSkipForNow": {
+    "message": "Jäta praegu vahele",
+    "description": ""
+  },
+  "onboardingPanelWelcomeHeader": {
+    "message": "Tere tulemast kasutama Brave Rewardsi!",
+    "description": ""
+  },
+  "onboardingPanelWelcomeText": {
+    "message": "Erinevalt tavareklaamidest annab Brave'i erareklaamide vaatamine teile sisuloojate toetamiseks tokeneid, samas hoitakse teie isikuandmed privaatsed.",
+    "description": ""
+  },
+  "onboardingPanelAdsHeader": {
+    "message": "Kus reklaamid kuvatakse?",
+    "description": ""
+  },
+  "onboardingPanelAdsText": {
+    "message": "Brave'i erareklaamid kuvatakse tavateavitusena. Seadete abil saate reguleerida, kui tihti neid reklaame näete.",
+    "description": ""
+  },
+  "onboardingPanelScheduleHeader": {
+    "message": "Millal preemiaid saab?",
+    "description": ""
+  },
+  "onboardingPanelScheduleText": {
+    "message": "Käesoleval kuul Brave'i erareklaamide eest teenitud tokenid saabuvad järgmise kuu 5ndal kuupäeval.",
+    "description": ""
+  },
+  "onboardingPanelAcHeader": {
+    "message": "Vaevata vastuannetused",
+    "description": ""
+  },
+  "onboardingPanelAcText": {
+    "message": "Loojad saavad teie annetatud tokenid automaatselt teie kaasatustaseme alusel, mida mõõdame \"aktiivsusena\".",
+    "description": ""
+  },
+  "onboardingPanelTippingHeader": {
+    "message": "Saate tänada preemiaga",
+    "description": ""
+  },
+  "onboardingPanelTippingText": {
+    "message": "Preemia andmisega saate isiklikult toetada meeldivat sisu või toredaid loojaid. Hakake preemiat jagama! ",
+    "description": ""
+  },
+  "onboardingPanelRedeemHeader": {
+    "message": "Mida saab tokenitega teha?",
+    "description": ""
+  },
+  "onboardingPanelRedeemText": {
+    "message": "Tokeneid saab kasutada ka muuks peale loojate toetamise. Saate osta digitaalset sisu ja muid kaupu, sedamööda, kuidas lisandub kaupmehi.",
+    "description": ""
+  },
+  "onboardingPanelCompleteHeader": {
+    "message": "Ohoo, olete valmis alustama!",
+    "description": ""
+  },
+  "onboardingPanelCompleteText": {
+    "message": "Brave Rewardsi kasutamisega aitate veebi kõigi jaoks paremaks muuta. Ja see on vinge!",
     "description": ""
   }
 }

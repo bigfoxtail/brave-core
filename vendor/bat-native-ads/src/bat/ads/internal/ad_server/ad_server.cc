@@ -11,12 +11,12 @@
 
 #include "base/time/time.h"
 #include "bat/ads/ads.h"
+#include "bat/ads/internal/account/confirmations/confirmations.h"
 #include "bat/ads/internal/ad_server/get_catalog_url_request_builder.h"
 #include "bat/ads/internal/ads_client_helper.h"
 #include "bat/ads/internal/bundle/bundle.h"
 #include "bat/ads/internal/catalog/catalog.h"
 #include "bat/ads/internal/catalog/catalog_issuers_info.h"
-#include "bat/ads/internal/confirmations/confirmations.h"
 #include "bat/ads/internal/logging.h"
 #include "bat/ads/internal/server/ads_server_util.h"
 #include "bat/ads/internal/time_formatting_util.h"
@@ -62,7 +62,7 @@ void AdServer::Fetch() {
   DCHECK(!is_processing_);
 
   BLOG(1, "Get catalog");
-  BLOG(2, "GET /v5/catalog");
+  BLOG(2, "GET /v6/catalog");
 
   is_processing_ = true;
 
@@ -91,8 +91,7 @@ void AdServer::OnFetch(
     if (catalog.FromJson(url_response.body)) {
       SaveCatalog(catalog);
 
-      const CatalogIssuersInfo catalog_issuers = catalog.GetIssuers();
-      NotifyCatalogUpdated(catalog_issuers);
+      NotifyCatalogUpdated(catalog);
 
       FetchAfterDelay();
 
@@ -159,7 +158,7 @@ void AdServer::OnRetry() {
 void AdServer::FetchAfterDelay() {
   retry_timer_.Stop();
 
-  const int64_t ping = _is_debug ? kDebugCatalogPing :
+  const int64_t ping = g_is_debug ? kDebugCatalogPing :
       AdsClientHelper::Get()->GetInt64Pref(prefs::kCatalogPing);
 
   const base::TimeDelta delay = base::TimeDelta::FromSeconds(ping);
@@ -171,9 +170,9 @@ void AdServer::FetchAfterDelay() {
 }
 
 void AdServer::NotifyCatalogUpdated(
-    const CatalogIssuersInfo& catalog_issuers) {
+    const Catalog& catalog) {
   for (AdServerObserver& observer : observers_) {
-    observer.OnCatalogUpdated(catalog_issuers);
+    observer.OnCatalogUpdated(catalog);
   }
 }
 

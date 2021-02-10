@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "bat/ads/ad_content_info.h"
 #include "bat/ads/ad_notification_info.h"
@@ -18,6 +19,7 @@
 #include "bat/ads/category_content_info.h"
 #include "bat/ads/export.h"
 #include "bat/ads/mojom.h"
+#include "bat/ads/promoted_content_ad_info.h"
 #include "bat/ads/result.h"
 #include "bat/ads/statement_info.h"
 
@@ -31,21 +33,24 @@ using RemoveAllHistoryCallback = std::function<void(const Result)>;
 using GetStatementCallback =
     std::function<void(const bool, const StatementInfo&)>;
 
-// |_environment| indicates that URL requests should use production, staging or
+// |g_environment| indicates that URL requests should use production, staging or
 // development servers but can be overridden via command-line arguments
-extern Environment _environment;
+extern Environment g_environment;
 
-// |_build_channel| indicates the build channel
-extern BuildChannel _build_channel;
+// |g_sys_info| contains the hardware |manufacturer| and |model|
+extern SysInfo g_sys_info;
 
-// |_is_debug| indicates that the next catalog download should be reduced from
+// |g_build_channel| indicates the build channel
+extern BuildChannel g_build_channel;
+
+// |g_is_debug| indicates that the next catalog download should be reduced from
 // ~1 hour to ~25 seconds. This value should be set to false on production
 // builds and true on debug builds but can be overridden via command-line
 // arguments
-extern bool _is_debug;
+extern bool g_is_debug;
 
 // Catalog schema resource id
-extern const char _catalog_schema_resource_id[];
+extern const char g_catalog_schema_resource_id[];
 
 // Returns true if the locale is supported otherwise returns false
 bool IsSupportedLocale(
@@ -87,11 +92,12 @@ class ADS_EXPORT Ads {
   virtual void OnAdsSubdivisionTargetingCodeHasChanged() = 0;
 
   // Should be called when a page has loaded and the content is available for
-  // analysis
+  // analysis. |redirect_chain| contains the chain of redirects, incuding
+  // client-side redirect and the current URL. |content| will contain the HTML
+  // page content
   virtual void OnPageLoaded(
-    const int32_t tab_id,
-      const std::string& original_url,
-      const std::string& url,
+      const int32_t tab_id,
+      const std::vector<std::string>& redirect_chain,
       const std::string& content) = 0;
 
   // Should be called when a user is no longer idle. This call is optional for
@@ -158,9 +164,15 @@ class ADS_EXPORT Ads {
 
   // Should be called when a user views or clicks a new tab page ad
   virtual void OnNewTabPageAdEvent(
-      const std::string& wallpaper_id,
+      const std::string& uuid,
       const std::string& creative_instance_id,
       const NewTabPageAdEventType event_type) = 0;
+
+  // Should be called when a user views or clicks a promoted content ad
+  virtual void OnPromotedContentAdEvent(
+      const std::string& uuid,
+      const std::string& creative_instance_id,
+      const PromotedContentAdEventType event_type) = 0;
 
   // Should be called to remove all cached history. The callback takes one
   // argument — |Result| should be set to |SUCCESS| if successful otherwise

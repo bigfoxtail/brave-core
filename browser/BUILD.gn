@@ -13,7 +13,6 @@ import("//brave/components/crypto_dot_com/browser/buildflags/buildflags.gni")
 import("//brave/components/gemini/browser/buildflags/buildflags.gni")
 import("//brave/components/greaselion/browser/buildflags/buildflags.gni")
 import("//brave/components/ipfs/buildflags/buildflags.gni")
-import("//brave/components/moonpay/browser/buildflags/buildflags.gni")
 import("//brave/components/speedreader/buildflags.gni")
 import("//brave/components/tor/buildflags/buildflags.gni")
 import("//build/buildflag_header.gni")
@@ -28,14 +27,14 @@ source_set("browser_process") {
   # Remove when https://github.com/brave/brave-browser/issues/10657 is resolved
   check_includes = false
   visibility = [
-    "//chrome/browser/*",
-    "//brave/browser/*",
     "//brave:browser_dependencies",
+    "//brave/browser/*",
     "//brave/components/brave_ads/test:*",
     "//brave/components/brave_rewards/browser:testutil",
     "//brave/components/brave_rewards/test:*",
     "//brave/components/ipfs/test:*",
     "//brave/test:*",
+    "//chrome/browser/*",
   ]
 
   sources = [
@@ -85,8 +84,6 @@ source_set("browser_process") {
     "search_engines/search_engine_tracker.h",
     "search_engines/tor_window_search_engine_provider_service.cc",
     "search_engines/tor_window_search_engine_provider_service.h",
-    "sync/brave_profile_sync_service_delegate.cc",
-    "sync/brave_profile_sync_service_delegate.h",
     "update_util.cc",
     "update_util.h",
   ]
@@ -109,23 +106,22 @@ source_set("browser_process") {
   deps = [
     ":sparkle_buildflags",
     ":version_info",
-    "autoplay",
     "brave_stats:stats_updater",
     "browsing_data",
     "content_settings",
     "download",
     "ephemeral_storage",
-    "farbling",
     "net",
     "ntp_background_images",
     "profiles",
     "renderer_context_menu",
     "search",
+    "sync",
     "themes",
     "ui",
     "//base",
+    "//brave/browser/brave_ads/notifications",
     "//brave/browser/net",
-    "//brave/browser/notifications",
     "//brave/browser/translate/buildflags",
     "//brave/common",
     "//brave/common:pref_names",
@@ -141,12 +137,13 @@ source_set("browser_process") {
     "//brave/components/brave_wayback_machine:buildflags",
     "//brave/components/brave_webtorrent/browser/buildflags",
     "//brave/components/content_settings/core/browser",
+    "//brave/components/cosmetic_filters/browser",
+    "//brave/components/cosmetic_filters/common:mojom",
     "//brave/components/crypto_dot_com/browser/buildflags",
     "//brave/components/gemini/browser/buildflags",
     "//brave/components/greaselion/browser/buildflags",
     "//brave/components/ipfs/buildflags",
     "//brave/components/l10n/browser",
-    "//brave/components/moonpay/browser/buildflags",
     "//brave/components/ntp_background_images/browser",
     "//brave/components/ntp_tiles",
     "//brave/components/p3a",
@@ -155,6 +152,8 @@ source_set("browser_process") {
     "//brave/components/tor/buildflags",
     "//brave/components/weekly_storage",
     "//brave/services/network/public/cpp",
+    "//brave/ui/brave_ads",
+    "//brave/ui/brave_ads/public/cpp",
     "//chrome/common",
     "//components/autofill/core/common",
     "//components/browsing_data/core",
@@ -176,16 +175,17 @@ source_set("browser_process") {
     "//components/services/patch/content",
     "//components/services/unzip/content",
     "//components/sessions",
-    "//components/sync_device_info",
     "//components/spellcheck/browser",
+    "//components/sync_device_info",
     "//components/unified_consent",
     "//components/update_client:patch_impl",
     "//components/update_client:unzip_impl",
     "//content/public/browser",
     "//content/public/common",
     "//extensions/buildflags",
+    "//mojo/public/cpp/bindings",
+    "//services/metrics/public/cpp:metrics_cpp",
     "//services/network/public/cpp",
-    "//third_party/blink/public/common",
     "//third_party/blink/public/mojom:mojom_platform_headers",
     "//third_party/widevine/cdm:buildflags",
     "//ui/base",
@@ -193,8 +193,8 @@ source_set("browser_process") {
 
   if (brave_wallet_enabled) {
     deps += [
-      "//brave/components/brave_wallet",
       "brave_wallet",
+      "//brave/components/brave_wallet",
     ]
   }
 
@@ -303,13 +303,6 @@ source_set("browser_process") {
 
   if (brave_together_enabled) {
     deps += [ "//brave/components/brave_together/browser" ]
-  }
-
-  if (moonpay_enabled) {
-    deps += [
-      "//brave/components/moonpay/browser",
-      "//brave/components/moonpay/common",
-    ]
   }
 
   if (enable_tor) {
@@ -441,10 +434,10 @@ source_set("version_info") {
 
 source_set("browser") {
   visibility = [
-    "//chrome/browser/*",
-    "//brave/browser/*",
     "//brave:browser_dependencies",
+    "//brave/browser/*",
     "//brave/test:*",
+    "//chrome/browser/*",
   ]
 
   deps = [ "//chrome/browser" ]

@@ -55,8 +55,7 @@ KeyedService* ViewCounterServiceFactory::BuildServiceInstanceFor(
   if (auto* service =
           g_brave_browser_process->ntp_background_images_service()) {
     Profile* profile = Profile::FromBrowserContext(browser_context);
-//    bool is_supported_locale = false;
-    bool is_supported_locale = true;
+    bool is_supported_locale = false;
     auto* ads_service = brave_ads::AdsServiceFactory::GetForProfile(profile);
     if (ads_service) {
       is_supported_locale = ads_service->IsSupportedLocale();

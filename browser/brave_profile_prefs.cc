@@ -27,7 +27,6 @@
 #include "brave/components/ipfs/buildflags/buildflags.h"
 #include "brave/components/l10n/browser/locale_helper.h"
 #include "brave/components/l10n/common/locale_util.h"
-#include "brave/components/moonpay/browser/buildflags/buildflags.h"
 #include "brave/components/search_engines/brave_prepopulated_engines.h"
 #include "brave/components/speedreader/buildflags.h"
 #include "brave/components/tor/buildflags/buildflags.h"
@@ -72,11 +71,6 @@
 #include "brave/components/gemini/browser/pref_names.h"
 #endif
 
-#if BUILDFLAG(MOONPAY_ENABLED)
-#include "brave/components/moonpay/browser/moonpay_pref_utils.h"
-#include "brave/components/moonpay/common/pref_names.h"
-#endif
-
 #if BUILDFLAG(ENABLE_BRAVE_PERF_PREDICTOR)
 #include "brave/components/brave_perf_predictor/browser/p3a_bandwidth_savings_tracker.h"
 #include "brave/components/brave_perf_predictor/browser/perf_predictor_tab_helper.h"
@@ -103,6 +97,10 @@
 #include "components/feed/core/shared_prefs/pref_names.h"
 #include "components/ntp_tiles/pref_names.h"
 #include "components/translate/core/browser/translate_pref_names.h"
+#endif
+
+#if !defined(OS_ANDROID)
+#include "brave/browser/ui/startup/default_brave_browser_prompt.h"
 #endif
 
 using extensions::FeatureSwitch;
@@ -150,7 +148,7 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   registry->RegisterBooleanPref(kHTTPSEVerywhereControlType, true);
   registry->RegisterBooleanPref(kNoScriptControlType, false);
   registry->RegisterBooleanPref(kAdControlType, true);
-  registry->RegisterBooleanPref(kShieldsAdvancedViewEnabled, true);
+  registry->RegisterBooleanPref(kShieldsAdvancedViewEnabled, false);
 
 #if !BUILDFLAG(USE_GCM_FROM_PLATFORM)
   // PushMessaging
@@ -324,10 +322,6 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   speedreader::SpeedreaderService::RegisterPrefs(registry);
 #endif
 
-#if BUILDFLAG(MOONPAY_ENABLED)
-  moonpay::MoonpayPrefUtils::RegisterPrefs(registry);
-#endif
-
 #if BUILDFLAG(CRYPTO_DOT_COM_ENABLED)
   crypto_dot_com::RegisterPrefs(registry);
 #endif
@@ -340,17 +334,16 @@ void RegisterProfilePrefs(user_prefs::PrefRegistrySyncable* registry) {
   BraveOmniboxClientImpl::RegisterPrefs(registry);
 #endif
 
-/*
 #if !defined(OS_ANDROID)
   brave_ads::RegisterP2APrefs(registry);
 #endif
-*/
 
 #if !defined(OS_ANDROID)
   // Turn on most visited mode on NTP by default.
   // We can turn customization mode on when we have add-shortcut feature.
   registry->SetDefaultPrefValue(prefs::kNtpUseMostVisitedTiles,
                                 base::Value(true));
+  RegisterDefaultBraveBrowserPromptPrefs(registry);
 #endif
 
   RegisterProfilePrefsForMigration(registry);

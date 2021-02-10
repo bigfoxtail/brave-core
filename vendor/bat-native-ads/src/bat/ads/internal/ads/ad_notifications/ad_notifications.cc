@@ -12,6 +12,7 @@
 #include "base/json/json_reader.h"
 #include "base/json/json_writer.h"
 #include "base/time/time.h"
+#include "brave/common/brave_channel_info.h"
 #include "bat/ads/ad_notification_info.h"
 #include "bat/ads/ad_type.h"
 #include "bat/ads/internal/ad_events/ad_event_info.h"
@@ -19,6 +20,7 @@
 #include "bat/ads/internal/client/client.h"
 #include "bat/ads/internal/database/tables/ad_events_database_table.h"
 #include "bat/ads/internal/logging.h"
+#include "bat/ads/pref_names.h"
 #include "bat/ads/result.h"
 
 #if defined(OS_ANDROID)
@@ -46,7 +48,7 @@ const char kNotificationUuidKey[] = "id";
 const char kNotificationCreativeInstanceIdKey[] = "uuid";
 const char kNotificationCreativeSetIdKey[] = "creative_set_id";
 const char kNotificationCampaignIdKey[] = "campaign_id";
-const char kNotificationCategoryKey[] = "category";
+const char kNotificationSegmentKey[] = "segment";
 const char kNotificationTitleKey[] = "advertiser";
 const char kNotificationBodyKey[] = "text";
 const char kNotificationTargetUrlKey[] = "url";
@@ -187,6 +189,10 @@ uint64_t AdNotifications::Count() const {
 
 #if defined(OS_ANDROID)
 void AdNotifications::RemoveAllAfterReboot() {
+  if (brave::IsNightlyOrDeveloperBuild()) {
+    return;
+  }
+
   database::table::AdEvents database_table;
   database_table.GetAll([=](
       const Result result,
@@ -212,6 +218,10 @@ void AdNotifications::RemoveAllAfterReboot() {
 }
 
 void AdNotifications::RemoveAllAfterUpdate() {
+  if (brave::IsNightlyOrDeveloperBuild()) {
+    return;
+  }
+
   const std::string current_version_code =
       base::android::BuildInfo::GetInstance()->package_version_code();
 
@@ -277,8 +287,12 @@ bool AdNotifications::GetNotificationFromDictionary(
     new_ad_notification.campaign_id = "";
   }
 
-  if (!GetCategoryFromDictionary(dictionary, &new_ad_notification.category)) {
-    return false;
+  if (!GetSegmentFromDictionary(dictionary, &new_ad_notification.segment)) {
+    // Migrate for legacy notifications
+    if (!GetStringFromDictionary("category", dictionary,
+        &new_ad_notification.segment)) {
+      return false;
+    }
   }
 
   if (!GetTitleFromDictionary(dictionary, &new_ad_notification.title)) {
@@ -325,10 +339,10 @@ bool AdNotifications::GetCampaignIdFromDictionary(
   return GetStringFromDictionary(kNotificationCampaignIdKey, dictionary, value);
 }
 
-bool AdNotifications::GetCategoryFromDictionary(
+bool AdNotifications::GetSegmentFromDictionary(
     base::DictionaryValue* dictionary,
     std::string* value) const {
-  return GetStringFromDictionary(kNotificationCategoryKey, dictionary, value);
+  return GetStringFromDictionary(kNotificationSegmentKey, dictionary, value);
 }
 
 bool AdNotifications::GetTitleFromDictionary(
@@ -495,8 +509,8 @@ base::Value AdNotifications::GetAsList() {
         base::Value(ad_notification.creative_set_id));
     dictionary.SetKey(kNotificationCampaignIdKey,
         base::Value(ad_notification.campaign_id));
-    dictionary.SetKey(kNotificationCategoryKey,
-        base::Value(ad_notification.category));
+    dictionary.SetKey(kNotificationSegmentKey,
+        base::Value(ad_notification.segment));
     dictionary.SetKey(kNotificationTitleKey,
         base::Value(ad_notification.title));
     dictionary.SetKey(kNotificationBodyKey,

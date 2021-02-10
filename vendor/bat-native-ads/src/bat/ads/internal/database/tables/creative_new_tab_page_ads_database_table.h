@@ -15,10 +15,10 @@
 #include "bat/ads/internal/bundle/creative_new_tab_page_ad_info.h"
 #include "bat/ads/internal/database/database_table.h"
 #include "bat/ads/internal/database/tables/campaigns_database_table.h"
-#include "bat/ads/internal/database/tables/categories_database_table.h"
 #include "bat/ads/internal/database/tables/creative_ads_database_table.h"
 #include "bat/ads/internal/database/tables/dayparts_database_table.h"
 #include "bat/ads/internal/database/tables/geo_targets_database_table.h"
+#include "bat/ads/internal/database/tables/segments_database_table.h"
 #include "bat/ads/mojom.h"
 #include "bat/ads/result.h"
 
@@ -50,8 +50,8 @@ class CreativeNewTabPageAds : public Table {
       const std::string& creative_instance_id,
       GetCreativeNewTabPageAdCallback callback);
 
-  void GetForCategories(
-      const CategoryList& categories,
+  void GetForSegments(
+      const SegmentList& segments,
       GetCreativeNewTabPageAdsCallback callback);
 
   void GetAll(
@@ -84,9 +84,9 @@ class CreativeNewTabPageAds : public Table {
       const std::string& creative_instance_id,
       GetCreativeNewTabPageAdCallback callback);
 
-  void OnGetForCategories(
+  void OnGetForSegments(
       DBCommandResponsePtr response,
-      const CategoryList& categories,
+      const SegmentList& segments,
       GetCreativeNewTabPageAdsCallback callback);
 
   void OnGetAll(
@@ -96,18 +96,18 @@ class CreativeNewTabPageAds : public Table {
   CreativeNewTabPageAdInfo GetFromRecord(
       DBRecord* record) const;
 
-  void CreateTableV3(
+  void CreateTableV9(
       DBTransaction* transaction);
-  void MigrateToV3(
+  void MigrateToV9(
       DBTransaction* transaction);
 
   int batch_size_;
 
   std::unique_ptr<Campaigns> campaigns_database_table_;
-  std::unique_ptr<Categories> categories_database_table_;
   std::unique_ptr<CreativeAds> creative_ads_database_table_;
   std::unique_ptr<Dayparts> dayparts_database_table_;
   std::unique_ptr<GeoTargets> geo_targets_database_table_;
+  std::unique_ptr<Segments> segments_database_table_;
 };
 
 }  // namespace table

@@ -81,8 +81,6 @@ class AdsService : public KeyedService {
   virtual void SetAdsPerHour(
       const uint64_t ads_per_hour) = 0;
 
-  virtual uint64_t GetAdsPerDay() const = 0;
-
   virtual bool ShouldAllowAdsSubdivisionTargeting() const = 0;
   virtual std::string GetAdsSubdivisionTargetingCode() const = 0;
   virtual void SetAdsSubdivisionTargetingCode(
@@ -96,8 +94,7 @@ class AdsService : public KeyedService {
 
   virtual void OnPageLoaded(
       const SessionID& tab_id,
-      const GURL& original_url,
-      const GURL& url,
+      const std::vector<GURL>& redirect_chain,
       const std::string& content) = 0;
 
   virtual void OnMediaStart(
@@ -118,9 +115,14 @@ class AdsService : public KeyedService {
       const std::string& id) = 0;
 
   virtual void OnNewTabPageAdEvent(
-      const std::string& wallpaper_id,
+      const std::string& uuid,
       const std::string& creative_instance_id,
       const ads::mojom::BraveAdsNewTabPageAdEventType event_type) = 0;
+
+  virtual void OnPromotedContentAdEvent(
+      const std::string& uuid,
+      const std::string& creative_instance_id,
+      const ads::mojom::BraveAdsPromotedContentAdEventType event_type) = 0;
 
   virtual void ReconcileAdRewards() = 0;
 

@@ -10,8 +10,8 @@
 #include "base/stl_util.h"
 #include "brave/components/brave_extension/grit/brave_extension.h"
 #include "brave/components/brave_wallet/buildflags/buildflags.h"
-//#include "brave/components/brave_rewards/resources/extension/grit/brave_rewards_extension_resources.h"
-//#include "brave/components/brave_webtorrent/grit/brave_webtorrent_resources.h"
+#include "brave/components/brave_rewards/resources/extension/grit/brave_rewards_extension_resources.h"
+#include "brave/components/brave_webtorrent/grit/brave_webtorrent_resources.h"
 #include "components/grit/brave_components_resources.h"
 #include "extensions/common/constants.h"
 
@@ -43,8 +43,8 @@ namespace extensions {
     switch (manifest_resource_id) {
       // Please keep the list in alphabetical order.
       case IDR_BRAVE_EXTENSION:
-//      case IDR_BRAVE_REWARDS:
-//      case IDR_BRAVE_WEBTORRENT:
+      case IDR_BRAVE_REWARDS:
+      case IDR_BRAVE_WEBTORRENT:
         return true;
     }
 

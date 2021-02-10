@@ -2,6 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import './change_ipfs_gateway_dialog.js';
+
 (function() {
 'use strict';
 
@@ -19,8 +21,10 @@ Polymer({
   properties: {
     showRestartToast_: Boolean,
     torEnabled_: Boolean,
+    widevineEnabled_: Boolean,
     disableTorOption_: Boolean,
     ipfsEnabled_: Boolean,
+    showChangeIPFSGatewayDialog_: Boolean,
   },
 
   /** @private {?settings.BraveDefaultExtensionsBrowserProxy} */
@@ -39,6 +43,7 @@ Polymer({
     this.onIPFSCompanionEnabledChange_ = this.onIPFSCompanionEnabledChange_.bind(this)
     this.openExtensionsPage_ = this.openExtensionsPage_.bind(this)
     this.openKeyboardShortcutsPage_ = this.openKeyboardShortcutsPage_.bind(this)
+    this.onWidevineEnabledChange_ = this.onWidevineEnabledChange_.bind(this)
     this.restartBrowser_ = this.restartBrowser_.bind(this)
     this.onTorEnabledChange_ = this.onTorEnabledChange_.bind(this)
 
@@ -47,6 +52,9 @@ Polymer({
     })
     this.addWebUIListener('tor-enabled-changed', (enabled) => {
       this.torEnabled_ = enabled
+    })
+    this.addWebUIListener('widevine-enabled-changed', (enabled) => {
+      this.widevineEnabled_ = enabled
     })
 
     this.browserProxy_.getRestartNeeded().then(show => {
@@ -58,9 +66,12 @@ Polymer({
     this.browserProxy_.isTorManaged().then(managed => {
       this.disableTorOption_ = managed
     })
-//    this.browserProxy_.getWeb3ProviderList().then(list => {
-//      this.braveWeb3Providers_ = JSON.parse(list)
-//    });
+    this.browserProxy_.isWidevineEnabled().then(enabled => {
+      this.widevineEnabled_ = enabled
+    })
+    this.browserProxy_.getWeb3ProviderList().then(list => {
+      this.braveWeb3Providers_ = JSON.parse(list)
+    });
     this.browserProxy_.getIPFSResolveMethodList().then(list => {
       this.ipfsResolveMethod_ = JSON.parse(list)
     });
@@ -98,6 +109,10 @@ Polymer({
     this.browserProxy_.setTorEnabled(this.$.torEnabled.checked);
   },
 
+  onWidevineEnabledChange_: function() {
+    this.browserProxy_.setWidevineEnabled(this.$.widevineEnabled.checked);
+  },
+
   openExtensionsPage_: function() {
     window.open("chrome://extensions", "_self");
   },
@@ -112,6 +127,14 @@ Polymer({
 
   shouldShowRestartForGoogleLogin_: function(value) {
     return this.browserProxy_.wasSignInEnabledAtStartup() != value;
+  },
+
+  onChangeIPFSGatewayDialogTapped_: function() {
+    this.showChangeIPFSGatewayDialog_ = true;
+  },
+
+  onChangeIPFSGatewayDialogClosed_: function() {
+    this.showChangeIPFSGatewayDialog_ = false;
   },
 
 });

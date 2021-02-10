@@ -1,8 +1,8 @@
 diff --git a/chrome/browser/ui/webui/settings/people_handler.cc b/chrome/browser/ui/webui/settings/people_handler.cc
-index 702dce6977751cc7b884e9b6645f742aa5639961..c37b964414913d18ff5200b9f64a42c9ca74b844 100644
+index e326ae815ea7fe2bd8b867868f1752b648c6c01f..1633aaa85878915e0468f44ef8b98d52d75b1dc0 100644
 --- a/chrome/browser/ui/webui/settings/people_handler.cc
 +++ b/chrome/browser/ui/webui/settings/people_handler.cc
-@@ -879,7 +879,7 @@ void PeopleHandler::OnStateChanged(syncer::SyncService* sync) {
+@@ -855,7 +855,7 @@ void PeopleHandler::OnStateChanged(syncer::SyncService* sync) {
  
  void PeopleHandler::BeforeUnloadDialogCancelled() {
    // The before unload dialog is only shown during the first sync setup.
@@ -11,11 +11,19 @@ index 702dce6977751cc7b884e9b6645f742aa5639961..c37b964414913d18ff5200b9f64a42c9
    syncer::SyncService* service = GetSyncService();
    DCHECK(service && service->IsSetupInProgress() &&
           !service->GetUserSettings()->IsFirstSetupComplete());
-@@ -994,6 +994,7 @@ void PeopleHandler::PushSyncPrefs() {
-   }
-   args.SetBoolean("syncAllDataTypes",
-                   sync_user_settings->IsSyncEverythingEnabled());
-+  args.SetBoolean("preferencesSynced",false);
-   args.SetBoolean(
-       "paymentsIntegrationEnabled",
-       autofill::prefs::IsPaymentsIntegrationEnabled(profile_->GetPrefs()));
+@@ -903,6 +903,7 @@ std::unique_ptr<base::DictionaryValue> PeopleHandler::GetSyncStatusDictionary()
+       service && !disallowed_by_policy && service->IsSetupInProgress() &&
+           !service->GetUserSettings()->IsFirstSetupComplete() &&
+           identity_manager->HasPrimaryAccount());
++  BRAVE_GET_SYNC_STATUS_DICTIONARY
+ 
+   const sync_ui_util::StatusLabels status_labels =
+       sync_ui_util::GetStatusLabels(profile_);
+@@ -1053,6 +1054,7 @@ void PeopleHandler::MaybeMarkSyncConfiguring() {
+ }
+ 
+ bool PeopleHandler::IsProfileAuthNeededOrHasErrors() {
++  return false;
+   return !IdentityManagerFactory::GetForProfile(profile_)
+               ->HasPrimaryAccount() ||
+          SigninErrorControllerFactory::GetForProfile(profile_)->HasError();

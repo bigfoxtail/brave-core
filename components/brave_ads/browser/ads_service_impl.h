@@ -17,6 +17,7 @@
 #include "base/containers/flat_set.h"
 #include "base/files/file_path.h"
 #include "base/memory/weak_ptr.h"
+#include "base/system/sys_info.h"
 #include "base/timer/timer.h"
 #include "bat/ads/ads.h"
 #include "bat/ads/ads_client.h"
@@ -90,8 +91,6 @@ class AdsServiceImpl : public AdsService,
   void SetAdsPerHour(
       const uint64_t ads_per_hour) override;
 
-  uint64_t GetAdsPerDay() const override;
-
   bool ShouldAllowAdsSubdivisionTargeting() const override;
   std::string GetAdsSubdivisionTargetingCode() const override;
   void SetAdsSubdivisionTargetingCode(
@@ -105,8 +104,7 @@ class AdsServiceImpl : public AdsService,
 
   void OnPageLoaded(
       const SessionID& tab_id,
-      const GURL& original_url,
-      const GURL& url,
+      const std::vector<GURL>& redirect_chain,
       const std::string& content) override;
 
   void OnMediaStart(
@@ -127,9 +125,14 @@ class AdsServiceImpl : public AdsService,
       const std::string& id) override;
 
   void OnNewTabPageAdEvent(
-      const std::string& wallpaper_id,
+      const std::string& uuid,
       const std::string& creative_instance_id,
       const ads::NewTabPageAdEventType event_type) override;
+
+  void OnPromotedContentAdEvent(
+      const std::string& uuid,
+      const std::string& creative_instance_id,
+      const ads::PromotedContentAdEventType event_type) override;
 
   void ReconcileAdRewards() override;
 
@@ -205,6 +208,10 @@ class AdsServiceImpl : public AdsService,
       const int32_t result);
   void OnResetAllState(
       const bool success);
+
+  void GetHardwareInfo();
+  void OnGetHardwareInfo(
+      base::SysInfo::HardwareInfo hardware);
 
   void EnsureBaseDirectoryExists();
   void OnEnsureBaseDirectoryExists(

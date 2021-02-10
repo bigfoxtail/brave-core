@@ -45,7 +45,7 @@ void UnitTestBase::SetUp() {
   // Code here will be called immediately after the constructor (right before
   // each test)
 
-  SetUpForTesting(/* end to end testing */ false);
+  SetUpForTesting(/* integration_test */ false);
 }
 
 void UnitTestBase::SetUpForTesting(
@@ -71,6 +71,13 @@ void UnitTestBase::FastForwardClockBy(
   task_environment_.FastForwardBy(time_delta);
 }
 
+void UnitTestBase::FastForwardClockTo(
+    const base::Time& time) {
+  const base::TimeDelta time_delta = time - base::Time::Now();
+
+  FastForwardClockBy(time_delta);
+}
+
 void UnitTestBase::AdvanceClockToMidnightUTC() {
   const base::TimeDelta time_delta = base::Time::Now().LocalMidnight() +
       base::TimeDelta::FromHours(24) - base::Time::Now();
@@ -94,12 +101,18 @@ base::TimeDelta UnitTestBase::NextPendingTaskDelay() const {
   return task_environment_.NextMainThreadPendingTaskDelay();
 }
 
+size_t UnitTestBase::GetPendingTaskCount() const {
+  return task_environment_.GetPendingMainThreadTaskCount();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void UnitTestBase::Initialize() {
   ASSERT_TRUE(temp_dir_.CreateUniqueTempDir());
 
   SetEnvironment(Environment::DEVELOPMENT);
+
+  SetSysInfo(SysInfo());
 
   SetBuildChannel(false, "test");
 
@@ -146,7 +159,10 @@ void UnitTestBase::Initialize() {
     ASSERT_EQ(Result::SUCCESS, result);
   });
 
-  confirmations_state_ = std::make_unique<ConfirmationsState>();
+  ad_rewards_ = std::make_unique<AdRewards>();
+
+  confirmations_state_ =
+      std::make_unique<ConfirmationsState>(ad_rewards_.get());
   confirmations_state_->Initialize([](
       const Result result) {
     ASSERT_EQ(Result::SUCCESS, result);
@@ -161,6 +177,10 @@ void UnitTestBase::Initialize() {
   tab_manager_ = std::make_unique<TabManager>();
 
   user_activity_ = std::make_unique<UserActivity>();
+
+  // Fast forward until no tasks remain to ensure "EnsureSqliteInitialized"
+  // tasks have fired before running tests
+  task_environment_.FastForwardUntilNoTasksRemain();
 }
 
 void UnitTestBase::InitializeAds() {
@@ -171,6 +191,8 @@ void UnitTestBase::InitializeAds() {
       const Result result) {
     ASSERT_EQ(Result::SUCCESS, result);
   });
+
+  task_environment_.RunUntilIdle();
 }
 
 }  // namespace ads

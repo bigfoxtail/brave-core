@@ -30,6 +30,24 @@ const ipfsReducer: Reducer<IPFS.State | undefined> = (state: IPFS.State | undefi
         }
       }
       break
+    case types.IPFS_GET_NODE_INFO:
+      chrome.send('ipfs.getNodeInfo')
+      break
+    case types.IPFS_ON_GET_NODE_INFO:
+      state = {
+        ...state,
+        nodeInfo: action.payload.nodeInfo
+      }
+      break
+    case types.IPFS_GET_REPO_STATS:
+      chrome.send('ipfs.getRepoStats')
+      break
+    case types.IPFS_ON_GET_REPO_STATS:
+      state = {
+        ...state,
+        repoStats: action.payload.repoStats
+      }
+      break
     case types.IPFS_GET_ADDRESSES_CONFIG:
       chrome.send('ipfs.getAddressesConfig')
       break

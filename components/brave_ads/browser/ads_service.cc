@@ -52,9 +52,7 @@ void AdsService::RegisterProfilePrefs(
       ads::prefs::kShouldAllowConversionTracking, true);
 
   registry->RegisterUint64Pref(
-      ads::prefs::kAdsPerHour, 2);
-  registry->RegisterUint64Pref(
-      ads::prefs::kAdsPerDay, 40);
+      ads::prefs::kAdsPerHour, ads::kDefaultAdNotificationsPerHour);
 
   registry->RegisterIntegerPref(
       ads::prefs::kIdleThreshold, 15);
@@ -74,6 +72,11 @@ void AdsService::RegisterProfilePrefs(
       ads::prefs::kCatalogPing, 0);
   registry->RegisterInt64Pref(
       ads::prefs::kCatalogLastUpdated, 0);
+
+  registry->RegisterStringPref(
+      ads::prefs::kEpsilonGreedyBanditArms, "");
+  registry->RegisterStringPref(
+      ads::prefs::kEpsilonGreedyBanditEligibleSegments, "");
 }
 
 }  // namespace brave_ads

@@ -12,6 +12,7 @@
 #include "base/win/core_winrt_util.h"
 #include "base/win/scoped_hstring.h"
 #include "base/feature_list.h"
+#include "brave/common/brave_channel_info.h"
 #include "chrome/common/chrome_features.h"
 #include "chrome/install_static/install_util.h"
 #include "chrome/installer/util/install_util.h"
@@ -68,6 +69,10 @@ bool NotificationHelperWin::ShouldShowNotifications() {
   if (IsFullScreenMode()) {
     LOG(WARNING) << "Notification not made: Full screen mode";
     return false;
+  }
+
+  if (brave::IsNightlyOrDeveloperBuild()) {
+    return true;
   }
 
   if (base::win::GetVersion() < base::win::Version::WIN10_RS4) {

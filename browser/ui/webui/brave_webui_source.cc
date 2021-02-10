@@ -1044,6 +1044,10 @@ void CustomizeWebUIHTMLSource(const std::string &name,
         { "walletStatusPending", IDS_BRAVE_REWARDS_INTERNALS_WALLET_STATUS_PENDING },    // NOLINT
       }
     }, {
+<<<<<<< HEAD
+=======
+/**
+>>>>>>> brave1.21.49
 #if BUILDFLAG(IPFS_ENABLED)
       std::string("tor-internals"), {
         { "tabGeneralInfo", IDS_TOR_INTERNALS_TAB_GENERAL_INFO },
@@ -1057,6 +1061,10 @@ void CustomizeWebUIHTMLSource(const std::string &name,
       }
     }, {
 #endif
+<<<<<<< HEAD
+=======
+*/
+>>>>>>> brave1.21.49
       std::string("webcompat"), {
         // Report modal
         { "reportModalTitle", IDS_BRAVE_WEBCOMPATREPORTER_REPORT_MODAL_TITLE },

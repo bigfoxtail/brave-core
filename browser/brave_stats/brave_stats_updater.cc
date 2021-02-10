@@ -253,7 +253,7 @@ void BraveStatsUpdater::OnServerPingTimerFired() {
   if (base::CompareCaseInsensitiveASCII(today_ymd, last_check_ymd) == 0)
     return;
 
-  SendServerPing();
+//  SendServerPing();
 }
 
 bool BraveStatsUpdater::IsReferralInitialized() {
@@ -280,10 +280,10 @@ void BraveStatsUpdater::QueueServerPing() {
   } else {
     pref_change_registrar_.reset(new PrefChangeRegistrar());
     pref_change_registrar_->Init(pref_service_);
-    pref_change_registrar_->Add(
-        kReferralInitialization,
-        base::Bind(&BraveStatsUpdater::OnReferralInitialization,
-                   base::Unretained(this)));
+//    pref_change_registrar_->Add(
+//        kReferralInitialization,
+//        base::Bind(&BraveStatsUpdater::OnReferralInitialization,
+//                   base::Unretained(this)));
   }
 }  // namespace brave
 

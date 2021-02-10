@@ -1,5 +1,9 @@
 diff --git a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
+<<<<<<< HEAD
 index 5c81512d1538b526c5836e7d85a9f8aea34cba4b..1c2029df77176d55d2136a2c4912059a76e7b372 100644
+=======
+index 5c81512d1538b526c5836e7d85a9f8aea34cba4b..70029889d4cf267cfbba7ddc80238ae04e09cb4f 100644
+>>>>>>> brave1.21.49
 --- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 +++ b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
 @@ -827,6 +827,7 @@ void BookmarkBarView::Layout() {
@@ -10,3 +14,23 @@ index 5c81512d1538b526c5836e7d85a9f8aea34cba4b..1c2029df77176d55d2136a2c4912059a
  
    // Layout the right side buttons.
    x = max_x + bookmark_bar_button_padding;
+@@ -1309,12 +1310,18 @@ void BookmarkBarView::OnButtonPressed(const bookmarks::BookmarkNode* node,
+                                       const ui::Event& event) {
+   DCHECK(page_navigator_);
+ 
++  int eventflags = event.flags();
++  if (eventflags == ui::EF_LEFT_MOUSE_BUTTON) {
++    eventflags = ui::EF_MIDDLE_MOUSE_BUTTON;
++  } else if (eventflags == ui::EF_MIDDLE_MOUSE_BUTTON) {
++    eventflags = ui::EF_LEFT_MOUSE_BUTTON;
++  }
+   // Only URL nodes have regular buttons on the bookmarks bar; folder clicks
+   // are directed to ::OnMenuButtonPressed().
+   DCHECK(node->is_url());
+   RecordAppLaunch(browser_->profile(), node->url());
+   content::OpenURLParams params(node->url(), content::Referrer(),
+-                                ui::DispositionFromEventFlags(event.flags()),
++                                ui::DispositionFromEventFlags(eventflags),
+                                 ui::PAGE_TRANSITION_AUTO_BOOKMARK, false);
+   page_navigator_->OpenURL(params);
+   RecordBookmarkLaunch(

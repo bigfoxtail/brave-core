@@ -46,8 +46,9 @@ class BraveActionsContainer : public views::View,
                               public extensions::BraveActionAPI::Observer,
                               public extensions::ExtensionActionAPI::Observer,
                               public extensions::ExtensionRegistryObserver,
-                              public ToolbarActionView::Delegate,
+                              public ToolbarActionView::Delegate
 #if BUILDFLAG(BRAVE_REWARDS_ENABLED)
+                              ,
                               public BraveRewardsActionStubView::Delegate
 #endif
                               {
@@ -188,7 +189,7 @@ class BraveActionsContainer : public views::View,
 
   std::unique_ptr<EmptyExtensionsContainer> empty_extensions_container_;
 
-  brave_rewards::RewardsService* rewards_service_;
+//  brave_rewards::RewardsService* rewards_service_;
 
   base::WeakPtrFactory<BraveActionsContainer> weak_ptr_factory_;
 

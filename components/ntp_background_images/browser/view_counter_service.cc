@@ -134,20 +134,20 @@ base::Value ViewCounterService::GetCurrentWallpaper() const {
 }
 
 std::vector<TopSite> ViewCounterService::GetTopSitesVectorForWebUI() const {
-#if BUILDFLAG(ENABLE_BRAVE_REFERRALS)
+//#if BUILDFLAG(ENABLE_BRAVE_REFERRALS)
   if (auto* data = GetCurrentBrandedWallpaperData()) {
       return GetCurrentBrandedWallpaperData()->GetTopSitesForWebUI();
   }
-#endif
+//#endif
 
   return {};
 }
 
 std::vector<TopSite> ViewCounterService::GetTopSitesVectorData() const {
-#if BUILDFLAG(ENABLE_BRAVE_REFERRALS)
+//#if BUILDFLAG(ENABLE_BRAVE_REFERRALS)
   if (auto* data = GetCurrentBrandedWallpaperData())
     return data->top_sites;
-#endif
+//#endif
 
   return {};
 }

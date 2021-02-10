@@ -4,10 +4,15 @@
 // you can obtain one at http://mozilla.org/MPL/2.0/.
 
 import * as React from 'react'
-import { OpenNewIcon } from 'brave-ui/components/icons'
+import {
+  Link,
+  PhotoName
+} from '../../default'
+import * as S from '../../default/page'
+import { getLocale } from '../../../../common/locale'
 
 import createWidget from '../widget/index'
-import * as Styled from './logo-style'
+//import * as Styled from './logo-style'
 
 interface Props {
   data: NewTab.BrandedWallpaperLogo
@@ -17,10 +22,14 @@ interface Props {
 function Logo ({ data, onClickLogo }: Props) {
   return (
     <>
-      <Styled.Image src={data.image} alt={data.alt} />
-      <Styled.Anchor href={data.destinationUrl} title={data.alt} onClick={onClickLogo}>
-        <Styled.Indicator><OpenNewIcon /></Styled.Indicator>
-      </Styled.Anchor>
+          <S.GridItemCredits>
+            <PhotoName>
+              {`${getLocale('photoBy')} `}
+              <Link href={data.destinationUrl} rel='noreferrer noopener' target='_blank'>
+                {data.alt}
+              </Link>
+            </PhotoName>
+          </S.GridItemCredits>
     </>
   )
 }

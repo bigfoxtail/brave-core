@@ -1,0 +1,37 @@
+diff --git a/chrome/browser/resources/bookmarks/item.html b/chrome/browser/resources/bookmarks/item.html
+index 557afae2aaa570c052d439cac6611e4fa20ab49b..f36cede4c000848a65ea80e8bd85c47d421d5f05 100644
+--- a/chrome/browser/resources/bookmarks/item.html
++++ b/chrome/browser/resources/bookmarks/item.html
+@@ -30,7 +30,7 @@
+ 
+   #website-title {
+     color: var(--cr-primary-text-color);
+-    flex: 1;
++    flex: 0 auto;
+     margin-inline-start: 20px;
+     text-decoration: none;
+   }
+@@ -39,6 +39,10 @@
+     flex: 0 auto;
+   }
+ 
++  :host([is-selected-item_]) #title-tab {
++    display: none;
++  }
++
+   @media (prefers-color-scheme: dark) {
+     :host([is-selected-item_]) #website-title {
+       color: var(--google-grey-900);
+@@ -90,8 +94,11 @@
+ </style>
+ <div id="icon"></div>
+ <div id="website-title" class="elided-text" title="[[item_.title]]">
+-  [[item_.title]]
++  <a href="[[item_.url]]" id="link" class="website-link"
++      title="[[item_.title]]" on-click="onLinkClick_"
++      >[[item_.title]]</a>
+ </div>
++<span id="title-tab" style=" flex: 1;min-width: 100px;"></span>
+ <div id="website-url" class="elided-text" title="[[item_.url]]">
+   [[item_.url]]
+ </div>

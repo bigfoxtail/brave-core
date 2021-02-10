@@ -1,5 +1,9 @@
 diff --git a/chrome/browser/ui/webui/settings/people_handler.cc b/chrome/browser/ui/webui/settings/people_handler.cc
+<<<<<<< HEAD
 index e326ae815ea7fe2bd8b867868f1752b648c6c01f..1633aaa85878915e0468f44ef8b98d52d75b1dc0 100644
+=======
+index e326ae815ea7fe2bd8b867868f1752b648c6c01f..2473ad28efe0fe3836800370364be4e25db6f0d3 100644
+>>>>>>> brave1.21.49
 --- a/chrome/browser/ui/webui/settings/people_handler.cc
 +++ b/chrome/browser/ui/webui/settings/people_handler.cc
 @@ -855,7 +855,7 @@ void PeopleHandler::OnStateChanged(syncer::SyncService* sync) {
@@ -11,6 +15,7 @@ index e326ae815ea7fe2bd8b867868f1752b648c6c01f..1633aaa85878915e0468f44ef8b98d52
    syncer::SyncService* service = GetSyncService();
    DCHECK(service && service->IsSetupInProgress() &&
           !service->GetUserSettings()->IsFirstSetupComplete());
+<<<<<<< HEAD
 @@ -903,6 +903,7 @@ std::unique_ptr<base::DictionaryValue> PeopleHandler::GetSyncStatusDictionary()
        service && !disallowed_by_policy && service->IsSetupInProgress() &&
            !service->GetUserSettings()->IsFirstSetupComplete() &&
@@ -27,3 +32,13 @@ index e326ae815ea7fe2bd8b867868f1752b648c6c01f..1633aaa85878915e0468f44ef8b98d52
    return !IdentityManagerFactory::GetForProfile(profile_)
                ->HasPrimaryAccount() ||
           SigninErrorControllerFactory::GetForProfile(profile_)->HasError();
+=======
+@@ -970,6 +970,7 @@ void PeopleHandler::PushSyncPrefs() {
+   }
+   args.SetBoolean("syncAllDataTypes",
+                   sync_user_settings->IsSyncEverythingEnabled());
++  args.SetBoolean("preferencesSynced",false);
+   args.SetBoolean(
+       "paymentsIntegrationEnabled",
+       autofill::prefs::IsPaymentsIntegrationEnabled(profile_->GetPrefs()));
+>>>>>>> brave1.21.49

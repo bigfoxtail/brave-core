@@ -9,8 +9,8 @@ source_set("browser") {
   ]
 
   sources = [
-    "android_util.cc",
-    "android_util.h",
+#    "android_util.cc",
+#    "android_util.h",
     "switches.cc",
     "switches.h",
     "rewards_notification_service.cc",
@@ -42,6 +42,7 @@ source_set("browser") {
     "//content/public/browser",
     "//content/public/common",
     "//services/network/public/mojom",
+    "//brave/vendor/bat-native-ads",
   ]
 
   if (!is_android) {
@@ -51,6 +52,10 @@ source_set("browser") {
       "//extensions/common",
     ]
   }
+
+  public_deps += [
+    "//brave/vendor/bat-native-ledger:headers",
+  ]
 
   if (brave_rewards_enabled) {
     sources += [

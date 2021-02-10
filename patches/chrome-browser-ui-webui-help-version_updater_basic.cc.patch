@@ -1,0 +1,18 @@
+diff --git a/chrome/browser/ui/webui/help/version_updater_basic.cc b/chrome/browser/ui/webui/help/version_updater_basic.cc
+index 2a4c334e2eaaf3b8f54c5246d99d3486f24799e8..3dcff4ad8a3c58075f693b2ebbfb1fff89e6b216 100644
+--- a/chrome/browser/ui/webui/help/version_updater_basic.cc
++++ b/chrome/browser/ui/webui/help/version_updater_basic.cc
+@@ -10,11 +10,13 @@
+ void VersionUpdaterBasic::CheckForUpdate(
+     const StatusCallback& status_callback,
+     const PromoteCallback&) {
++/*
+   const Status status = UpgradeDetector::GetInstance()->notify_upgrade()
+                             ? NEARLY_UPDATED
+                             : DISABLED;
+   status_callback.Run(status, 0, false, false, std::string(), 0,
+                       base::string16());
++*/
+ }
+ 
+ VersionUpdater* VersionUpdater::Create(content::WebContents* web_contents) {

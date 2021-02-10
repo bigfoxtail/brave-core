@@ -27,6 +27,7 @@ void ResetSync(syncer::BraveProfileSyncService* sync_service,
       device_info_service->GetDeviceInfoTracker();
   DCHECK(tracker);
 
+/*
   const syncer::DeviceInfo* local_device_info =
       device_info_service->GetLocalDeviceInfoProvider()->GetLocalDeviceInfo();
 
@@ -41,6 +42,7 @@ void ResetSync(syncer::BraveProfileSyncService* sync_service,
             sync_service->ResumeDeviceObserver();
           },
           sync_service, std::move(on_reset_done)));
+*/
 }
 
 void DeleteDevice(syncer::BraveProfileSyncService* sync_service,
@@ -54,7 +56,7 @@ void DeleteDevice(syncer::BraveProfileSyncService* sync_service,
       device_info_service->GetDeviceInfoTracker();
   DCHECK(tracker);
 
-  tracker->DeleteDeviceInfo(device_guid, base::DoNothing());
+//  tracker->DeleteDeviceInfo(device_guid, base::DoNothing());
 }
 
 }  // namespace brave_sync

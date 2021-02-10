@@ -1,7 +1,7 @@
 import("//brave/build/config.gni")
 import("//brave/components/crypto_dot_com/browser/buildflags/buildflags.gni")
 
-assert(crypto_dot_com_enabled)
+#assert(crypto_dot_com_enabled)
 
 source_set("browser") {
   public_deps = [

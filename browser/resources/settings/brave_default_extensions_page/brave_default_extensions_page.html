@@ -66,6 +66,7 @@
       }
     </style>
 
+    <!--
     <div class="settings-box first">
       <div class="start">$i18n{braveWeb3ProviderDesc}</div>
       <settings-dropdown-menu id="braveWeb3ProvidersType"
@@ -78,6 +79,7 @@
         pref="{{prefs.brave.wallet.load_on_startup}}"
         label="$i18n{loadCryptoWalletsOnStartupDesc}">
     </settings-toggle-button>
+    -->
     <settings-toggle-button id="googleLoginForExtensions"
         class="cr-row"
         pref="{{prefs.signin.allowed_on_next_startup}}"
@@ -162,6 +164,7 @@
         disabled="[[!torEnabled_]]">
     </settings-toggle-button>
     </if>
+    <!--
     <settings-toggle-button id="webTorrentEnabled"
         class="cr-row"
         pref="{{prefs.brave.webtorrent_enabled}}"
@@ -169,6 +172,7 @@
         sub-label="$i18n{webTorrentEnabledDesc}"
         on-settings-boolean-control-change="onWebTorrentEnabledChange_">
     </settings-toggle-button>
+    -->
     <settings-toggle-button
         class="cr-row"
         pref="{{prefs.brave.ask_widevine_install}}"

@@ -89,8 +89,8 @@ void BraveIncognitoMenuView::AddTorButton() {
 }
 
 void BraveIncognitoMenuView::OnTorProfileButtonClicked() {
-  TorProfileManager::SwitchToTorProfile(browser()->profile(),
-                                        ProfileManager::CreateCallback());
+//  TorProfileManager::SwitchToTorProfile(browser()->profile(),
+//                                        ProfileManager::CreateCallback());
 }
 
 base::string16 BraveIncognitoMenuView::GetAccessibleWindowTitle() const {
@@ -102,7 +102,7 @@ base::string16 BraveIncognitoMenuView::GetAccessibleWindowTitle() const {
 void BraveIncognitoMenuView::OnExitButtonClicked() {
   if (browser()->profile()->IsTor()) {
     RecordClick(ActionableItem::kExitProfileButton);
-    TorProfileManager::CloseTorProfileWindows(browser()->profile());
+//    TorProfileManager::CloseTorProfileWindows(browser()->profile());
   } else {
     IncognitoMenuView::OnExitButtonClicked();
   }

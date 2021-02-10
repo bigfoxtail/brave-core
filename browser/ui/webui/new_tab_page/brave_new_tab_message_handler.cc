@@ -17,8 +17,8 @@
 #include "brave/browser/search_engines/search_engine_provider_util.h"
 #include "brave/browser/ui/webui/new_tab_page/brave_new_tab_ui.h"
 #include "brave/common/pref_names.h"
-#include "brave/components/brave_ads/browser/ads_service.h"
-#include "brave/components/brave_ads/browser/ads_service_factory.h"
+//#include "brave/components/brave_ads/browser/ads_service.h"
+//#include "brave/components/brave_ads/browser/ads_service_factory.h"
 #include "brave/components/brave_perf_predictor/browser/buildflags.h"
 #include "brave/components/crypto_dot_com/browser/buildflags/buildflags.h"
 #include "brave/components/ntp_background_images/browser/features.h"
@@ -174,6 +174,7 @@ BraveNewTabMessageHandler* BraveNewTabMessageHandler::Create(
   // Initial Values
   // Should only contain data that is static
   //
+/*
   auto* ads_service_ = brave_ads::AdsServiceFactory::GetForProfile(profile);
   // For safety, default |is_ads_supported_locale_| to true. Better to have
   // false positive than falsen egative,
@@ -184,11 +185,11 @@ BraveNewTabMessageHandler* BraveNewTabMessageHandler::Create(
   } else {
     is_ads_supported_locale_ = ads_service_->IsSupportedLocale();
   }
+*/
 
   source->AddBoolean(
       "featureFlagBraveNTPSponsoredImagesWallpaper",
-      base::FeatureList::IsEnabled(kBraveNTPBrandedWallpaper) &&
-      is_ads_supported_locale_);
+      base::FeatureList::IsEnabled(kBraveNTPBrandedWallpaper));
   // Private Tab info
   if (IsPrivateNewTab(profile)) {
     source->AddBoolean(
@@ -590,6 +591,7 @@ void BraveNewTabMessageHandler::HandleTodayOnCardVisit(
   UMA_HISTOGRAM_EXACT_LINEAR("Brave.Today.WeeklyMaxCardVisitsCount", answer,
                              base::size(kBuckets) + 1);
   // Record ad click if a promoted card was read.
+
   if (args->GetSize() < 4) {
     return;
   }
@@ -597,10 +599,12 @@ void BraveNewTabMessageHandler::HandleTodayOnCardVisit(
   std::string creative_instance_id = args->GetList()[2].GetString();
   bool is_promoted = args->GetList()[3].GetBool();
   if (is_promoted && !item_id.empty() && !creative_instance_id.empty()) {
+/*
     auto* ads_service_ = brave_ads::AdsServiceFactory::GetForProfile(profile_);
     ads_service_->OnPromotedContentAdEvent(
         item_id, creative_instance_id,
         ads::mojom::BraveAdsPromotedContentAdEventType::kClicked);
+*/
   }
 }
 
@@ -630,10 +634,12 @@ void BraveNewTabMessageHandler::HandleTodayOnPromotedCardView(
   std::string creative_instance_id = args->GetList()[0].GetString();
   std::string item_id = args->GetList()[1].GetString();
   if (!item_id.empty() && !creative_instance_id.empty()) {
+/*
     auto* ads_service_ = brave_ads::AdsServiceFactory::GetForProfile(profile_);
     ads_service_->OnPromotedContentAdEvent(
         item_id, creative_instance_id,
         ads::mojom::BraveAdsPromotedContentAdEventType::kViewed);
+*/
   }
 }
 

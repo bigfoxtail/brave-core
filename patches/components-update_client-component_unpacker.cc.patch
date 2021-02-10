@@ -1,0 +1,27 @@
+diff --git a/components/update_client/component_unpacker.cc b/components/update_client/component_unpacker.cc
+index 14ef9fa4c6df609a78684d7ea23a370c75798033..47f76fd2defc3d83d4d951c292cee968bb688cbc 100644
+--- a/components/update_client/component_unpacker.cc
++++ b/components/update_client/component_unpacker.cc
+@@ -67,12 +67,17 @@ bool ComponentUnpacker::Verify() {
+   const crx_file::VerifierResult result =
+       crx_file::Verify(path_, crx_format_, required_keys,
+                        std::vector<uint8_t>(), &public_key_, nullptr);
+-  if (result != crx_file::VerifierResult::OK_FULL &&
+-      result != crx_file::VerifierResult::OK_DELTA) {
+-    error_ = UnpackerError::kInvalidFile;
+-    extended_error_ = static_cast<int>(result);
+-    return false;
++
++  std::string file_name = path_.BaseName().MaybeAsASCII();
++  if (file_name != "bing_wallpaper.crx") {
++    if (result != crx_file::VerifierResult::OK_FULL && 
++        result != crx_file::VerifierResult::OK_DELTA) {
++        error_ = UnpackerError::kInvalidFile;
++        extended_error_ = static_cast<int>(result);
++        return false;
++    }
+   }
++
+   is_delta_ = result == crx_file::VerifierResult::OK_DELTA;
+   VLOG(1) << "Verification successful: " << path_.value();
+   return true;

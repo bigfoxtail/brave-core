@@ -27,7 +27,7 @@ import BackgroundImageIcon from './settings/icons/backgroundImage.svg'
 import NraveStatsIcon from './settings/icons/braveStats.svg'
 import TopSitesIcon from './settings/icons/topSites.svg'
 import ClockIcon from './settings/icons/clock.svg'
-import CardsIcon from './settings/icons/cards.svg'
+//import CardsIcon from './settings/icons/cards.svg'
 import TodayIcon from './settings/icons/braveToday.svg'
 
 // Tabs
@@ -35,7 +35,7 @@ const BackgroundImageSettings = React.lazy(() => import('./settings/backgroundIm
 const BraveStatsSettings = React.lazy(() => import('./settings/braveStats'))
 const TopSitesSettings = React.lazy(() => import('./settings/topSites'))
 const ClockSettings = React.lazy(() => import('./settings/clock'))
-const CardsSettings = React.lazy(() => import('./settings/cards'))
+//const CardsSettings = React.lazy(() => import('./settings/cards'))
 const BraveTodaySettings = React.lazy(() => import('./settings/braveToday'))
 
 // Types
@@ -54,13 +54,13 @@ export interface Props {
   toggleShowToday: () => any
   toggleShowTopSites: () => void
   toggleCustomLinksEnabled: () => void
-  toggleShowRewards: () => void
-  toggleShowTogether: () => void
-  toggleShowBinance: () => void
-  toggleShowGemini: () => void
-  toggleShowCryptoDotCom: () => void
+//  toggleShowRewards: () => void
+//  toggleShowTogether: () => void
+//  toggleShowBinance: () => void
+//  toggleShowGemini: () => void
+//  toggleShowCryptoDotCom: () => void
   toggleBrandedWallpaperOptIn: () => void
-  toggleCards: (show: boolean) => void
+//  toggleCards: (show: boolean) => void
   showBackgroundImage: boolean
   showStats: boolean
   showToday: boolean
@@ -70,18 +70,18 @@ export interface Props {
   customLinksEnabled: boolean
   brandedWallpaperOptIn: boolean
   allowSponsoredWallpaperUI: boolean
-  showRewards: boolean
-  showTogether: boolean
-  showBinance: boolean
-  binanceSupported: boolean
-  togetherSupported: boolean
-  showGemini: boolean
-  geminiSupported: boolean
-  showCryptoDotCom: boolean
-  cryptoDotComSupported: boolean
+//  showRewards: boolean
+//  showTogether: boolean
+//  showBinance: boolean
+//  binanceSupported: boolean
+//  togetherSupported: boolean
+//  showGemini: boolean
+//  geminiSupported: boolean
+//  showCryptoDotCom: boolean
+//  cryptoDotComSupported: boolean
   todayPublishers?: BraveToday.Publishers
   setActiveTab?: TabType
-  cardsHidden: boolean
+//  cardsHidden: boolean
 }
 
 export enum TabType {
@@ -90,7 +90,7 @@ export enum TabType {
   TopSites = 'topSites',
   BraveToday = 'braveToday',
   Clock = 'clock',
-  Cards = 'cards'
+//  Cards = 'cards'
 }
 
 interface State {
@@ -199,9 +199,9 @@ export default class Settings extends React.PureComponent<Props, State> {
       case TabType.Clock:
         srcUrl = ClockIcon
         break
-      case TabType.Cards:
-        srcUrl = CardsIcon
-        break
+//      case TabType.Cards:
+//        srcUrl = CardsIcon
+//        break
       default:
         srcUrl = BackgroundImageIcon
         break
@@ -221,8 +221,8 @@ export default class Settings extends React.PureComponent<Props, State> {
         return 'braveTodayTitle'
       case TabType.Clock:
         return 'clockTitle'
-      case TabType.Cards:
-        return 'cards'
+//      case TabType.Cards:
+//        return 'cards'
       default:
         return ''
     }
@@ -236,8 +236,8 @@ export default class Settings extends React.PureComponent<Props, State> {
       toggleShowStats,
       toggleShowTopSites,
       toggleCustomLinksEnabled,
-      toggleShowRewards,
-      toggleShowTogether,
+//      toggleShowRewards,
+//      toggleShowTogether,
       toggleBrandedWallpaperOptIn,
       showBackgroundImage,
       showStats,
@@ -245,21 +245,21 @@ export default class Settings extends React.PureComponent<Props, State> {
       clockFormat,
       showTopSites,
       customLinksEnabled,
-      showRewards,
-      showTogether,
+//      showRewards,
+//      showTogether,
       brandedWallpaperOptIn,
-      toggleShowBinance,
-      showBinance,
-      binanceSupported,
-      togetherSupported,
-      toggleShowGemini,
-      geminiSupported,
-      showGemini,
-      toggleShowCryptoDotCom,
-      cryptoDotComSupported,
-      showCryptoDotCom,
-      toggleCards,
-      cardsHidden
+//      toggleShowBinance,
+//      showBinance,
+//      binanceSupported,
+//      togetherSupported,
+//      toggleShowGemini,
+//      geminiSupported,
+//      showGemini,
+//      toggleShowCryptoDotCom,
+//      cryptoDotComSupported,
+//      showCryptoDotCom,
+//      toggleCards,
+//      cardsHidden
     } = this.props
     const { activeTab } = this.state
 
@@ -364,29 +364,6 @@ export default class Settings extends React.PureComponent<Props, State> {
                       toggleShowClock={toggleShowClock}
                       showClock={showClock}
                       clockFormat={clockFormat}
-                    />
-                  ) : null
-              }
-              {
-                activeTab === TabType.Cards
-                  ? (
-                    <CardsSettings
-                      toggleCards={toggleCards}
-                      cardsHidden={cardsHidden}
-                      toggleShowBinance={toggleShowBinance}
-                      showBinance={showBinance}
-                      binanceSupported={binanceSupported}
-                      toggleShowTogether={toggleShowTogether}
-                      showTogether={showTogether}
-                      togetherSupported={togetherSupported}
-                      toggleShowRewards={toggleShowRewards}
-                      showRewards={showRewards}
-                      showGemini={showGemini}
-                      toggleShowGemini={toggleShowGemini}
-                      geminiSupported={geminiSupported}
-                      toggleShowCryptoDotCom={toggleShowCryptoDotCom}
-                      cryptoDotComSupported={cryptoDotComSupported}
-                      showCryptoDotCom={showCryptoDotCom}
                     />
                   ) : null
               }

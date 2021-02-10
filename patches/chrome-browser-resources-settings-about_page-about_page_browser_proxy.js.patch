@@ -1,0 +1,13 @@
+diff --git a/chrome/browser/resources/settings/about_page/about_page_browser_proxy.js b/chrome/browser/resources/settings/about_page/about_page_browser_proxy.js
+index 4942b9f5cee0dd486226a02ff07a7824b254bfe0..b7a5e93988871103763a28c86d4fb435d8c259fe 100644
+--- a/chrome/browser/resources/settings/about_page/about_page_browser_proxy.js
++++ b/chrome/browser/resources/settings/about_page/about_page_browser_proxy.js
+@@ -174,7 +174,7 @@ cr.define('settings', function() {
+      * Request update status from the browser. It results in one or more
+      * 'update-status-changed' WebUI events.
+      */
+-    refreshUpdateStatus() {}
++//    refreshUpdateStatus() {}
+ 
+     // <if expr="chromeos">
+     /** Opens the release notes app. */

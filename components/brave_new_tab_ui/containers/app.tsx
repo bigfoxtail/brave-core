@@ -50,11 +50,11 @@ function DefaultPage (props: Props) {
         saveShowBackgroundImage={PreferencesAPI.saveShowBackgroundImage}
         saveShowStats={PreferencesAPI.saveShowStats}
         saveShowToday={PreferencesAPI.saveShowToday}
-        saveShowRewards={PreferencesAPI.saveShowRewards}
-        saveShowTogether={PreferencesAPI.saveShowTogether}
-        saveShowBinance={PreferencesAPI.saveShowBinance}
-        saveShowGemini={PreferencesAPI.saveShowGemini}
-        saveShowCryptoDotCom={PreferencesAPI.saveShowCryptoDotCom}
+//        saveShowRewards={PreferencesAPI.saveShowRewards}
+//        saveShowTogether={PreferencesAPI.saveShowTogether}
+//        saveShowBinance={PreferencesAPI.saveShowBinance}
+//        saveShowGemini={PreferencesAPI.saveShowGemini}
+//        saveShowCryptoDotCom={PreferencesAPI.saveShowCryptoDotCom}
         saveBrandedWallpaperOptIn={PreferencesAPI.saveBrandedWallpaperOptIn}
         onReadBraveTodayIntroCard={dismissBraveTodayIntroCard}
         saveSetAllStackWidgets={PreferencesAPI.saveSetAllStackWidgets}

@@ -73,6 +73,7 @@ using content::RenderFrameHost;
 using content::WebContents;
 
 #if BUILDFLAG(ENABLE_EXTENSIONS)
+#include "brave/common/url_constants.h"
 #include "chrome/browser/extensions/chrome_content_browser_client_extensions_part.h"
 #include "extensions/browser/extension_registry.h"
 using extensions::ChromeContentBrowserClientExtensionsPart;

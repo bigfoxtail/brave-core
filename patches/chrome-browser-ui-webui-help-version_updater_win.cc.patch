@@ -1,0 +1,18 @@
+diff --git a/chrome/browser/ui/webui/help/version_updater_win.cc b/chrome/browser/ui/webui/help/version_updater_win.cc
+index be910614a2943a817d05f7b6ebfa1cf12d83ca79..a206e9d9a9e15a2b56507ae83ebba6a83de42451 100644
+--- a/chrome/browser/ui/webui/help/version_updater_win.cc
++++ b/chrome/browser/ui/webui/help/version_updater_win.cc
+@@ -29,10 +29,10 @@ VersionUpdaterWin::~VersionUpdaterWin() {
+ void VersionUpdaterWin::CheckForUpdate(const StatusCallback& callback,
+                                        const PromoteCallback&) {
+   // There is no supported integration with Google Update for Chromium.
+-  callback_ = callback;
++//  callback_ = callback;
+ 
+-  callback_.Run(CHECKING, 0, false, false, std::string(), 0, base::string16());
+-  DoBeginUpdateCheck(false /* !install_update_if_possible */);
++//  callback_.Run(CHECKING, 0, false, false, std::string(), 0, base::string16());
++//  DoBeginUpdateCheck(false /* !install_update_if_possible */);
+ }
+ 
+ void VersionUpdaterWin::OnUpdateCheckComplete(

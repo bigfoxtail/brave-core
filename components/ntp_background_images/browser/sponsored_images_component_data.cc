@@ -758,7 +758,7 @@ base::Optional<SponsoredImagesComponentData> GetSponsoredImagesComponentData(
   };
 
   for (const auto& data : regional_data) {
-    if (data.region == "US")
+    if (data.region == region)
       return data;
   }
   return base::nullopt;

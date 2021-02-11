@@ -119,7 +119,7 @@ void NTPBackgroundImagesService::Init() {
     RegisterSponsoredImagesComponent();
   }
 
-//#if BUILDFLAG(ENABLE_BRAVE_REFERRALS)
+#if BUILDFLAG(ENABLE_BRAVE_REFERRALS)
   if (base::FeatureList::IsEnabled(features::kBraveNTPSuperReferralWallpaper)) {
     // Flag override for testing or demo purposes
     base::FilePath forced_local_path(
@@ -135,7 +135,7 @@ void NTPBackgroundImagesService::Init() {
       CheckSuperReferralComponent();
     }
   }
-//#endif
+#endif
 }
 
 void NTPBackgroundImagesService::CheckSIComponentUpdate(
@@ -213,9 +213,8 @@ void NTPBackgroundImagesService::CheckSuperReferralComponent() {
     // If referral code is non empty, that means browser is shutdown after
     // getting referal code. In this case, we should start downloading mapping
     // table.
-//    if ((local_pref_->GetBoolean(kReferralCheckedForPromoCodeFile) ||
-//         local_pref_->GetBoolean(kReferralInitialization)) &&
-    if (
+    if ((local_pref_->GetBoolean(kReferralCheckedForPromoCodeFile) ||
+         local_pref_->GetBoolean(kReferralInitialization)) &&
         !local_pref_->GetBoolean(
              prefs::kNewTabPageGetInitialSRComponentInProgress)) {
       MarkThisInstallIsNotSuperReferralForever();
@@ -240,7 +239,6 @@ void NTPBackgroundImagesService::CheckSuperReferralComponent() {
 
     // This below code is for recover above abnormal situation - Shutdown
     // situation before getting map table or getting initial component.
-/*
     if (brave::BraveReferralsService::IsDefaultReferralCode(code)) {
       MarkThisInstallIsNotSuperReferralForever();
     } else {
@@ -248,7 +246,6 @@ void NTPBackgroundImagesService::CheckSuperReferralComponent() {
       // mapping table.
       DownloadSuperReferralMappingTable();
     }
-*/
     return;
   }
 
@@ -273,7 +270,6 @@ void NTPBackgroundImagesService::OnPreferenceChanged(
   DVLOG(2) << __func__ << ": Got referral promo code: "
                        << new_referral_code;
   DCHECK(!new_referral_code.empty());
-/*
   if (brave::BraveReferralsService::IsDefaultReferralCode(new_referral_code)) {
     DVLOG(2) << __func__ << ": This has default referral promo code.";
     MarkThisInstallIsNotSuperReferralForever();
@@ -284,7 +280,6 @@ void NTPBackgroundImagesService::OnPreferenceChanged(
                        << " Let's check this code is super referral or not"
                        << " after downloading mapping table.";
   DownloadSuperReferralMappingTable();
-*/
 }
 
 void NTPBackgroundImagesService::RegisterSuperReferralComponent() {

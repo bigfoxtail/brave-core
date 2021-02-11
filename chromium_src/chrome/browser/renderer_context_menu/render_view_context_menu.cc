@@ -86,14 +86,12 @@ bool BraveRenderViewContextMenu::IsCommandIdEnabled(int id) const {
 void BraveRenderViewContextMenu::ExecuteCommand(int id, int event_flags) {
   switch (id) {
     case IDC_CONTENT_CONTEXT_OPENLINKTOR:
-/*
       TorProfileManager::SwitchToTorProfile(
           GetProfile(),
           base::Bind(
               OnProfileCreated, params_.link_url,
               content::Referrer(
                   GURL(), network::mojom::ReferrerPolicy::kStrictOrigin)));
-*/
       break;
     default:
       RenderViewContextMenu_Chromium::ExecuteCommand(id, event_flags);

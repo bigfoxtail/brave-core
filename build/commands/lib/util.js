@@ -457,8 +457,7 @@ const util = {
       num_compile_failure = 0
 
     const args = util.buildArgsToString(config.buildArgs())
-//    util.run('gn', ['gen', config.outputDir, '--args="' + args + '"'], options)
-    util.run('gn', ['gen --ide=vs --filters=//chrome --no-deps', config.outputDir, '--args="' + args + '"'], options)
+    util.run('gn', ['gen', config.outputDir, '--args="' + args + '"'], options)
 
     let ninjaOpts = [
       '-C', config.outputDir, config.buildTarget,
@@ -522,7 +521,7 @@ const util = {
     let reset = forceReset
 
     // base args
-    const initialArgs = ['sync', '-j3', '--reset', '--nohooks']
+    const initialArgs = ['sync', '--reset', '--nohooks']
     const chromiumArgs = ['--revision', 'src@' + config.getProjectRef('chrome')]
     const resetArgs = ['--with_tags', '--with_branch_heads', '--upstream']
 

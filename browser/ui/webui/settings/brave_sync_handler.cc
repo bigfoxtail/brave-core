@@ -90,10 +90,10 @@ void BraveSyncHandler::HandleGetSyncCode(const base::ListValue* args) {
   const base::Value* callback_id;
   CHECK(args->Get(0, &callback_id));
 
-//  auto* sync_service = GetSyncService();
+  auto* sync_service = GetSyncService();
   std::string sync_code;
-//  if (sync_service)
-//    sync_code = sync_service->GetOrCreateSyncCode();
+  if (sync_service)
+    sync_code = sync_service->GetOrCreateSyncCode();
 
   ResolveJavascriptCallback(*callback_id, base::Value(sync_code));
 }
@@ -158,13 +158,13 @@ void BraveSyncHandler::HandleSetSyncCode(const base::ListValue* args) {
     RejectJavascriptCallback(*callback_id, base::Value(false));
     return;
   }
-/*
+
   auto* sync_service = GetSyncService();
   if (!sync_service || !sync_service->SetSyncCode(sync_code->GetString())) {
     RejectJavascriptCallback(*callback_id, base::Value(false));
     return;
   }
-*/
+
   ResolveJavascriptCallback(*callback_id, base::Value(true));
 }
 
@@ -246,10 +246,9 @@ base::Value BraveSyncHandler::GetSyncDeviceList() {
   DCHECK(tracker);
   const syncer::DeviceInfo* local_device_info =
       GetLocalDeviceInfoProvider()->GetLocalDeviceInfo();
-  DCHECK(local_device_info);
 
   base::Value device_list(base::Value::Type::LIST);
-/*
+
   for (const auto& device : tracker->GetAllBraveDeviceInfo()) {
     auto device_value = base::Value::FromUniquePtrValue(device->ToValue());
     bool is_current_device =
@@ -262,7 +261,7 @@ base::Value BraveSyncHandler::GetSyncDeviceList() {
 
     device_list.Append(std::move(device_value));
   }
-*/
+
   return device_list;
 }
 

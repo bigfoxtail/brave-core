@@ -184,12 +184,11 @@ bool BraveMainDelegate::BasicStartupComplete(int* exit_code) {
 #endif  // defined(OS_ANDROID)
 
   // Brave's sync protocol does not use the sync service url
-//  command_line.AppendSwitchASCII(switches::kSyncServiceURL,
-//                                 brave_sync_service_url.c_str());
+  command_line.AppendSwitchASCII(switches::kSyncServiceURL,
+                                 brave_sync_service_url.c_str());
 
   command_line.AppendSwitchASCII(switches::kLsoUrl, kDummyUrl);
 
-/*
 #if defined(OFFICIAL_BUILD)
   // Brave variations
   std::string kVariationsServerURL = BRAVE_VARIATIONS_SERVER_URL;
@@ -197,7 +196,6 @@ bool BraveMainDelegate::BasicStartupComplete(int* exit_code) {
                                  kVariationsServerURL.c_str());
   CHECK(!kVariationsServerURL.empty());
 #endif
-*/
 
   // Enabled features.
   std::unordered_set<const char*> enabled_features = {

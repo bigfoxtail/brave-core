@@ -8,21 +8,12 @@ export * from './settings'
 import { ListWidget, Tile, TileActionsContainer, TileAction, TileFavicon } from './gridSites'
 import { SiteRemovalNotification, SiteRemovalText, SiteRemovalAction } from './notification'
 import { ClockWidget } from './clock'
-<<<<<<< HEAD
 import { RewardsWidget } from './rewards'
 import { BinanceWidget } from './binance'
 import { TogetherWidget } from './together'
 import { GeminiWidget } from './gemini'
 import { CryptoDotComWidget } from './cryptoDotCom'
 import EditCards from './editCards'
-=======
-//import { RewardsWidget } from './rewards'
-//import { BinanceWidget } from './binance'
-//import { TogetherWidget } from './together'
-//import { GeminiWidget } from './gemini'
-//import { CryptoDotComWidget } from './cryptoDotCom'
-//import EditCards from './editCards'
->>>>>>> brave1.21.49
 import createWidget from './widget'
 
 export * from './page'
@@ -39,20 +30,11 @@ export {
   SiteRemovalText,
   SiteRemovalAction,
   ClockWidget,
-<<<<<<< HEAD
   RewardsWidget,
   BinanceWidget,
   TogetherWidget,
   EditCards,
   GeminiWidget,
   CryptoDotComWidget,
-=======
-//  RewardsWidget,
-//  BinanceWidget,
-//  TogetherWidget,
-//  EditCards,
-//  GeminiWidget,
-//  CryptoDotComWidget,
->>>>>>> brave1.21.49
   createWidget
 }

@@ -3,8 +3,7 @@ import("//build/config/features.gni")
 import("//extensions/buildflags/buildflags.gni")
 
 declare_args() {
-  #enable_brave_translate_go = false
-  enable_brave_translate_go = true
+  enable_brave_translate_go = false
 }
 
 declare_args() {

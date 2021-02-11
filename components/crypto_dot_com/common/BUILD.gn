@@ -1,6 +1,6 @@
 import("//brave/components/crypto_dot_com/browser/buildflags/buildflags.gni")
 
-#assert(crypto_dot_com_enabled)
+assert(crypto_dot_com_enabled)
 
 source_set("common") {
     sources = [

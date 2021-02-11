@@ -64,11 +64,7 @@ void BraveProfileSyncServiceDelegate::OnDeviceInfoChange() {
 }
 
 void BraveProfileSyncServiceDelegate::OnSelfDeviceInfoDeleted() {
-<<<<<<< HEAD
   profile_sync_service_->OnSelfDeviceInfoDeleted(base::DoNothing::Once());
-=======
-//  profile_sync_service_->OnSelfDeviceInfoDeleted(base::DoNothing::Once());
->>>>>>> brave1.21.49
 }
 
 void BraveProfileSyncServiceDelegate::SuspendDeviceObserverForOwnReset() {

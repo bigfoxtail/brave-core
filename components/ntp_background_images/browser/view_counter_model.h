@@ -37,7 +37,7 @@ class ViewCounterModel {
 
  private:
   static const int kInitialCountToBrandedWallpaper = 1;
-  static const int kRegularCountToBrandedWallpaper = 1;
+  static const int kRegularCountToBrandedWallpaper = 3;
 
   FRIEND_TEST_ALL_PREFIXES(ViewCounterModelTest, NTPSponsoredImagesTest);
   FRIEND_TEST_ALL_PREFIXES(NTPBackgroundImagesViewCounterTest, ModelTest);

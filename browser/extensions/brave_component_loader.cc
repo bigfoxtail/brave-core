@@ -19,8 +19,8 @@
 #include "brave/components/brave_extension/grit/brave_extension.h"
 #include "brave/components/brave_rewards/browser/buildflags/buildflags.h"
 #include "brave/components/brave_rewards/common/pref_names.h"
-//#include "brave/components/brave_rewards/resources/extension/grit/brave_rewards_extension_resources.h"
-//#include "brave/components/brave_webtorrent/grit/brave_webtorrent_resources.h"
+#include "brave/components/brave_rewards/resources/extension/grit/brave_rewards_extension_resources.h"
+#include "brave/components/brave_webtorrent/grit/brave_webtorrent_resources.h"
 #include "chrome/browser/extensions/extension_service.h"
 #include "chrome/browser/profiles/profile.h"
 #include "chrome/common/pref_names.h"
@@ -184,11 +184,7 @@ void BraveComponentLoader::AddWebTorrentExtension() {
     base::FilePath brave_webtorrent_path(FILE_PATH_LITERAL(""));
     brave_webtorrent_path =
         brave_webtorrent_path.Append(FILE_PATH_LITERAL("brave_webtorrent"));
-<<<<<<< HEAD
     Add(IDR_BRAVE_WEBTORRENT, brave_webtorrent_path);
-=======
-//    Add(IDR_BRAVE_WEBTORRENT, brave_webtorrent_path);
->>>>>>> brave1.21.49
   }
 }
 

@@ -114,8 +114,8 @@ BraveActionsContainer::BraveActionsContainer(Browser* browser, Profile* profile)
       extension_action_observer_(this),
       brave_action_observer_(this),
       empty_extensions_container_(new EmptyExtensionsContainer),
-//      rewards_service_(
-//          brave_rewards::RewardsServiceFactory::GetForProfile(profile)),
+      rewards_service_(
+          brave_rewards::RewardsServiceFactory::GetForProfile(profile)),
       weak_ptr_factory_(this) {
   // Handle when the extension system is ready
   extension_system_->ready().Post(
@@ -376,9 +376,9 @@ void BraveActionsContainer::OnRewardsStubButtonClicked() {
           static_cast<extensions::BraveComponentLoader*>(loader)->
               AddRewardsExtension();
 
-//    if (rewards_service_) {
-//      rewards_service_->StartProcess(base::DoNothing());
-//    }
+    if (rewards_service_) {
+      rewards_service_->StartProcess(base::DoNothing());
+    }
   }
 }
 // end BraveRewardsActionStubView::Delegate members

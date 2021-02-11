@@ -62,9 +62,9 @@ class BraveDefaultExtensionsHandler : public settings::SettingsPageUIHandler {
 #endif
   Profile* profile_ = nullptr;
   PrefChangeRegistrar pref_change_registrar_;
-//#if BUILDFLAG(ENABLE_TOR)
+#if BUILDFLAG(ENABLE_TOR)
   PrefChangeRegistrar local_state_change_registrar_;
-//#endif
+#endif
   base::WeakPtrFactory<BraveDefaultExtensionsHandler> weak_ptr_factory_;
 
   DISALLOW_COPY_AND_ASSIGN(BraveDefaultExtensionsHandler);

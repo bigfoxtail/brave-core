@@ -9,7 +9,7 @@ import * as statsAPI from './api/stats'
 import * as topSitesAPI from './api/topSites'
 import * as privateTabDataAPI from './api/privateTabData'
 import * as torTabDataAPI from './api/torTabData'
-import { getInitialData } from './api/initialData'
+import { getInitialData, getRewardsInitialData, getRewardsPreInitialData } from './api/initialData'
 
 async function updatePreferences (prefData: NewTab.Preferences) {
   getActions().preferencesUpdated(prefData)
@@ -27,13 +27,11 @@ async function updateTorTabData (data: torTabDataAPI.TorTabData) {
   getActions().torTabDataUpdated(data)
 }
 
-/*
 function onRewardsToggled (prefData: NewTab.Preferences): void {
   if (prefData.showRewards) {
     rewardsInitData()
   }
 }
-*/
 
 async function onMostVisitedInfoChanged (topSites: topSitesAPI.MostVisitedInfoChanged) {
   getActions().tilesUpdated(topSites.tiles)
@@ -46,11 +44,9 @@ export function wireApiEventsToStore () {
   // Get initial data and dispatch to store
   getInitialData()
   .then((initialData) => {
-/*
     if (initialData.preferences.showRewards) {
       rewardsInitData()
     }
-*/
     getActions().setInitialData(initialData)
     if (initialData.preferences.showToday) {
       getActions().today.todayInit()
@@ -60,7 +56,7 @@ export function wireApiEventsToStore () {
     topSitesAPI.updateMostVisitedInfo()
     statsAPI.addChangeListener(updateStats)
     preferencesAPI.addChangeListener(updatePreferences)
-//    preferencesAPI.addChangeListener(onRewardsToggled)
+    preferencesAPI.addChangeListener(onRewardsToggled)
     privateTabDataAPI.addChangeListener(updatePrivateTabData)
     torTabDataAPI.addChangeListener(updateTorTabData)
   })
@@ -69,7 +65,6 @@ export function wireApiEventsToStore () {
   })
 }
 
-/*
 export function rewardsInitData () {
   getRewardsPreInitialData()
   .then((preInitialRewardsData) => {
@@ -123,4 +118,3 @@ chrome.braveRewards.onPromotionFinish.addListener((result: number, promotion: Ne
 chrome.braveRewards.onCompleteReset.addListener((properties: { success: boolean }) => {
   getActions().onCompleteReset(properties.success)
 })
-*/

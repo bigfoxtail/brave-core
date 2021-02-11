@@ -33,7 +33,7 @@ class BraveDeviceInfo : public DeviceInfo {
                   const std::string& fcm_registration_token,
                   const ModelTypeSet& interested_data_types,
                   bool is_self_delete_supported);
-  ~BraveDeviceInfo() {}
+  ~BraveDeviceInfo() override {}
 
   bool is_self_delete_supported() const;
   void set_is_self_delete_supported(bool is_self_delete_supported);

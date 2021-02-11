@@ -1,6 +1,6 @@
 import("//brave/components/brave_referrals/buildflags/buildflags.gni")
 
-#assert(enable_brave_referrals)
+assert(enable_brave_referrals)
 
 source_set("common") {
   sources = [

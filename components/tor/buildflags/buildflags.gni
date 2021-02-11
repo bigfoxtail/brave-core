@@ -1,7 +1,6 @@
 import("//build/config/features.gni")
 
 declare_args() {
-  #enable_tor = !is_android
-  enable_tor = false
+  enable_tor = !is_android
 }
 

@@ -103,8 +103,8 @@ void BraveProfileManager::DoFinalInitForServices(Profile* profile,
   ProfileManager::DoFinalInitForServices(profile, go_off_the_record);
   if (!do_final_services_init_)
     return;
-//  brave_ads::AdsServiceFactory::GetForProfile(profile);
-//  brave_rewards::RewardsServiceFactory::GetForProfile(profile);
+  brave_ads::AdsServiceFactory::GetForProfile(profile);
+  brave_rewards::RewardsServiceFactory::GetForProfile(profile);
 #if BUILDFLAG(BRAVE_WALLET_ENABLED)
   BraveWalletServiceFactory::GetForProfile(profile);
 #endif
@@ -148,7 +148,7 @@ bool BraveProfileManager::LoadProfileByPath(const base::FilePath& profile_path,
 // during the initialization.
 void BraveProfileManager::SetNonPersonalProfilePrefs(Profile* profile) {
   PrefService* prefs = profile->GetPrefs();
-//  prefs->SetBoolean(prefs::kSigninAllowed, false);
+  prefs->SetBoolean(prefs::kSigninAllowed, false);
   prefs->SetBoolean(bookmarks::prefs::kEditBookmarksEnabled, false);
   prefs->SetBoolean(bookmarks::prefs::kShowBookmarkBar, false);
 }

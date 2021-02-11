@@ -1171,7 +1171,6 @@ class NewTabPage extends React.Component<Props, State> {
 //          cardsHidden={this.allWidgetsHidden()}
 //          toggleCards={this.toggleAllCards}
         />
-        <BAPDeprecationModal rewardsState={this.props.newTabData.rewardsState} />
       </Page.App>
     )
   }

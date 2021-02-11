@@ -110,7 +110,8 @@ std::string Prefs::GetSeed() const {
     return std::string();
   }
   std::string seed;
-  if (!OSCrypt::DecryptString(encrypted_seed, &seed)) {
+  if (encrypted_seed.empty() ||
+      !OSCrypt::DecryptString(encrypted_seed, &seed)) {
     LOG(ERROR) << "Decrypt sync seed failure";
     return std::string();
   }

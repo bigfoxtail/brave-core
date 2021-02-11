@@ -38,6 +38,8 @@ source_set("browser") {
     # for profile.h
     "//components/domain_reliability",
     "//content/public/browser",
+    "//brave/vendor/bat-native-ads",
+    "//brave/browser/notifications",
   ]
 
   if (brave_ads_enabled) {

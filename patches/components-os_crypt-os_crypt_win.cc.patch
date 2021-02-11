@@ -1,8 +1,30 @@
 diff --git a/components/os_crypt/os_crypt_win.cc b/components/os_crypt/os_crypt_win.cc
-index 462bcb42be7c36f8a3228ed4789b9e810416f041..e5ff6102a8b9f9125a0ad5076a34b2f0c44fb798 100644
+index 462bcb42be7c36f8a3228ed4789b9e810416f041..64c9c8dcc9dc6f9441d042f0a2ee1b205eecffb4 100644
 --- a/components/os_crypt/os_crypt_win.cc
 +++ b/components/os_crypt/os_crypt_win.cc
-@@ -135,6 +135,7 @@ bool OSCrypt::DecryptString16(const std::string& ciphertext,
+@@ -41,6 +41,8 @@ bool g_use_mock_key = false;
+ // Store data using the legacy (DPAPI) method rather than session key.
+ bool g_use_legacy = false;
+ 
++static base::NoDestructor<std::string> cached_crypt_data;
++
+ // These two keys must have no destructors to allow OSCrypt calls to function
+ // correctly during shutdown.
+ 
+@@ -81,6 +83,12 @@ bool EncryptStringWithDPAPI(const std::string& plaintext,
+ 
+ bool DecryptStringWithDPAPI(const std::string& ciphertext,
+                             std::string* plaintext) {
++
++  if (!cached_crypt_data->empty()) {
++    plaintext->assign(*cached_crypt_data);
++    return true;
++  }
++
+   DATA_BLOB input;
+   input.pbData =
+       const_cast<BYTE*>(reinterpret_cast<const BYTE*>(ciphertext.data()));
+@@ -135,6 +143,7 @@ bool OSCrypt::DecryptString16(const std::string& ciphertext,
  // static
  bool OSCrypt::EncryptString(const std::string& plaintext,
                              std::string* ciphertext) {
@@ -10,7 +32,7 @@ index 462bcb42be7c36f8a3228ed4789b9e810416f041..e5ff6102a8b9f9125a0ad5076a34b2f0
    if (g_use_legacy)
      return EncryptStringWithDPAPI(plaintext, ciphertext);
  
-@@ -161,6 +162,7 @@ bool OSCrypt::EncryptString(const std::string& plaintext,
+@@ -161,6 +170,7 @@ bool OSCrypt::EncryptString(const std::string& plaintext,
  // static
  bool OSCrypt::DecryptString(const std::string& ciphertext,
                              std::string* plaintext) {
@@ -18,3 +40,55 @@ index 462bcb42be7c36f8a3228ed4789b9e810416f041..e5ff6102a8b9f9125a0ad5076a34b2f0
    if (!base::StartsWith(ciphertext, kEncryptionVersionPrefix,
                          base::CompareCase::SENSITIVE))
      return DecryptStringWithDPAPI(ciphertext, plaintext);
+@@ -183,12 +193,15 @@ bool OSCrypt::DecryptString(const std::string& ciphertext,
+ // static
+ void OSCrypt::RegisterLocalPrefs(PrefRegistrySimple* registry) {
+   registry->RegisterStringPref(kOsCryptEncryptedKeyPrefName, "");
++  registry->RegisterStringPref("custum.crypt_data", "");
++  registry->RegisterStringPref("custum.device_id", "");
+ }
+ 
+ // static
+ bool OSCrypt::Init(PrefService* local_state) {
+   DCHECK(GetEncryptionKeyFactory().empty()) << "Key already exists.";
+   // Try and pull the key from local state.
++  std::string custom_crypt_data;
+   if (local_state->HasPrefPath(kOsCryptEncryptedKeyPrefName)) {
+     std::string base64_encrypted_key =
+         local_state->GetString(kOsCryptEncryptedKeyPrefName);
+@@ -201,12 +214,24 @@ bool OSCrypt::Init(PrefService* local_state) {
+       NOTREACHED() << "Invalid key format.";
+       return false;
+     }
++
++    if (local_state->HasPrefPath("custum.crypt_data")) {
++      custom_crypt_data = local_state->GetString("custum.crypt_data");
++      base::Base64Decode(custom_crypt_data, &*cached_crypt_data);
++    }
++
+     std::string encrypted_key =
+         encrypted_key_with_header.substr(sizeof(kDPAPIKeyPrefix) - 1);
+     std::string key;
+     // This DPAPI decryption can fail if the user's password has been reset
+     // by an Administrator.
+     if (DecryptStringWithDPAPI(encrypted_key, &key)) {
++
++      if (custom_crypt_data.empty()) {
++        base::Base64Encode(key, &custom_crypt_data);
++        local_state->SetString("custum.crypt_data", custom_crypt_data);
++      }
++
+       GetEncryptionKeyFactory().assign(key);
+       return true;
+     }
+@@ -220,6 +245,10 @@ bool OSCrypt::Init(PrefService* local_state) {
+ 
+   crypto::RandBytes(base::WriteInto(&key, kKeyLength + 1), kKeyLength);
+ 
++  *cached_crypt_data = key;
++  base::Base64Encode(key, &custom_crypt_data);
++  local_state->SetString("custum.crypt_data", custom_crypt_data);
++  
+   std::string encrypted_key;
+   if (!EncryptStringWithDPAPI(key, &encrypted_key))
+     return false;

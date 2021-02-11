@@ -1,0 +1,20 @@
+diff --git a/chrome/browser/translate/translate_service.h b/chrome/browser/translate/translate_service.h
+index fdf7b93e3e86ed4fa121975cf8d8c00a509b2b54..099c593100a6b26aed7e42a1171ef81138d12f23 100644
+--- a/chrome/browser/translate/translate_service.h
++++ b/chrome/browser/translate/translate_service.h
+@@ -9,6 +9,7 @@
+ 
+ class GURL;
+ class PrefService;
++class Profile;
+ 
+ namespace language {
+ class LanguageModel;
+@@ -20,6 +21,7 @@ class TranslateService
+  public:
+   // Must be called before the Translate feature can be used.
+   static void Initialize();
++  static void Initialize(Profile* profile_);
+ 
+   // Must be called to shut down the Translate feature.
+   static void Shutdown(bool cleanup_pending_fetcher);

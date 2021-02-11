@@ -32,6 +32,7 @@ RegisterPolymerTemplateModifications({
       console.error('[Brave Settings Overrides] People Page cannot find signin template')
       return
     }
+/**
     const syncSetupLink = templateContent.querySelector('#sync-setup')
     if (syncSetupLink) {
       syncSetupLink.remove()
@@ -59,6 +60,7 @@ RegisterPolymerTemplateModifications({
       return
     }
     manageGoogleAccount.remove()
+*/
     // Edit profile item needs to know it's the first in the section
     const firstItem = signinTemplate.content.querySelector('#edit-profile')
     if (!firstItem) {

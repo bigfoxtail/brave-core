@@ -1,31 +1,8 @@
 diff --git a/chrome/browser/resources/settings/about_page/about_page.js b/chrome/browser/resources/settings/about_page/about_page.js
-index 05ca4e7b79b61bf3252803192349cf6904d1fa97..0e86cb24241324bba7b504972c900bcbfef4739a 100644
+index 05ca4e7b79b61bf3252803192349cf6904d1fa97..c956d11c66a18b9506a155238af5f5f181bda3ba 100644
 --- a/chrome/browser/resources/settings/about_page/about_page.js
 +++ b/chrome/browser/resources/settings/about_page/about_page.js
-@@ -124,11 +124,13 @@ Polymer({
- 
-     // <if expr="not chromeos">
-     this.startListening_();
-+/**
-     if (Router.getInstance().getQueryParameters().get('checkForUpdate') ===
-         'true') {
-       this.onUpdateStatusChanged_({status: UpdateStatus.CHECKING});
-       this.aboutBrowserProxy_.requestUpdate();
-     }
-+*/
-     // </if>
-   },
- 
-@@ -156,7 +158,7 @@ Polymer({
-         'promotion-state-changed',
-         this.onPromoteUpdaterStatusChanged_.bind(this));
-     // </if>
--    this.aboutBrowserProxy_.refreshUpdateStatus();
-+//    this.aboutBrowserProxy_.refreshUpdateStatus();
-   },
- 
-   /**
-@@ -213,7 +215,14 @@ Polymer({
+@@ -213,7 +213,14 @@ Polymer({
  
    /** @private */
    onRelaunchTap_() {
@@ -40,3 +17,11 @@ index 05ca4e7b79b61bf3252803192349cf6904d1fa97..0e86cb24241324bba7b504972c900bcb
    },
  
    // <if expr="not chromeos">
+@@ -300,6 +307,7 @@ Polymer({
+    * @private
+    */
+   getUpdateStatusIcon_() {
++    return 'settings:check-circle';
+     // If this platform has reached the end of the line, display an error icon
+     // and ignore UpdateStatus.
+     if (this.obsoleteSystemInfo_.endOfLine) {

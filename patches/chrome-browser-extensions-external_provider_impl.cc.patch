@@ -1,0 +1,18 @@
+diff --git a/chrome/browser/extensions/external_provider_impl.cc b/chrome/browser/extensions/external_provider_impl.cc
+index d28017b7fee52677c4b295586c2d1fe8fd096c9a..0c3b8defc729f96771d86355bbc27657e3ec1aa8 100644
+--- a/chrome/browser/extensions/external_provider_impl.cc
++++ b/chrome/browser/extensions/external_provider_impl.cc
+@@ -793,6 +793,13 @@ void ExternalProviderImpl::CreateExternalProviders(
+           Extension::NO_FLAGS);
+       registry_provider->set_allow_updates(true);
+       provider_list->push_back(std::move(registry_provider));
++      provider_list->push_back(std::make_unique<ExternalProviderImpl>(
++          service,
++          base::MakeRefCounted<ExternalPrefLoader>(
++              chrome::DIR_EXTERNAL_EXTENSIONS, ExternalPrefLoader::NONE,
++              nullptr),
++          profile, Manifest::EXTERNAL_PREF, Manifest::EXTERNAL_PREF_DOWNLOAD,
++          Extension::NO_FLAGS));
+ #else
+       provider_list->push_back(std::make_unique<ExternalProviderImpl>(
+           service,

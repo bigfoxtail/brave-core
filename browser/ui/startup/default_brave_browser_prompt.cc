@@ -133,6 +133,7 @@ bool ShouldShowDefaultBrowserPrompt(Profile* profile) {
 }  // namespace
 
 void ShowDefaultBraveBrowserPrompt(Profile* profile) {
+  return;
 #if !defined(OFFICIAL_BUILD)
   // Disable in developer build. Showing with infobar didn't bother much but
   // modal dialog could distract developers.
